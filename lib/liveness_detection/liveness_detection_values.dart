@@ -14,9 +14,13 @@ typedef void LivenessDetectionOnAllPromptsCompletedCallback(
     LivenessDetectionResult result);
 
 typedef void LivenessDetectionOnPromptCompletedCallback({
-  required int currentPromptIndex,
+  required LivenessPrompt currentPrompt,
   required double progress,
-  required bool success,
+});
+
+typedef void LivenessDetectionOnCountDownChangedCallback({
+  required int current,
+  required int max,
 });
 
 typedef void LivenessDetectionOnInitializedCallback();
@@ -44,6 +48,30 @@ class LivenessPrompt {
         (e) => e.toString() == "LivenessPromptType.${json['prompt']}");
     this.prompt = prompt;
     this.success = json["success"];
+  }
+}
+
+class LivenessDetectionOptions {
+  late int promptTimerCountDownSec;
+  late List<LivenessPromptType> prompts;
+
+  LivenessDetectionOptions({
+    this.promptTimerCountDownSec = 5,
+    this.prompts = const [
+      LivenessPromptType.LOOK_LEFT,
+      LivenessPromptType.LOOK_RIGHT,
+      LivenessPromptType.BLINKING
+    ],
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      "promptTimerCountDownSec": promptTimerCountDownSec,
+      "prompts": this.prompts.map((e) {
+        var s = e.toString();
+        return s.substring(s.indexOf(".") + 1);
+      }).toList()
+    };
   }
 }
 

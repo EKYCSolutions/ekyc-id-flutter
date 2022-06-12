@@ -18,22 +18,30 @@ class LivenessDetectionController {
     required LivenessDetectionOnInitializedCallback onInitialized,
     required LivenessDetectionOnFocusDroppedCallback onFocusDropped,
     required LivenessDetectionOnPromptCompletedCallback onPromptCompleted,
+    required LivenessDetectionOnCountDownChangedCallback onCountDownChanged,
     required LivenessDetectionOnAllPromptsCompletedCallback
         onAllPromptsCompleted,
+    LivenessDetectionOptions? options,
   }) async {
-    await _methodChannel.invokeMethod('start');
+    if (options != null) {
+      await _methodChannel.invokeMethod('start', options.toMap());
+    } else {
+      await _methodChannel.invokeMethod('start');
+    }
+
     registerEventListener(
       onFocus: onFocus,
       onFrame: onFrame,
       onInitialized: onInitialized,
       onFocusDropped: onFocusDropped,
       onPromptCompleted: onPromptCompleted,
+      onCountDownChanged: onCountDownChanged,
       onAllPromptsCompleted: onAllPromptsCompleted,
     );
   }
 
-  Future<void> stop() async {
-    await _methodChannel.invokeMethod('stop');
+  Future<void> dispose() async {
+    await _methodChannel.invokeMethod('dispose');
   }
 
   Future<void> nextImage() async {
@@ -46,6 +54,7 @@ class LivenessDetectionController {
     required LivenessDetectionOnInitializedCallback onInitialized,
     required LivenessDetectionOnFocusDroppedCallback onFocusDropped,
     required LivenessDetectionOnPromptCompletedCallback onPromptCompleted,
+    required LivenessDetectionOnCountDownChangedCallback onCountDownChanged,
     required LivenessDetectionOnAllPromptsCompletedCallback
         onAllPromptsCompleted,
   }) {
@@ -64,16 +73,27 @@ class LivenessDetectionController {
         Map<String, dynamic> values =
             Map<String, dynamic>.from(event["values"]);
         onPromptCompleted(
-          currentPromptIndex: values["currentPromptIndex"],
+          currentPrompt: LivenessPrompt.fromMap(
+            Map<String, dynamic>.from(
+              values["prompt"],
+            ),
+          ),
           progress: values["progress"],
-          success: values["success"],
         );
       } else if (event["type"] == "onAllPromptsCompleted") {
-        Map<String, dynamic> values =
-            Map<String, dynamic>.from(event["values"]);
+        Map<String, dynamic> values = Map<String, dynamic>.from(
+          event["values"],
+        );
         LivenessDetectionResult result =
             LivenessDetectionResult.fromMap(values);
         onAllPromptsCompleted(result);
+      } else if (event["type"] == "onCountDownChanged") {
+        Map<String, dynamic> values =
+            Map<String, dynamic>.from(event["values"]);
+        onCountDownChanged(
+          current: values["current"],
+          max: values["max"],
+        );
       }
     });
   }

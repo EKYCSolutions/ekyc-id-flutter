@@ -30,9 +30,8 @@ class DocumentScannerController {
     await _methodChannel.invokeMethod('setTapToFocus');
   }
 
-  Future<void> stop() async {
-    await _methodChannel.invokeMethod('stop');
-    // this.values = DocumentScannerValues();
+  Future<void> dispose() async {
+    await _methodChannel.invokeMethod('dispose');
   }
 
   Future<void> nextImage() async {
