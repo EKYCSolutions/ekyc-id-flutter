@@ -1,8 +1,8 @@
 PODS:
   - ekyc_id_flutter (1.0.0):
-    - EkycID (~> 1.0.5)
+    - EkycID (~> 1.0.7)
     - Flutter
-  - EkycID (1.0.5):
+  - EkycID (1.0.7):
     - GoogleMLKit/FaceDetection (= 2.5.0)
     - OpenCV (= 4.3.0)
     - TensorFlowLiteSwift (= 0.0.1-nightly.20211127)
@@ -104,8 +104,8 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  ekyc_id_flutter: fd62e38a738dcad9e1cf46ee3d571bb462653f23
-  EkycID: 0175297679b04bb18bf91dd905c0d019a324e6ab
+  ekyc_id_flutter: a6657630195df9d96f452ccd9277d812da71fdca
+  EkycID: 82126848ed27d9a1e5816ebc6910073fcfe4c329
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleMLKit: 0d7f5aa2f8a2f2ea9d849a05abdbe80974b0ec83

@@ -15,7 +15,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   bool isInitialized = false;
-  // late DocumentScannerController controller;
   late LivenessDetectionController controller;
 
   @override
@@ -28,11 +27,12 @@ class _MyAppState extends State<MyApp> {
     this.controller = controller;
     await this.controller.start(
           onFrame: onFrame,
-          onInitialized: onInitialized,
-          onAllPromptsCompleted: onAllPromptCompleted,
-          onPromptCompleted: onPromptCompleted,
           onFocus: onFocus,
+          onInitialized: onInitialized,
           onFocusDropped: onFocusDropped,
+          onPromptCompleted: onPromptCompleted,
+          onCountDownChanged: onCountDownChanged,
+          onAllPromptsCompleted: onAllPromptCompleted,
         );
   }
 
@@ -49,22 +49,31 @@ class _MyAppState extends State<MyApp> {
   }
 
   void onPromptCompleted({
-    required int currentPromptIndex,
+    required LivenessPrompt currentPrompt,
     required double progress,
-    required bool success,
   }) {}
 
   void onAllPromptCompleted(LivenessDetectionResult result) {}
 
-  // void onDetection(DocumentScannerResult result) {
-  //   print("onDetection: ${result.documentType}");
-  // }
+  void onCountDownChanged({
+    required int current,
+    required int max,
+  }) {
+    print("max: $max");
+    print("current: $current");
+  }
 
   void onInitialized() {
     setState(() {
       isInitialized = true;
     });
     print("onInitialized");
+  }
+
+  @override
+  void dispose() {
+    this.controller.dispose();
+    super.dispose();
   }
 
   @override
