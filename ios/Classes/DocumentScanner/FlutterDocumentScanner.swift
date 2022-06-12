@@ -22,13 +22,6 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         self.viewId = viewId
         super.init()
         self.flutterCameraView = UIView(frame: frame)
-        
-        self.cameraView = DocumentScannerCameraView(frame: self.flutterCameraView!.frame)
-        self.cameraView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.cameraView!.addListener(self)
-        
-        self.flutterCameraView!.addSubview(self.cameraView!)
-        
         self.methodChannel = FlutterMethodChannel(name: "DocumentScanner_MethodChannel_" + String(viewId), binaryMessenger: messenger)
         self.eventChannel = FlutterEventChannel(name: "DocumentScanner_EventChannel_" + String(viewId), binaryMessenger: messenger)
         self.eventStreamHandler = DocumentScannerEventStreamHandler()
@@ -41,13 +34,11 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
     }
     
     private func start(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
+        self.cameraView = DocumentScannerCameraView(frame: self.flutterCameraView!.frame)
+        self.cameraView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        self.cameraView!.addListener(self)
+        self.flutterCameraView!.addSubview(self.cameraView!)
         self.cameraView!.start()
-        result(true)
-    }
-    
-    
-    private func stop(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
-        self.cameraView!.stop()
         result(true)
     }
     
@@ -63,6 +54,10 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
     }
     
     private func dispose(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
+        if (self.cameraView != nil) {
+            self.cameraView!.stop()
+            self.cameraView = nil
+        }
         result(true)
     }
     
@@ -75,9 +70,9 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
                 result(FlutterError(code: "initialize Error", message: nil, details: nil))
             }
             break
-        case "stop":
+        case "dispose":
             do {
-                try self.stop(call: call, result: result)
+                try self.dispose(call: call, result: result)
             } catch {
                 result(FlutterError(code: "dispose Error", message: nil, details: nil))
             }
