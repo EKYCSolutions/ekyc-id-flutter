@@ -21,13 +21,9 @@ class LivenessDetectionController {
     required LivenessDetectionOnCountDownChangedCallback onCountDownChanged,
     required LivenessDetectionOnAllPromptsCompletedCallback
         onAllPromptsCompleted,
-    LivenessDetectionOptions? options,
+    required LivenessDetectionOptions options,
   }) async {
-    if (options != null) {
-      await _methodChannel.invokeMethod('start', options.toMap());
-    } else {
-      await _methodChannel.invokeMethod('start');
-    }
+    await _methodChannel.invokeMethod('start', options.toMap());
 
     registerEventListener(
       onFocus: onFocus,
@@ -70,14 +66,12 @@ class LivenessDetectionController {
       } else if (event["type"] == "onFocusDropped") {
         onFocusDropped();
       } else if (event["type"] == "onPromptCompleted") {
+        print(event);
         Map<String, dynamic> values =
             Map<String, dynamic>.from(event["values"]);
         onPromptCompleted(
-          currentPrompt: LivenessPrompt.fromMap(
-            Map<String, dynamic>.from(
-              values["prompt"],
-            ),
-          ),
+          completedPromptIndex: values["completedPromptIndex"],
+          success: values["success"],
           progress: values["progress"],
         );
       } else if (event["type"] == "onAllPromptsCompleted") {

@@ -41,24 +41,18 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
     }
     
     private func start(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
-        let args = call.arguments as! [String: Any]?
-        if (args != nil) {
-            let prompts = args!["prompts"] as! [String]
-            let promptTimerCountDownSec = args!["promptTimerCountDownSec"] as! Int
-            self.cameraView = LivenessDetectionCameraView(
-                frame: self.flutterCameraView!.frame,
-                options: LivenessDetectionOptions(
-                    prompts: prompts.map { e in
-                        LIVENESS_PROMPT_TYPE_MAPPING[e]!
-                    },
-                    promptTimerCountDownSec: promptTimerCountDownSec
-                )
+        let args = call.arguments as! [String: Any]
+        let prompts = args["prompts"] as! [String]
+        let promptTimerCountDownSec = args["promptTimerCountDownSec"] as! Int
+        self.cameraView = LivenessDetectionCameraView(
+            frame: self.flutterCameraView!.frame,
+            options: LivenessDetectionOptions(
+                prompts: prompts.map { e in
+                    LIVENESS_PROMPT_TYPE_MAPPING[e]!
+                },
+                promptTimerCountDownSec: promptTimerCountDownSec
             )
-        } else {
-            self.cameraView = LivenessDetectionCameraView(
-                frame: self.flutterCameraView!.frame
-            )
-        }
+        )
         self.cameraView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.cameraView!.addListener(self)
         
@@ -118,9 +112,10 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
         self.eventStreamHandler?.sendOnFrameEventToFlutter(frameStatus)
     }
     
-    public func onPromptCompleted(currentPrompt: LivenessPrompt, progress: Float) {
+    public func onPromptCompleted(completedPromptIndex: Int, success: Bool, progress: Float) {
         self.eventStreamHandler?.sendOnPromptCompletedEventToFlutter(
-            currentPrompt: currentPrompt,
+            completedPromptIndex: completedPromptIndex,
+            success: success,
             progress: progress
         )
     }
@@ -189,13 +184,14 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
             }
         }
         
-        func sendOnPromptCompletedEventToFlutter(currentPrompt: LivenessPrompt, progress: Float) {
+        func sendOnPromptCompletedEventToFlutter(completedPromptIndex: Int, success: Bool, progress: Float) {
             if (self.events != nil) {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
                     event["type"] = "onPromptCompleted"
                     var values = [String: Any?]()
-                    values["currentPrompt"] = currentPrompt.toFlutterMap()
+                    values["completedPromptIndex"] = completedPromptIndex
+                    values["success"] = success
                     values["progress"] = progress
                     event["values"] = values
                     self.events!(event)
@@ -248,23 +244,48 @@ extension LivenessPrompt {
     }
 }
 
+extension LivenessFace {
+    func toFlutterMap() -> [String: Any?] {
+        var values = [String: Any?]()
+        values["image"] = FlutterStandardTypedData(bytes: self.image!.jpegData(compressionQuality: 0.8)!)
+        values["leftEyeOpenProbability"] = self.leftEyeOpenProbability
+        values["rightEyeOpenProbability"] = self.rightEyeOpenProbability
+        values["headEulerAngleX"] = self.headEulerAngleX
+        values["headEulerAngleY"] = self.headEulerAngleY
+        values["headEulerAngleZ"] = self.headEulerAngleZ
+        
+        if (self.headDirection != nil) {
+            values["headDirection"] = "\(self.headDirection!)"
+        } else {
+            values["headDirection"] = nil
+        }
+        
+        if (self.eyesStatus != nil) {
+            values["eyesStatus"] = "\(self.eyesStatus!)"
+        } else {
+            values["eyesStatus"] = nil
+        }
+        return values
+    }
+}
+
 extension LivenessDetectionResult {
     func toFlutterMap() -> [String: Any?] {
         var values = [String: Any?]()
         if (self.frontFace != nil) {
-            values["frontFace"] = FlutterStandardTypedData(bytes: self.frontFace!.jpegData(compressionQuality: 0.8)!)
+            values["frontFace"] = self.frontFace!.toFlutterMap()
         } else {
             values["frontFace"] = nil
         }
         
         if (self.leftFace != nil) {
-            values["leftFace"] = FlutterStandardTypedData(bytes: self.leftFace!.jpegData(compressionQuality: 0.8)!)
+            values["leftFace"] = self.leftFace!.toFlutterMap()
         } else {
             values["leftFace"] = nil
         }
         
         if (self.rightFace != nil) {
-            values["rightFace"] = FlutterStandardTypedData(bytes: self.rightFace!.jpegData(compressionQuality: 0.8)!)
+            values["rightFace"] = self.rightFace!.toFlutterMap()
         } else {
             values["rightFace"] = nil
         }

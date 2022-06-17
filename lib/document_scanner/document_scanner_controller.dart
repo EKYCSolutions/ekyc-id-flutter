@@ -16,9 +16,9 @@ class DocumentScannerController {
     required DocumentScannerOnFrameCallback onFrame,
     required DocumentScannerOnDetectionCallback onDetection,
     required DocumentScannerOnInitializedCallback onInitialized,
-    List<String>? whiteList,
+    required DocumentScannerOptions options,
   }) async {
-    await _methodChannel.invokeMethod('start');
+    await _methodChannel.invokeMethod('start', options.toMap());
     registerEventListener(
       onFrame: onFrame,
       onDetection: onDetection,

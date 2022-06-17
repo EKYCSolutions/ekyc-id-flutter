@@ -1,4 +1,5 @@
 enum FrameStatus {
+  INITIALIZING,
   PREPARING,
   PROCESSING,
 

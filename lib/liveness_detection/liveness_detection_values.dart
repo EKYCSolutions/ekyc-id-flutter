@@ -14,7 +14,8 @@ typedef void LivenessDetectionOnAllPromptsCompletedCallback(
     LivenessDetectionResult result);
 
 typedef void LivenessDetectionOnPromptCompletedCallback({
-  required LivenessPrompt currentPrompt,
+  required int completedPromptIndex,
+  required bool success,
   required double progress,
 });
 
@@ -32,6 +33,17 @@ enum LivenessPromptType {
   BLINKING,
   LOOK_LEFT,
   LOOK_RIGHT,
+}
+
+enum FaceDetectionHeadDirection {
+  FRONT,
+  LEFT,
+  RIGHT,
+}
+
+enum FaceDetectionEyesStatus {
+  OPEN,
+  CLOSED,
 }
 
 class LivenessPrompt {
@@ -75,10 +87,50 @@ class LivenessDetectionOptions {
   }
 }
 
+class LivenessFace {
+  late Uint8List image;
+  late double? leftEyeOpenProbability;
+  late double? rightEyeOpenProbability;
+  late double? headEulerAngleX;
+  late double? headEulerAngleY;
+  late double? headEulerAngleZ;
+  late FaceDetectionHeadDirection? headDirection;
+  late FaceDetectionEyesStatus? eyesStatus;
+
+  LivenessFace.fromMap(Map<String, dynamic> json) {
+    this.image = Uint8List.fromList(json["image"]);
+    this.leftEyeOpenProbability = json["leftEyeOpenProbability"];
+    this.rightEyeOpenProbability = json["rightEyeOpenProbability"];
+    this.headEulerAngleX = json["headEulerAngleX"];
+    this.headEulerAngleY = json["headEulerAngleY"];
+    this.headEulerAngleZ = json["headEulerAngleZ"];
+    print("FaceDetectionHeadDirection.${json['headDirection']}");
+    if (json["headDirection"] != null) {
+      FaceDetectionHeadDirection d = FaceDetectionHeadDirection.values
+          .firstWhere((e) =>
+              e.toString() ==
+              "FaceDetectionHeadDirection.${json['headDirection']}");
+      this.headDirection = d;
+    } else {
+      this.headDirection = null;
+    }
+
+    if (json["eyesStatus"] != null) {
+      print("FaceDetectionEyesStatus.${json['eyesStatus']!}");
+      FaceDetectionEyesStatus d = FaceDetectionEyesStatus.values.firstWhere(
+          (e) =>
+              e.toString() == "FaceDetectionEyesStatus.${json['eyesStatus']}");
+      this.eyesStatus = d;
+    } else {
+      this.eyesStatus = null;
+    }
+  }
+}
+
 class LivenessDetectionResult {
-  late Uint8List? frontFace;
-  late Uint8List? rightFace;
-  late Uint8List? leftFace;
+  late LivenessFace? frontFace;
+  late LivenessFace? rightFace;
+  late LivenessFace? leftFace;
   late List<LivenessPrompt> prompts;
 
   LivenessDetectionResult({
@@ -89,13 +141,24 @@ class LivenessDetectionResult {
 
   LivenessDetectionResult.fromMap(Map<String, dynamic> json) {
     if (json["frontFace"] != null) {
-      this.frontFace = Uint8List.fromList(json["frontFace"]);
+      this.frontFace =
+          LivenessFace.fromMap(Map<String, dynamic>.from(json["frontFace"]));
+    } else {
+      this.frontFace = null;
     }
+
     if (json["rightFace"] != null) {
-      this.rightFace = Uint8List.fromList(json["rightFace"]);
+      this.rightFace =
+          LivenessFace.fromMap(Map<String, dynamic>.from(json["rightFace"]));
+    } else {
+      this.rightFace = null;
     }
+
     if (json["leftFace"] != null) {
-      this.leftFace = Uint8List.fromList(json["leftFace"]);
+      this.leftFace =
+          LivenessFace.fromMap(Map<String, dynamic>.from(json["leftFace"]));
+    } else {
+      this.leftFace = null;
     }
 
     this.prompts = List.from(json["prompts"]).map<LivenessPrompt>((e) {
