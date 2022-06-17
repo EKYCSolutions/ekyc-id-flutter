@@ -34,7 +34,13 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
     }
     
     private func start(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
-        self.cameraView = DocumentScannerCameraView(frame: self.flutterCameraView!.frame)
+        let args = call.arguments as! [String: Any?]
+        self.cameraView = DocumentScannerCameraView(
+            frame: self.flutterCameraView!.frame,
+            options: DocumentScannerOptions(
+                preparingDuration: args["preparingDuration"]! as! Int
+            )
+        )
         self.cameraView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.cameraView!.addListener(self)
         self.flutterCameraView!.addSubview(self.cameraView!)

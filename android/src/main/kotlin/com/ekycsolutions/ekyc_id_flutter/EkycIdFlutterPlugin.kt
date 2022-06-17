@@ -1,35 +1,56 @@
 package com.ekycsolutions.ekyc_id_flutter
 
 import androidx.annotation.NonNull
+import com.ekycsolutions.ekyc_id_flutter.DocumentScanner.DocumentScannerViewFactory
+import com.ekycsolutions.ekyc_id_flutter.LivenessDetection.LivenessDetectionViewFactory
+import com.ekycsolutions.ekycid.Initializer
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler
-import io.flutter.plugin.common.MethodChannel.Result
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 
 /** EkycIdFlutterPlugin */
-class EkycIdFlutterPlugin: FlutterPlugin, MethodCallHandler {
+class EkycIdFlutterPlugin: FlutterPlugin, ActivityAware {
   /// The MethodChannel that will the communication between Flutter and native Android
   ///
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
-  private lateinit var channel : MethodChannel
+
+  private var flutterPluginBinding: FlutterPlugin.FlutterPluginBinding? = null
+  private var ekycInitializer: Initializer? = null
+
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "ekyc_id_flutter")
-    channel.setMethodCallHandler(this)
-  }
-
-  override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else {
-      result.notImplemented()
-    }
+    this.flutterPluginBinding = flutterPluginBinding
+    this.ekycInitializer = Initializer(flutterPluginBinding.applicationContext)
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
+    this.flutterPluginBinding = null
+  }
+
+  override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+    this.ekycInitializer!!.start {  }
+    this.flutterPluginBinding!!.platformViewRegistry.registerViewFactory(
+      "DocumentScanner",
+      DocumentScannerViewFactory(this.flutterPluginBinding!!, binding.activity)
+    )
+    this.flutterPluginBinding!!.platformViewRegistry.registerViewFactory(
+      "LivenessDetection",
+      LivenessDetectionViewFactory(this.flutterPluginBinding!!, binding.activity)
+    )
+  }
+
+
+  override fun onDetachedFromActivityForConfigChanges() {
+    onDetachedFromActivity()
+  }
+
+  override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+    onAttachedToActivity(binding);
+  }
+
+  override fun onDetachedFromActivity() {
+
   }
 }

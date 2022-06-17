@@ -14,6 +14,20 @@ typedef void DocumentScannerOnDetectionCallback(DocumentScannerResult result);
 
 typedef void DocumentScannerOnInitializedCallback();
 
+class DocumentScannerOptions {
+  late int preparingDuration;
+
+  DocumentScannerOptions({
+    this.preparingDuration = 2,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      "preparingDuration": preparingDuration,
+    };
+  }
+}
+
 class DocumentScannerResult {
   late ObjectDetectionObjectType documentType;
   late ObjectDetectionObjectGroup documentGroup;

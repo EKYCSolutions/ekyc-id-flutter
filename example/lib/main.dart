@@ -33,6 +33,7 @@ class _MyAppState extends State<MyApp> {
           onPromptCompleted: onPromptCompleted,
           onCountDownChanged: onCountDownChanged,
           onAllPromptsCompleted: onAllPromptCompleted,
+          options: LivenessDetectionOptions(),
         );
   }
 
@@ -49,7 +50,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   void onPromptCompleted({
-    required LivenessPrompt currentPrompt,
+    required int completedPromptIndex,
+    required bool success,
     required double progress,
   }) {}
 
