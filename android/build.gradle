@@ -18,7 +18,7 @@ rootProject.allprojects {
     repositories {
         google()
         jcenter()
-        mavenLocal()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -38,5 +38,5 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.ekycsolutions:ekyc-id:1.0.3"
+    implementation 'com.github.EKYCSolutions:ekyc-id-android:1.0.12'
 }
