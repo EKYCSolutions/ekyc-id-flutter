@@ -1,6 +1,6 @@
 name: ekyc_id_flutter
 description: A Flutter Plugin to interact with EkycID.
-version: 1.0.2
+version: 1.0.12
 homepage: https://ekycsolutions.com
 
 environment:
