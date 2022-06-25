@@ -1,8 +1,6 @@
+import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_result.dart';
+import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_view.dart';
 import 'package:flutter/material.dart';
-import 'package:ekyc_id_flutter/models/frame_status.dart';
-import 'package:ekyc_id_flutter/liveness_detection/liveness_detection.dart';
-import 'package:ekyc_id_flutter/liveness_detection/liveness_detection_values.dart';
-import 'package:ekyc_id_flutter/liveness_detection/liveness_detection_controller.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,68 +12,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool isInitialized = false;
-  late LivenessDetectionController controller;
-
   @override
   void initState() {
     super.initState();
   }
 
-  void onLivenessDetectionCreated(
-      LivenessDetectionController controller) async {
-    this.controller = controller;
-    await this.controller.start(
-          onFrame: onFrame,
-          onFocus: onFocus,
-          onInitialized: onInitialized,
-          onFocusDropped: onFocusDropped,
-          onPromptCompleted: onPromptCompleted,
-          onCountDownChanged: onCountDownChanged,
-          onAllPromptsCompleted: onAllPromptCompleted,
-          options: LivenessDetectionOptions(),
-        );
-  }
-
-  void onFrame(FrameStatus frameStatus) {
-    print("onFrame: $frameStatus");
-  }
-
-  void onFocus() {
-    print("onFocus");
-  }
-
-  void onFocusDropped() {
-    print("onFocusDropped");
-  }
-
-  void onPromptCompleted({
-    required int completedPromptIndex,
-    required bool success,
-    required double progress,
-  }) {}
-
-  void onAllPromptCompleted(LivenessDetectionResult result) {}
-
-  void onCountDownChanged({
-    required int current,
-    required int max,
-  }) {
-    print("max: $max");
-    print("current: $current");
-  }
-
-  void onInitialized() {
-    setState(() {
-      isInitialized = true;
-    });
-    print("onInitialized");
-  }
-
-  @override
-  void dispose() {
-    this.controller.dispose();
-    super.dispose();
+  Future<void> onDocumentScanned({
+    DocumentScannerResult? mainSide,
+    DocumentScannerResult? secondarySide,
+  }) async {
+    print("== Result ==");
   }
 
   @override
@@ -83,12 +29,12 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('EkycID Flutter'),
         ),
         body: Container(
           color: Colors.blue,
-          child: LivenessDetection(
-            onCreated: onLivenessDetectionCreated,
+          child: DocumentScannerView(
+            onDocumentScanned: onDocumentScanned,
           ),
         ),
       ),

@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:ekyc_id_flutter/models/frame_status.dart';
+import 'package:ekyc_id_flutter/core/models/frame_status.dart';
 
 import 'liveness_detection_controller.dart';
 

@@ -1,8 +1,8 @@
 PODS:
   - ekyc_id_flutter (1.0.0):
-    - EkycID (~> 1.0.10)
+    - EkycID (~> 1.0.12)
     - Flutter
-  - EkycID (1.0.10):
+  - EkycID (1.0.12):
     - GoogleMLKit/FaceDetection (= 2.5.0)
     - OpenCV (= 4.3.0)
     - TensorFlowLiteSwift (= 0.0.1-nightly.20211127)
@@ -63,8 +63,8 @@ PODS:
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
   - OpenCV (4.3.0)
-  - PromisesObjC (2.1.0)
-  - Protobuf (3.21.1)
+  - PromisesObjC (2.1.1)
+  - Protobuf (3.21.2)
   - TensorFlowLiteC (0.0.1-nightly.20211127):
     - TensorFlowLiteC/Core (= 0.0.1-nightly.20211127)
   - TensorFlowLiteC/Core (0.0.1-nightly.20211127)
@@ -104,8 +104,8 @@ EXTERNAL SOURCES:
     :path: Flutter
 
 SPEC CHECKSUMS:
-  ekyc_id_flutter: 2d689fccf0d94f10ffe2692fb0eeaee0a90457de
-  EkycID: 9fc1829cf2562b7c8bfc33b75fb875c3a227700c
+  ekyc_id_flutter: 42337a0d7d450c061a93671a88c024e8d7dea5a8
+  EkycID: 37241b4f196748c59626d1ddce18a56876013e8a
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleMLKit: 0d7f5aa2f8a2f2ea9d849a05abdbe80974b0ec83
@@ -119,8 +119,8 @@ SPEC CHECKSUMS:
   MLKitVision: e87dc3f2e456a6ab32361ebd985e078dd2746143
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   OpenCV: 681e0451c1e54c5930a8922277f817ed5d5ab459
-  PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
-  Protobuf: 9e88c1e667d75aa2491d211f26ccddde4e8ad4cf
+  PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
+  Protobuf: 818c6a87e44193a77f56b87c6a1c106efda7e062
   TensorFlowLiteC: b2eba881175ce9b490698f74cedf88c0c430f1d1
   TensorFlowLiteSwift: ee03ae882bab905b8e532c80640524cf6c91ec65
 

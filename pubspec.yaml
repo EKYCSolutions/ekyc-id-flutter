@@ -8,6 +8,11 @@ environment:
   flutter: ">=1.20.0"
 
 dependencies:
+  dio: 4.0.4
+  just_audio: 0.9.24
+  flutter_beep: 1.0.0
+  flutter_spinkit: 5.1.0
+  vibration: 1.7.4-nullsafety.0
   flutter:
     sdk: flutter
 
@@ -16,6 +21,8 @@ dev_dependencies:
     sdk: flutter
 
 flutter:
+  assets:
+    - packages/ekyc_id_flutter/assets/audios/
   plugin:
     platforms:
       android:
