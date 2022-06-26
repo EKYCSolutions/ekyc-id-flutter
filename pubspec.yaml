@@ -11,11 +11,10 @@ dependencies:
   dio: 4.0.4
   just_audio: 0.9.24
   flutter_beep: 1.0.0
+  interpolation: 2.1.2
   flutter_spinkit: 5.1.0
   flutter_font_icons: 2.2.4
   vibration: 1.7.4-nullsafety.0
-  interpolate:
-    git: "https://github.com/mazzonem/interpolate.git"
   flutter:
     sdk: flutter
 

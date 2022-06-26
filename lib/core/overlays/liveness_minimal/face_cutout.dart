@@ -1,8 +1,9 @@
 import 'dart:math';
 import 'dart:math' as math;
+import 'package:ekyc_id_flutter/core/utils/interpolate.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:interpolate/interpolate.dart';
+
 
 final Interpolate progressMapping = Interpolate(
   inputRange: [0, 1],

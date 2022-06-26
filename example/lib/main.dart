@@ -46,6 +46,11 @@ class _HomeScreenState extends State<HomeScreen> {
     DocumentScannerResult? secondarySide,
   }) async {
     print("== ACCESS RESULTS HERE ==");
+
+    EkycIDServices.instance.ocr(
+      image: mainSide.documentImage,
+      objectType: mainSide.documentType
+    );
   }
 
   @override

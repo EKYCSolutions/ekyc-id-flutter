@@ -142,15 +142,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.1"
-  interpolate:
+  interpolation:
     dependency: transitive
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "3e5d9219635f73f7c89e3aa933af780deb37aaa4"
-      url: "https://github.com/mazzonem/interpolate.git"
-    source: git
-    version: "1.1.0"
+      name: interpolation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.2"
   js:
     dependency: transitive
     description:
