@@ -1,11 +1,11 @@
-import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_result.dart';
-import 'package:ekyc_id_flutter/core/models/language.dart';
+import 'package:flutter/material.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
 import 'package:ekyc_id_flutter/core/services.dart';
 import 'package:ekyc_id_flutter/ekyc_id_express.dart';
-import 'package:flutter/material.dart';
+import 'package:ekyc_id_flutter/core/models/language.dart';
+import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_result.dart';
 import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_result.dart';
-import 'package:ekyc_id_flutter/core/widgets/kyc_result_card.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,16 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required DocumentScannerResult mainSide,
     DocumentScannerResult? secondarySide,
   }) async {
-    await showCupertinoModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return KYCResultCard(
-          mainSide: mainSide,
-          secondarySide: secondarySide,
-          livenessDetectionResult: liveness,
-        );
-      },
-    );
+    print("== ACCESS RESULTS HERE ==");
   }
 
   @override
