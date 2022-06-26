@@ -1,11 +1,12 @@
 # Flutter SDK for EkycID
+![](https://img.shields.io/badge/platform-flutter-blue) ![](https://img.shields.io/github/v/tag/EKYCSolutions/ekyc-id-flutter?label=version)
 
 An easy to use SDK for developing Identity Verification for KYC process. With this SDK, developers can quickly integrate KYC process into their flutter apps.
 
 This Flutter SDK is a wrapper around our Native SDK ([Android](https://github.com/EKYCSolutions/ekyc-id-android) & [iOS](https://github.com/EKYCSolutions/ekyc-id-ios)).
 
 ## 1. Requirements
----
+
 ### iOS
 - Minimum iOS Deployment Target: 10.0
 - Xcode 13 or newer
@@ -18,7 +19,6 @@ This Flutter SDK is a wrapper around our Native SDK ([Android](https://github.co
 - compileSdkVersion 32
 
 ## 2. Installation
----
 
 ### 2.1. Flutter Setup
 To use this plugin, add `ekyc_id_flutter` as a dependency in your pubspec.yaml file.
@@ -30,7 +30,7 @@ dependencies:
 
 ### 2.2 iOS Setup
 **Step 1:** On iOS add the following to your Info.plist
-```plist
+```xml
 <!-- Camera Access -->
 <key>NSCameraUsageDescription</key>
 <string>Camera Access for Scanning</string>
@@ -73,7 +73,7 @@ end
 No extra setup is needed.
 
 ## 3. Usage
----
+
 **Step 1:** Setup URL to server.
 
 ```dart
@@ -179,5 +179,5 @@ Future<void> onKYCCompleted({
 ```
 
 ## 4. License
----
+
 © 2022 EKYC Solutions Co, Ltd. All rights reserved.
