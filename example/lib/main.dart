@@ -22,14 +22,13 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  void onLivenessDetectionCreated(
-      LivenessDetectionController controller) async {
+  void onLivenessDetectionCreated(LivenessDetectionController controller) async {
     this.controller = controller;
     await this.controller.start(
           onFrame: onFrame,
           onFocus: onFocus,
-          onInitialized: onInitialized,
           onFocusDropped: onFocusDropped,
+          onInitialized: onInitialized,
           onPromptCompleted: onPromptCompleted,
           onCountDownChanged: onCountDownChanged,
           onAllPromptsCompleted: onAllPromptCompleted,
