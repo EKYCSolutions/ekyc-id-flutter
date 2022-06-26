@@ -25,7 +25,16 @@ dev_dependencies:
 
 flutter:
   assets:
-    - packages/ekyc_id_flutter/assets/audios/
+    - packages/ekyc_id_flutter/assets/blink_en.mp3
+    - packages/ekyc_id_flutter/assets/look_left_en.mp3
+    - packages/ekyc_id_flutter/assets/look_right_en.mp3
+    - packages/ekyc_id_flutter/assets/scan_back_en.mp3
+    - packages/ekyc_id_flutter/assets/scan_front_en.mp3
+    - packages/ekyc_id_flutter/assets/blink_kh.mp3
+    - packages/ekyc_id_flutter/assets/look_left_kh.mp3
+    - packages/ekyc_id_flutter/assets/look_right_kh.mp3
+    - packages/ekyc_id_flutter/assets/scan_back_kh.mp3
+    - packages/ekyc_id_flutter/assets/scan_front_kh.mp3
   plugin:
     platforms:
       android:

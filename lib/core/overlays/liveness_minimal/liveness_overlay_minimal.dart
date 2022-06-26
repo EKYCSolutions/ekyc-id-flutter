@@ -42,14 +42,17 @@ class LivenessOverlayMinimal extends StatelessWidget {
       LivenessPromptType.LOOK_LEFT: Icon(
         AntDesign.arrowleft,
         size: 24,
+        color: Colors.white,
       ),
       LivenessPromptType.LOOK_RIGHT: Icon(
         AntDesign.arrowright,
         size: 24,
+        color: Colors.white,
       ),
       LivenessPromptType.BLINKING: Icon(
         AntDesign.eye,
         size: 24,
+        color: Colors.white,
       ),
     };
 
@@ -72,14 +75,12 @@ class LivenessOverlayMinimal extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        LANGUAGE[activePrompt
-                            .toString()
-                            .replaceAll("LivenessPromptType.", "")
-                            .toLowerCase()]![language]!,
+                        LANGUAGE[activePrompt!.toShortString().toLowerCase()]![
+                            language]!,
                         style: Theme.of(context).textTheme.bodyText1!.copyWith(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onBackground,
+                              color: Colors.white,
                             ),
                       ),
                       SizedBox(height: 10),
@@ -93,7 +94,7 @@ class LivenessOverlayMinimal extends StatelessWidget {
                             offset: Offset(0, -2),
                             child: Icon(
                               MaterialIcons.timer,
-                              color: Theme.of(context).colorScheme.onBackground,
+                              color: Colors.white,
                               size: 24,
                             ),
                           ),
@@ -103,9 +104,7 @@ class LivenessOverlayMinimal extends StatelessWidget {
                             style:
                                 Theme.of(context).textTheme.bodyText1!.copyWith(
                                       fontSize: 18,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onBackground,
+                                      color: Colors.white,
                                     ),
                           )
                         ],

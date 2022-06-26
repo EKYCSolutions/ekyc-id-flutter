@@ -53,8 +53,7 @@ class _TimerCountDownState extends State<TimerCountDown>
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: TimerCountDownPainter(
-        progressBarBackgroundColor:
-            Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
+        progressBarBackgroundColor: Colors.white.withOpacity(0.3),
         progressBarColor: ColorTween(
           begin: Colors.green,
           end: Colors.red,

@@ -1,33 +1,40 @@
 import 'package:dio/dio.dart';
+import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_values.dart';
 import 'package:http_parser/http_parser.dart';
-
-import 'models/driver_license.dart';
-import 'models/national_id.dart';
-import 'models/vehicle_registration.dart';
+import 'package:ekyc_id_flutter/core/models/api_result.dart';
 
 class EkycIDServices {
-  static Future<double> faceCompare({
-    required List<int>? image1,
-    required List<int>? image2,
-    required String url,
+  late String _url;
+
+  EkycIDServices._internal();
+
+  static final EkycIDServices instance = EkycIDServices._internal();
+
+  void setURL(String url) {
+    this._url = url;
+  }
+
+  Future<ApiResult> faceCompare({
+    required List<int>? faceImage1,
+    required List<int>? faceImage2,
   }) async {
     try {
-      if (image1 == null) {
-        throw "image1 not found";
+      if (faceImage1 == null) {
+        throw "faceImage1 not found";
       }
 
-      if (image2 == null) {
-        throw "image2 not found";
+      if (faceImage2 == null) {
+        throw "faceImage2 not found";
       }
 
       Dio dio = Dio();
       MultipartFile file1 = MultipartFile.fromBytes(
-        image1,
+        faceImage1,
         contentType: MediaType("image", "jpg"),
         filename: "image1.jpg",
       );
       MultipartFile file2 = MultipartFile.fromBytes(
-        image2,
+        faceImage2,
         contentType: MediaType("image", "jpg"),
         filename: "image2.jpg",
       );
@@ -38,21 +45,20 @@ class EkycIDServices {
       formData.files.add(img2);
 
       Response response = await dio.post(
-        url,
+        "${this._url}/v0/face-compare",
         data: formData,
       );
 
       Map<String, dynamic> json = Map<String, dynamic>.from(response.data);
-
-      return (1 - json["distance"]).toDouble();
+      return ApiResult.fromJson(json);
     } on DioError catch (e) {
       throw e.toString();
     }
   }
 
-  static Future<dynamic> ocr<T>({
+  Future<ApiResult> ocr({
     required List<int> image,
-    required String objectType,
+    required ObjectDetectionObjectType objectType,
   }) async {
     try {
       Dio dio = Dio();
@@ -62,7 +68,7 @@ class EkycIDServices {
         filename: "card.jpg",
       );
       FormData formData = FormData.fromMap({
-        "object_type": objectType,
+        "object_type": objectType.toShortString(),
         "is_raw": true,
       });
 
@@ -71,29 +77,17 @@ class EkycIDServices {
       formData.files.add(imageField);
 
       Response response = await dio.post(
-        "",
+        "${this._url}/v0/ocr",
         data: formData,
       );
 
       if (response.data == null) {
-        return null;
+        throw "cannot extract information";
       }
 
       Map<String, dynamic> json = Map<String, dynamic>.from(response.data);
 
-      if (T == NationalID) {
-        return NationalID.fromJson(json);
-      }
-
-      if (T == VehicleRegistration) {
-        return VehicleRegistration.fromJson(json);
-      }
-
-      if (T == DriverLicense) {
-        return DriverLicense.fromJson(json);
-      }
-
-      return json;
+      return ApiResult.fromJson(json);
     } on DioError catch (e) {
       throw e.toString();
     }

@@ -16,7 +16,7 @@ typedef void DocumentScannerOnDetectionCallback(DocumentScannerResult result);
 typedef void DocumentScannerOnInitializedCallback();
 
 typedef Future<void> OnDocumentScannedCallback({
-  DocumentScannerResult? mainSide,
+  required DocumentScannerResult mainSide,
   DocumentScannerResult? secondarySide,
 });
 

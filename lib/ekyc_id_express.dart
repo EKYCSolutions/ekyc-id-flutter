@@ -1,0 +1,181 @@
+import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_options.dart';
+import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_values.dart';
+import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_view.dart';
+import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_options.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_font_icons/flutter_font_icons.dart';
+
+import 'core/document_scanner/document_scanner_result.dart';
+import 'core/liveness_detection/liveness_detection_result.dart';
+import 'core/liveness_detection/liveness_detection_view.dart';
+import 'core/models/language.dart';
+
+enum KYCMode {
+  DOCUMENT,
+  LIVENESS,
+}
+
+typedef Future<void> OnKYCCompletedCallback({
+  required DocumentScannerResult mainSide,
+  required LivenessDetectionResult liveness,
+  DocumentScannerResult? secondarySide,
+});
+
+class EkycIDExpress extends StatefulWidget {
+  const EkycIDExpress({
+    Key? key,
+    required this.onKYCCompleted,
+    this.language = Language.EN,
+    this.documentTypes = const [DocumentScannerDocType.NATIONAL_ID],
+    this.documentScannerOptions = const DocumentScannerOptions(),
+    this.livenessDetectionOptions = const LivenessDetectionOptions(),
+  }) : super(key: key);
+
+  final Language language;
+  final OnKYCCompletedCallback onKYCCompleted;
+  final List<DocumentScannerDocType> documentTypes;
+  final DocumentScannerOptions documentScannerOptions;
+  final LivenessDetectionOptions livenessDetectionOptions;
+
+  @override
+  State<EkycIDExpress> createState() => _EkycIDExpressState();
+}
+
+class _EkycIDExpressState extends State<EkycIDExpress> {
+  KYCMode mode = KYCMode.DOCUMENT;
+  bool showLivenessCamera = false;
+  bool showDocumentCamera = true;
+
+  late DocumentScannerResult mainSide;
+  late LivenessDetectionResult liveness;
+  DocumentScannerResult? secondarySide;
+
+  @override
+  void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([]);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    super.dispose();
+  }
+
+  void onDocumentCameraAnimationEnds() {
+    setState(() {
+      showDocumentCamera = mode == KYCMode.DOCUMENT;
+    });
+  }
+
+  void onLivenessCameraAnimationEnds() {
+    setState(() {
+      showLivenessCamera = mode == KYCMode.LIVENESS;
+    });
+  }
+
+  Future<void> onDocumentScanned({
+    required DocumentScannerResult mainSide,
+    DocumentScannerResult? secondarySide,
+  }) async {
+    setState(() {
+      mode = KYCMode.LIVENESS;
+      this.mainSide = mainSide;
+      this.secondarySide = secondarySide;
+    });
+  }
+
+  Future<void> onLivenessTestCompleted(LivenessDetectionResult result) async {
+    setState(() {
+      liveness = result;
+    });
+
+    await widget
+        .onKYCCompleted(
+      liveness: liveness,
+      mainSide: mainSide,
+      secondarySide: secondarySide,
+    )
+        .then((value) async {
+      await Future.delayed(const Duration(milliseconds: 500));
+      setState(() {
+        mode = KYCMode.DOCUMENT;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mq = MediaQuery.of(context);
+
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        leading: Hero(
+          tag: "back-button",
+          child: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: Container(
+              width: 30,
+              height: 30,
+              decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(15)),
+              child: Center(
+                child: Icon(
+                  AntDesign.close,
+                  color: Colors.white,
+                  size: 14,
+                ),
+              ),
+            ),
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Stack(
+        children: [
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.linear,
+            onEnd: onDocumentCameraAnimationEnds,
+            top: 0,
+            left: mode == KYCMode.DOCUMENT ? 0 : -mq.size.width,
+            width: mq.size.width,
+            height: mq.size.height,
+            child: showDocumentCamera
+                ? DocumentScannerView(
+                    onDocumentScanned: onDocumentScanned,
+                    language: widget.language,
+                    options: widget.documentScannerOptions,
+                    documentTypes: widget.documentTypes,
+                  )
+                : Container(color: Colors.black),
+          ),
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.linear,
+            onEnd: onLivenessCameraAnimationEnds,
+            top: 0,
+            left: mode == KYCMode.LIVENESS ? 0 : mq.size.width,
+            width: mq.size.width,
+            height: mq.size.height,
+            child: showLivenessCamera
+                ? LivenessDetectionView(
+                    onLivenessTestCompleted: onLivenessTestCompleted,
+                    language: widget.language,
+                    options: widget.livenessDetectionOptions,
+                  )
+                : Container(color: Colors.black),
+          ),
+        ],
+      ),
+    );
+  }
+}

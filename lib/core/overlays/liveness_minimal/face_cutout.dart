@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:interpolate/interpolate.dart';
-// import 'package:ekyc_demo_app/config/theme.dart';
 
 final Interpolate progressMapping = Interpolate(
   inputRange: [0, 1],
@@ -80,7 +79,7 @@ class _FaceCutOutState extends State<FaceCutOut>
             .value,
         backgroundColor: ColorTween(
           begin: Colors.black.withOpacity(0.4),
-          end: Theme.of(context).colorScheme.background,
+          end: Colors.black,
         ).animate(_controller).value!,
         borderColor: ColorTween(
           begin: Colors.white,
@@ -95,8 +94,8 @@ class _FaceCutOutState extends State<FaceCutOut>
               ),
             )
             .value,
-        progressRingColor: Theme.of(context).colorScheme.onBackground,
-        progressRingActiveColor: Theme.of(context).colorScheme.primary,
+        progressRingColor: Colors.white,
+        progressRingActiveColor: Colors.green,
         progressRingOpacity: Tween(begin: 0.0, end: 1.0)
             .animate(
               CurvedAnimation(

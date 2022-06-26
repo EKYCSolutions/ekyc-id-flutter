@@ -62,7 +62,6 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
   ) async {
     this.controller = controller;
     setState(() {
-      options = widget.options;
       promptTimer = widget.options.promptTimerCountDownSec;
     });
 
@@ -81,6 +80,9 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
   @override
   void initState() {
     super.initState();
+    setState(() {
+      options = widget.options;
+    });
     player = AudioPlayer();
     progressController = AnimationController(
       vsync: this,
@@ -181,7 +183,7 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
     }
 
     if (type != null) {
-      String source = "packages/ekyc_id_flutter/assets/audios";
+      String source = "packages/ekyc_id_flutter/assets";
       String language = widget.language == Language.KH ? "kh" : "en";
       try {
         player?.setAsset("$source/${type}_$language.mp3").then((value) {

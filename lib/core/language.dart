@@ -49,4 +49,16 @@ const Map<String, Map<Language, String>> LANGUAGE = {
     Language.EN: "Can not grab document from image",
     Language.KH: "មិនអាចទាញយកកាតចេញពីរូបភាព",
   },
+  "blinking": {
+    Language.EN: "Blinking",
+    Language.KH: 'ព្រិចភ្នែក',
+  },
+  "look_left": {
+    Language.EN: "Turn Head - Left",
+    Language.KH: 'ងាកឆ្វេង',
+  },
+  "look_right": {
+    Language.EN: "Turn Head - Right",
+    Language.KH: 'ងាកស្តាំ',
+  },
 };

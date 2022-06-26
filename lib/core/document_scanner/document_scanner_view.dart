@@ -51,7 +51,7 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
     for (var doc in widget.documentTypes) {
       var mapping = DOC_TYPE_WHITE_LIST_MAPPING[doc]!;
       this.mainWhiteList.addAll(mapping[DocumentSide.MAIN]!);
-      this.secondaryWhiteList.addAll(mapping[DocumentSide.MAIN]!);
+      this.secondaryWhiteList.addAll(mapping[DocumentSide.SECONDARY]!);
     }
   }
 
@@ -140,11 +140,13 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
 
           playInstruction();
 
-          Future.delayed(const Duration(seconds: 4), () {
-            setState(() {
-              showFlippingAnimation = false;
+          if (this.mounted) {
+            Future.delayed(const Duration(seconds: 4), () {
+              setState(() {
+                showFlippingAnimation = false;
+              });
             });
-          });
+          }
 
           await this.controller.setWhiteList(
               secondaryWhiteList.map((e) => e.toShortString()).toList());
@@ -153,7 +155,7 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
 
         await widget
             .onDocumentScanned(
-          mainSide: mainSide,
+          mainSide: mainSide!,
           secondarySide: secondarySide,
         )
             .then((value) async {
@@ -167,7 +169,7 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
 
         await widget
             .onDocumentScanned(
-          mainSide: mainSide,
+          mainSide: mainSide!,
           secondarySide: secondarySide,
         )
             .then((value) async {
@@ -198,16 +200,18 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
   }
 
   void playBeep() {
-    FlutterBeep.beep();
-    Vibration.hasVibrator().then((value) {
-      if (value != null && value) {
-        Vibration.vibrate();
-      }
-    });
+    try {
+      FlutterBeep.beep();
+      Vibration.hasVibrator().then((value) {
+        if (value != null && value) {
+          Vibration.vibrate();
+        }
+      });
+    } catch (e) {}
   }
 
   void playInstruction() {
-    String source = "packages/ekyc_id_flutter/assets/audios";
+    String source = "packages/ekyc_id_flutter/assets";
     String side = "scan_${currentSide == DocumentSide.MAIN ? "front" : "back"}";
     String language = widget.language == Language.KH ? "kh" : "en";
     try {
