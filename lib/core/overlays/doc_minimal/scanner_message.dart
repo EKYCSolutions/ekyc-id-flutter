@@ -1,14 +1,18 @@
+import 'package:ekyc_id_flutter/core/models/language.dart';
 import 'package:flutter/material.dart';
+import 'package:ekyc_id_flutter/core/language.dart';
 import 'package:ekyc_id_flutter/core/models/frame_status.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_values.dart';
 
 class ScannerMessage extends StatelessWidget {
   const ScannerMessage({
     Key? key,
-    this.frameStatus = FrameStatus.INITIALIZING,
+    this.language = Language.EN,
     this.currentSide = DocumentSide.MAIN,
+    this.frameStatus = FrameStatus.INITIALIZING,
   }) : super(key: key);
 
+  final Language language;
   final FrameStatus frameStatus;
   final DocumentSide currentSide;
 
@@ -39,7 +43,7 @@ class ScannerMessage extends StatelessWidget {
         borderRadius: BorderRadius.circular(2),
       ),
       child: Text(
-        message[frameStatus]!,
+        LANGUAGE[message[frameStatus]!]![language]!,
         style: Theme.of(context).textTheme.bodyText1!.copyWith(
               color: Colors.white,
             ),

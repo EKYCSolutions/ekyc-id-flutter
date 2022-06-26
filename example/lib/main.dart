@@ -1,3 +1,4 @@
+import 'package:ekyc_id_flutter/core/models/language.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_result.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_view.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,7 @@ class _MyAppState extends State<MyApp> {
           color: Colors.blue,
           child: DocumentScannerView(
             onDocumentScanned: onDocumentScanned,
+            language: Language.KH,
           ),
         ),
       ),

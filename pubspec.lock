@@ -97,6 +97,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  flutter_font_icons:
+    dependency: "direct main"
+    description:
+      name: flutter_font_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.4"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -121,6 +128,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.1"
+  interpolate:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "3e5d9219635f73f7c89e3aa933af780deb37aaa4"
+      url: "https://github.com/mazzonem/interpolate.git"
+    source: git
+    version: "1.1.0"
   js:
     dependency: transitive
     description:

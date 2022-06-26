@@ -1,6 +1,8 @@
 import 'package:ekyc_id_flutter/core/models/frame_status.dart';
 import 'package:flutter/services.dart';
 
+import 'liveness_detection_options.dart';
+import 'liveness_detection_result.dart';
 import 'liveness_detection_values.dart';
 
 class LivenessDetectionController {

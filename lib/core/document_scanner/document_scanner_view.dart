@@ -1,29 +1,31 @@
-import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_values.dart';
-import 'package:ekyc_id_flutter/core/models/frame_status.dart';
-import 'package:ekyc_id_flutter/core/overlays/doc_minimal/doc_minimal.dart';
+import 'package:ekyc_id_flutter/core/overlays/document_scanner_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_beep/flutter_beep.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:vibration/vibration.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:flutter_beep/flutter_beep.dart';
+
+import 'package:ekyc_id_flutter/core/models/frame_status.dart';
+import 'package:ekyc_id_flutter/core/models/language.dart';
+import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_values.dart';
 
 import 'document_scanner.dart';
-import 'document_scanner_controller.dart';
-import 'document_scanner_options.dart';
 import 'document_scanner_result.dart';
+import 'document_scanner_options.dart';
+import 'document_scanner_controller.dart';
 
 class DocumentScannerView extends StatefulWidget {
   const DocumentScannerView({
     Key? key,
     required this.onDocumentScanned,
+    this.language = Language.EN,
     this.documentTypes = const [DocumentScannerDocType.NATIONAL_ID],
-    this.overlayMode = DocumentScannerViewOverlayMode.MINIMAL,
     this.options = const DocumentScannerOptions(preparingDuration: 1),
   }) : super(key: key);
 
+  final Language language;
   final DocumentScannerOptions options;
   final List<DocumentScannerDocType> documentTypes;
-  final DocumentScannerViewOverlayMode overlayMode;
   final OnDocumentScannedCallback onDocumentScanned;
 
   @override
@@ -32,7 +34,6 @@ class DocumentScannerView extends StatefulWidget {
 
 class _DocumentScannerViewState extends State<DocumentScannerView> {
   AudioPlayer? player;
-  bool isInitialized = false;
   bool shouldRenderCamera = false;
   bool showFlippingAnimation = false;
   bool allowFrameStatusUpdate = true;
@@ -71,8 +72,8 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
 
   @override
   void initState() {
-    player = AudioPlayer();
     this._buildWhiteList();
+    player = AudioPlayer();
     SystemChrome.setEnabledSystemUIOverlays([]);
     Future.delayed(const Duration(milliseconds: 500), () {
       setState(() {
@@ -88,22 +89,6 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
     this.player?.dispose();
     this.controller.dispose();
     super.dispose();
-  }
-
-  Widget _buildOverlay() {
-    if (widget.overlayMode == DocumentScannerViewOverlayMode.MINIMAL) {
-      return DocMinimalOverlay(
-        frameStatus: frameStatus,
-        currentSide: currentSide,
-        showFlippingAnimation: showFlippingAnimation,
-      );
-    }
-
-    return DocMinimalOverlay(
-      frameStatus: frameStatus,
-      currentSide: currentSide,
-      showFlippingAnimation: showFlippingAnimation,
-    );
   }
 
   void onFrame(FrameStatus f) {
@@ -133,7 +118,6 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
 
   void onInitialized() {
     setState(() {
-      isInitialized = true;
       frameStatus = FrameStatus.DOCUMENT_NOT_FOUND;
     });
 
@@ -223,11 +207,11 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
   }
 
   void playInstruction() {
+    String source = "packages/ekyc_id_flutter/assets/audios";
+    String side = "scan_${currentSide == DocumentSide.MAIN ? "front" : "back"}";
+    String language = widget.language == Language.KH ? "kh" : "en";
     try {
-      player
-          ?.setAsset(
-              "packages/ekyc_id_flutter/assets/audios/scan_${currentSide == DocumentSide.MAIN ? "front" : "back"}_en.mp3")
-          .then((value) {
+      player?.setAsset("$source/${side}_$language.mp3").then((value) {
         player?.play();
       });
     } catch (e) {
@@ -246,7 +230,14 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
                 )
               : Container(),
         ),
-        Positioned.fill(child: _buildOverlay())
+        Positioned.fill(
+          child: DocumentScannerOverlay(
+            frameStatus: frameStatus,
+            currentSide: currentSide,
+            language: widget.language,
+            showFlippingAnimation: showFlippingAnimation,
+          ),
+        )
       ],
     );
   }

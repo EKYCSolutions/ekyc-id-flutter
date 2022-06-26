@@ -70,10 +70,6 @@ enum ObjectDetectionObjectGroup {
   OTHERS,
 }
 
-enum DocumentScannerViewOverlayMode {
-  MINIMAL,
-}
-
 enum DocumentSide { MAIN, SECONDARY }
 
 enum DocumentScannerDocType { NATIONAL_ID, DRIVER_LICENSE }

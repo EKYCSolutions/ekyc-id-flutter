@@ -1,3 +1,4 @@
+import 'package:ekyc_id_flutter/core/models/language.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ekyc_id_flutter/core/models/frame_status.dart';
@@ -14,8 +15,10 @@ class DocMinimalOverlay extends StatelessWidget {
     required this.frameStatus,
     required this.currentSide,
     this.showFlippingAnimation = false,
+    this.language = Language.EN,
   }) : super(key: key);
 
+  final Language language;
   final FrameStatus frameStatus;
   final DocumentSide currentSide;
   final bool showFlippingAnimation;
@@ -37,6 +40,7 @@ class DocMinimalOverlay extends StatelessWidget {
           right: 0,
           child: Center(
             child: ScannerMessage(
+              language: language,
               frameStatus: frameStatus,
               currentSide: currentSide,
             ),
