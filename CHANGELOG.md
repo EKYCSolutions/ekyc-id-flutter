@@ -1,2 +1,3 @@
-## 1.0.14
-- Added EkycIDExpress widget.
+## 1.0.15
+- Fix wrong api route.
+- Added doc strings.
