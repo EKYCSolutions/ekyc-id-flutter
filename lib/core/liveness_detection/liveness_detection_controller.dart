@@ -14,6 +14,12 @@ class LivenessDetectionController {
     _eventChannel = new EventChannel('LivenessDetection_EventChannel_$id');
   }
 
+  /// Initializes the camera and starts the scanning process.
+  ///
+  /// When the camera is initialized [onInitialized] is called.
+  /// After the initialization process, the scanning process begins and on every frame [onFrame] is called.
+  /// When the camera detects a face in the center of frame, [onFocus] is called.
+  /// After the user completed each prompt, [onPromptCompleted] is called.
   Future<void> start({
     required LivenessDetectionOnFocusCallback onFocus,
     required LivenessDetectionOnFrameCallback onFrame,
@@ -27,7 +33,7 @@ class LivenessDetectionController {
   }) async {
     await _methodChannel.invokeMethod('start', options.toMap());
 
-    registerEventListener(
+    _registerEventListener(
       onFocus: onFocus,
       onFrame: onFrame,
       onInitialized: onInitialized,
@@ -38,15 +44,17 @@ class LivenessDetectionController {
     );
   }
 
+  /// Stops the scanning process and dispose the camera object.
   Future<void> dispose() async {
     await _methodChannel.invokeMethod('dispose');
   }
 
+  /// Allows the camera to start processing the next frame.
   Future<void> nextImage() async {
     await _methodChannel.invokeMethod('nextImage');
   }
 
-  void registerEventListener({
+  void _registerEventListener({
     required LivenessDetectionOnFocusCallback onFocus,
     required LivenessDetectionOnFrameCallback onFrame,
     required LivenessDetectionOnInitializedCallback onInitialized,

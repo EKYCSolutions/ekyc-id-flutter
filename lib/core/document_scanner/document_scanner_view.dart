@@ -48,6 +48,7 @@ const _DOCUMENTS_WITH_SECONDARY_SIDE = [
   ObjectDetectionObjectType.VEHICLE_REGISTRATION_2,
 ];
 
+/// The Camera View for Document Scanning
 class DocumentScannerView extends StatefulWidget {
   
   const DocumentScannerView({

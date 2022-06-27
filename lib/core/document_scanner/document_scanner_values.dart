@@ -8,7 +8,7 @@ typedef void DocumentScannerCreatedCallback(
   DocumentScannerController controller,
 );
 
-/// Callback on every frame during the scanning process.
+/// Callback on every frame during the document scanning process.
 typedef void DocumentScannerOnFrameCallback(FrameStatus frameStatus);
 
 /// Callback for when the document scanner detects a presence of a document.

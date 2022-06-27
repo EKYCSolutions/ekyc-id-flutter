@@ -1,7 +1,11 @@
 import 'liveness_detection_values.dart';
 
 class LivenessDetectionOptions {
+
+  /// Duration in seconds for user to complete a prompt.
   final int promptTimerCountDownSec;
+
+  /// List of prompts for the user to complete.
   final List<LivenessPromptType> prompts;
 
   const LivenessDetectionOptions({

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'liveness_detection_values.dart';
 import 'liveness_detection_controller.dart';
 
+/// Class representing the native LivenessDetection view
 class LivenessDetection extends StatefulWidget {
   const LivenessDetection({
     Key? key,

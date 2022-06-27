@@ -2,9 +2,17 @@ import 'liveness_face.dart';
 import 'liveness_prompt.dart';
 
 class LivenessDetectionResult {
+
+  /// The front face of the user
   late LivenessFace? frontFace;
+
+  /// The front right of the user
   late LivenessFace? rightFace;
+
+  /// The front left of the user
   late LivenessFace? leftFace;
+
+  /// List of prompts that the user has encountered
   late List<LivenessPrompt> prompts;
 
   LivenessDetectionResult({
@@ -13,6 +21,7 @@ class LivenessDetectionResult {
     this.leftFace,
   });
 
+  /// Creates an instance of LivenessDetectionResult from a [json] response.
   LivenessDetectionResult.fromMap(Map<String, dynamic> json) {
     if (json["frontFace"] != null) {
       this.frontFace =
