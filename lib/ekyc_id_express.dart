@@ -24,10 +24,8 @@ typedef Future<void> OnKYCCompletedCallback({
   DocumentScannerResult? secondarySide,
 });
 
-
 /// Widget for performing `Document Scanning` and `Liveness Detection` in one go.
 class EkycIDExpress extends StatefulWidget {
-
   const EkycIDExpress({
     Key? key,
     required this.onKYCCompleted,
@@ -37,10 +35,19 @@ class EkycIDExpress extends StatefulWidget {
     this.livenessDetectionOptions = const LivenessDetectionOptions(),
   }) : super(key: key);
 
+  /// The language for the audio and text in the EkycIDExpress.
   final Language language;
+
+  /// Callback for the KYC process is completed.
   final OnKYCCompletedCallback onKYCCompleted;
+
+  /// List of document types that are allowed to be scanned.
   final List<DocumentScannerDocType> documentTypes;
+
+  /// The option for the DocumentScanner
   final DocumentScannerOptions documentScannerOptions;
+
+  /// The option for the LivenessDetection
   final LivenessDetectionOptions livenessDetectionOptions;
 
   @override
