@@ -9,7 +9,7 @@ import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_resul
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  EkycIDServices.instance.setURL("https://eekyc-server.demo.ekycsolutions.com");
+  EkycIDServices.instance.setURL("SERVER_URL");
   runApp(MyApp());
 }
 
