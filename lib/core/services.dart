@@ -72,11 +72,11 @@ class EkycIDServices {
         filename: "card.jpg",
       );
       FormData formData = FormData.fromMap({
-        "object_type": objectType.toShortString(),
-        "is_raw": true,
+        "objectType": objectType.toShortString(),
+        "isRaw": "yes",
       });
 
-      MapEntry<String, MultipartFile> imageField = MapEntry("card_image", file);
+      MapEntry<String, MultipartFile> imageField = MapEntry("image", file);
 
       formData.files.add(imageField);
 

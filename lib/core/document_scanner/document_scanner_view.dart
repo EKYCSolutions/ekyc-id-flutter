@@ -50,7 +50,6 @@ const _DOCUMENTS_WITH_SECONDARY_SIDE = [
 
 /// The Camera View for Document Scanning
 class DocumentScannerView extends StatefulWidget {
-  
   const DocumentScannerView({
     Key? key,
     required this.onDocumentScanned,
@@ -231,15 +230,17 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
     required List<int> fullImage,
     required String group,
   }) async {
-    setState(() {
-      mainSide = null;
-      secondarySide = null;
-      currentSide = DocumentSide.MAIN;
-    });
-    await this
-        .controller
-        .setWhiteList(mainWhiteList.map((e) => e.toShortString()).toList());
-    this.controller.nextImage();
+    if (this.mounted) {
+      setState(() {
+        mainSide = null;
+        secondarySide = null;
+        currentSide = DocumentSide.MAIN;
+      });
+      await this
+          .controller
+          .setWhiteList(mainWhiteList.map((e) => e.toShortString()).toList());
+      this.controller.nextImage();
+    }
   }
 
   void playBeep() {
