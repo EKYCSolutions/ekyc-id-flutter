@@ -5,9 +5,6 @@ enum Extrapolate {
   clampEnd,
 }
 
-/// @param: List<double> inputRage
-/// @param: List<double> outputRage
-/// @param: Extrapolate extrapolate =  Extrapolate.extend
 class Interpolate {
   late List<double> _x;
   late List<double> _y;
