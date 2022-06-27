@@ -17,13 +17,17 @@ enum _KYCMode {
   LIVENESS,
 }
 
+/// Callback for when the KYC Process has been completed.
 typedef Future<void> OnKYCCompletedCallback({
   required DocumentScannerResult mainSide,
   required LivenessDetectionResult liveness,
   DocumentScannerResult? secondarySide,
 });
 
+
+/// Widget for performing `Document Scanning` and `Liveness Detection` in one go.
 class EkycIDExpress extends StatefulWidget {
+
   const EkycIDExpress({
     Key? key,
     required this.onKYCCompleted,

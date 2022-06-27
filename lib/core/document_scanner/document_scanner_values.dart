@@ -1,25 +1,31 @@
-import 'dart:typed_data';
-
 import 'package:ekyc_id_flutter/core/models/frame_status.dart';
 
-import 'document_scanner_controller.dart';
 import 'document_scanner_result.dart';
+import 'document_scanner_controller.dart';
 
+/// Callback for when the native view of the Document Scanner is created.
 typedef void DocumentScannerCreatedCallback(
   DocumentScannerController controller,
 );
 
+/// Callback on every frame during the scanning process.
 typedef void DocumentScannerOnFrameCallback(FrameStatus frameStatus);
 
+/// Callback for when the document scanner detects a presence of a document.
 typedef void DocumentScannerOnDetectionCallback(DocumentScannerResult result);
 
+/// Callback for when the document scanner is initialized.
 typedef void DocumentScannerOnInitializedCallback();
 
+/// Callback for when the document scanning process is completed.
 typedef Future<void> OnDocumentScannedCallback({
   required DocumentScannerResult mainSide,
   DocumentScannerResult? secondarySide,
 });
 
+/// Enum indicating the object type of the document
+///
+/// Refers to this [page](https://www.ekycsolutions.com) for images of each document type.
 enum ObjectDetectionObjectType {
   COVID_19_VACCINATION_CARD_0,
   COVID_19_VACCINATION_CARD_0_BACK,
@@ -52,6 +58,7 @@ enum ObjectDetectionObjectType {
   VEHICLE_REGISTRATION_2,
 }
 
+/// Enum indicating the group the document belongs to.
 enum ObjectDetectionObjectGroup {
   COVID_19_VACCINATION_CARD,
   DRIVER_LICENSE,
@@ -70,43 +77,11 @@ enum ObjectDetectionObjectGroup {
   OTHERS,
 }
 
+/// Enum indicating the side of the document.
 enum DocumentSide { MAIN, SECONDARY }
 
+/// Enum indicating the supported document type of of the document.
 enum DocumentScannerDocType { NATIONAL_ID, DRIVER_LICENSE }
-
-const DOC_TYPE_WHITE_LIST_MAPPING = {
-  DocumentScannerDocType.NATIONAL_ID: {
-    DocumentSide.MAIN: [
-      ObjectDetectionObjectGroup.NATIONAL_ID,
-    ],
-    DocumentSide.SECONDARY: [
-      ObjectDetectionObjectGroup.NATIONAL_ID_BACK,
-    ],
-  },
-  DocumentScannerDocType.DRIVER_LICENSE: {
-    DocumentSide.MAIN: [
-      ObjectDetectionObjectGroup.DRIVER_LICENSE,
-    ],
-    DocumentSide.SECONDARY: [
-      ObjectDetectionObjectGroup.DRIVER_LICENSE_BACK,
-    ],
-  },
-};
-
-const DOCUMENTS_WITH_SECONDARY_SIDE = [
-  ObjectDetectionObjectType.COVID_19_VACCINATION_CARD_0,
-  ObjectDetectionObjectType.COVID_19_VACCINATION_CARD_1,
-  ObjectDetectionObjectType.DRIVER_LICENSE_0,
-  ObjectDetectionObjectType.DRIVER_LICENSE_1,
-  ObjectDetectionObjectType.NATIONAL_ID_0,
-  ObjectDetectionObjectType.NATIONAL_ID_1,
-  ObjectDetectionObjectType.NATIONAL_ID_2,
-  ObjectDetectionObjectType.PASSPORT_0,
-  ObjectDetectionObjectType.SUPERFIT_0,
-  ObjectDetectionObjectType.VEHICLE_REGISTRATION_0,
-  ObjectDetectionObjectType.VEHICLE_REGISTRATION_1,
-  ObjectDetectionObjectType.VEHICLE_REGISTRATION_2,
-];
 
 extension ObjectDetectionObjectTypeToString on ObjectDetectionObjectType {
   String toShortString() {
