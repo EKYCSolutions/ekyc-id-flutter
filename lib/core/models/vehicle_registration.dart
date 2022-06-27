@@ -22,7 +22,6 @@ class VehicleRegistration {
   });
 
   VehicleRegistration.fromJson(Map<String, dynamic> json) {
-    print(json);
     this.ADDRESS = json["ADDRESS"];
     this.BRAND = json["BRAND"];
     this.COLOR = json["COLOR"];

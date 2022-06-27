@@ -14,7 +14,43 @@ import 'document_scanner_result.dart';
 import 'document_scanner_options.dart';
 import 'document_scanner_controller.dart';
 
+const _DOC_TYPE_WHITE_LIST_MAPPING = {
+  DocumentScannerDocType.NATIONAL_ID: {
+    DocumentSide.MAIN: [
+      ObjectDetectionObjectGroup.NATIONAL_ID,
+    ],
+    DocumentSide.SECONDARY: [
+      ObjectDetectionObjectGroup.NATIONAL_ID_BACK,
+    ],
+  },
+  DocumentScannerDocType.DRIVER_LICENSE: {
+    DocumentSide.MAIN: [
+      ObjectDetectionObjectGroup.DRIVER_LICENSE,
+    ],
+    DocumentSide.SECONDARY: [
+      ObjectDetectionObjectGroup.DRIVER_LICENSE_BACK,
+    ],
+  },
+};
+
+const _DOCUMENTS_WITH_SECONDARY_SIDE = [
+  ObjectDetectionObjectType.COVID_19_VACCINATION_CARD_0,
+  ObjectDetectionObjectType.COVID_19_VACCINATION_CARD_1,
+  ObjectDetectionObjectType.DRIVER_LICENSE_0,
+  ObjectDetectionObjectType.DRIVER_LICENSE_1,
+  ObjectDetectionObjectType.NATIONAL_ID_0,
+  ObjectDetectionObjectType.NATIONAL_ID_1,
+  ObjectDetectionObjectType.NATIONAL_ID_2,
+  ObjectDetectionObjectType.PASSPORT_0,
+  ObjectDetectionObjectType.SUPERFIT_0,
+  ObjectDetectionObjectType.VEHICLE_REGISTRATION_0,
+  ObjectDetectionObjectType.VEHICLE_REGISTRATION_1,
+  ObjectDetectionObjectType.VEHICLE_REGISTRATION_2,
+];
+
+/// The Camera View for Document Scanning
 class DocumentScannerView extends StatefulWidget {
+  
   const DocumentScannerView({
     Key? key,
     required this.onDocumentScanned,
@@ -23,9 +59,16 @@ class DocumentScannerView extends StatefulWidget {
     this.options = const DocumentScannerOptions(preparingDuration: 1),
   }) : super(key: key);
 
+  /// The language for the audio and text in the DocumentScannerView.
   final Language language;
+
+  /// The option for the DocumentScanner
   final DocumentScannerOptions options;
+
+  /// The list of document types allowed for scanning.
   final List<DocumentScannerDocType> documentTypes;
+
+  /// The callback for when the document scanning process is completed.
   final OnDocumentScannedCallback onDocumentScanned;
 
   @override
@@ -49,7 +92,7 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
 
   void _buildWhiteList() {
     for (var doc in widget.documentTypes) {
-      var mapping = DOC_TYPE_WHITE_LIST_MAPPING[doc]!;
+      var mapping = _DOC_TYPE_WHITE_LIST_MAPPING[doc]!;
       this.mainWhiteList.addAll(mapping[DocumentSide.MAIN]!);
       this.secondaryWhiteList.addAll(mapping[DocumentSide.SECONDARY]!);
     }
@@ -132,7 +175,7 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
       if (currentSide == DocumentSide.MAIN) {
         mainSide = result;
 
-        if (DOCUMENTS_WITH_SECONDARY_SIDE.contains(result.documentType)) {
+        if (_DOCUMENTS_WITH_SECONDARY_SIDE.contains(result.documentType)) {
           setState(() {
             currentSide = DocumentSide.SECONDARY;
             showFlippingAnimation = true;

@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'document_scanner_values.dart';
 import 'document_scanner_controller.dart';
 
+/// Class representing the native DocumentScanner view
 class DocumentScanner extends StatefulWidget {
   const DocumentScanner({
     Key? key,

@@ -15,9 +15,8 @@ import 'liveness_detection_result.dart';
 import 'liveness_detection_options.dart';
 import 'liveness_detection_controller.dart';
 
+/// The Camera View for Liveness Detection
 class LivenessDetectionView extends StatefulWidget {
-  final OnLivenessTestCompletedCallback onLivenessTestCompleted;
-
   LivenessDetectionView({
     Key? key,
     required this.onLivenessTestCompleted,
@@ -32,8 +31,14 @@ class LivenessDetectionView extends StatefulWidget {
     ),
   });
 
+  /// The language for the audio and text in the LivenessDetectionView.
   final Language language;
+
+  /// The option for the LivenessDetection
   final LivenessDetectionOptions options;
+
+  /// The callback for when the liveness test is completed.
+  final OnLivenessTestCompletedCallback onLivenessTestCompleted;
 
   @override
   _LivenessDetectionViewState createState() => _LivenessDetectionViewState();

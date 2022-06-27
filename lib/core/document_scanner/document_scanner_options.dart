@@ -1,4 +1,7 @@
+/// Class representing configurations of the [DocumentScanner].
 class DocumentScannerOptions {
+
+  /// The duration is seconds to wait before capturing the frame for process.
   final int preparingDuration;
 
   const DocumentScannerOptions({

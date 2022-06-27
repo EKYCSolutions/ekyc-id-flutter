@@ -12,17 +12,19 @@ import 'core/liveness_detection/liveness_detection_result.dart';
 import 'core/liveness_detection/liveness_detection_view.dart';
 import 'core/models/language.dart';
 
-enum KYCMode {
+enum _KYCMode {
   DOCUMENT,
   LIVENESS,
 }
 
+/// Callback for when the KYC Process has been completed.
 typedef Future<void> OnKYCCompletedCallback({
   required DocumentScannerResult mainSide,
   required LivenessDetectionResult liveness,
   DocumentScannerResult? secondarySide,
 });
 
+/// Widget for performing `Document Scanning` and `Liveness Detection` in one go.
 class EkycIDExpress extends StatefulWidget {
   const EkycIDExpress({
     Key? key,
@@ -33,10 +35,19 @@ class EkycIDExpress extends StatefulWidget {
     this.livenessDetectionOptions = const LivenessDetectionOptions(),
   }) : super(key: key);
 
+  /// The language for the audio and text in the EkycIDExpress.
   final Language language;
+
+  /// Callback for the KYC process is completed.
   final OnKYCCompletedCallback onKYCCompleted;
+
+  /// List of document types that are allowed to be scanned.
   final List<DocumentScannerDocType> documentTypes;
+
+  /// The option for the DocumentScanner
   final DocumentScannerOptions documentScannerOptions;
+
+  /// The option for the LivenessDetection
   final LivenessDetectionOptions livenessDetectionOptions;
 
   @override
@@ -44,7 +55,7 @@ class EkycIDExpress extends StatefulWidget {
 }
 
 class _EkycIDExpressState extends State<EkycIDExpress> {
-  KYCMode mode = KYCMode.DOCUMENT;
+  _KYCMode mode = _KYCMode.DOCUMENT;
   bool showLivenessCamera = false;
   bool showDocumentCamera = true;
 
@@ -66,13 +77,13 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
 
   void onDocumentCameraAnimationEnds() {
     setState(() {
-      showDocumentCamera = mode == KYCMode.DOCUMENT;
+      showDocumentCamera = mode == _KYCMode.DOCUMENT;
     });
   }
 
   void onLivenessCameraAnimationEnds() {
     setState(() {
-      showLivenessCamera = mode == KYCMode.LIVENESS;
+      showLivenessCamera = mode == _KYCMode.LIVENESS;
     });
   }
 
@@ -81,7 +92,7 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
     DocumentScannerResult? secondarySide,
   }) async {
     setState(() {
-      mode = KYCMode.LIVENESS;
+      mode = _KYCMode.LIVENESS;
       this.mainSide = mainSide;
       this.secondarySide = secondarySide;
     });
@@ -101,7 +112,7 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
         .then((value) async {
       await Future.delayed(const Duration(milliseconds: 500));
       setState(() {
-        mode = KYCMode.DOCUMENT;
+        mode = _KYCMode.DOCUMENT;
       });
     });
   }
@@ -146,7 +157,7 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
             curve: Curves.linear,
             onEnd: onDocumentCameraAnimationEnds,
             top: 0,
-            left: mode == KYCMode.DOCUMENT ? 0 : -mq.size.width,
+            left: mode == _KYCMode.DOCUMENT ? 0 : -mq.size.width,
             width: mq.size.width,
             height: mq.size.height,
             child: showDocumentCamera
@@ -163,7 +174,7 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
             curve: Curves.linear,
             onEnd: onLivenessCameraAnimationEnds,
             top: 0,
-            left: mode == KYCMode.LIVENESS ? 0 : mq.size.width,
+            left: mode == _KYCMode.LIVENESS ? 0 : mq.size.width,
             width: mq.size.width,
             height: mq.size.height,
             child: showLivenessCamera
