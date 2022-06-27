@@ -1,3 +1,4 @@
+import 'package:ekyc_id_flutter/core/models/api_result.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -47,10 +48,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }) async {
     print("== ACCESS RESULTS HERE ==");
 
-    EkycIDServices.instance.ocr(
-      image: mainSide.documentImage,
-      objectType: mainSide.documentType
+    ApiResult result = await EkycIDServices.instance.faceCompare(
+      faceImage1: mainSide.faceImage,
+      faceImage2: liveness.frontFace?.image,
     );
+
+    print(result.data);
   }
 
   @override

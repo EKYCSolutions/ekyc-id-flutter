@@ -113,9 +113,11 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
     required int current,
     required int max,
   }) {
-    setState(() {
-      promptTimer = current;
-    });
+    if (this.mounted) {
+      setState(() {
+        promptTimer = current;
+      });
+    }
   }
 
   void onPromptCompleted({
@@ -123,46 +125,54 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
     required bool success,
     required double progress,
   }) {
-    vibrate();
+    if (this.mounted) {
+      vibrate();
 
-    setState(() {
-      activePromptIndex = activePromptIndex! + 1;
-    });
+      setState(() {
+        activePromptIndex = activePromptIndex! + 1;
+      });
 
-    playInstruction();
+      playInstruction();
 
-    progressController.animateTo(progress).then((value) {
-      this.controller.nextImage();
-    });
+      progressController.animateTo(progress).then((value) {
+        this.controller.nextImage();
+      });
+    }
   }
 
   void onFocus() {
-    setState(() {
-      activePromptIndex = 0;
-      isFocusing = true;
-    });
+    if (this.mounted) {
+      setState(() {
+        activePromptIndex = 0;
+        isFocusing = true;
+      });
 
-    playInstruction();
+      playInstruction();
+    }
   }
 
   void onFocusDropped() {
-    progressController.value = 0;
+    if (this.mounted) {
+      progressController.value = 0;
 
-    setState(() {
-      activePromptIndex = null;
-      isFocusing = false;
-    });
+      setState(() {
+        activePromptIndex = null;
+        isFocusing = false;
+      });
+    }
   }
 
   void onAllPromptsCompleted(LivenessDetectionResult result) {
-    vibrate();
+    if (this.mounted) {
+      vibrate();
 
-    progressController.animateTo(1).then((value) {
-      widget.onLivenessTestCompleted(result).then((value) {
-        progressController.value = 0;
-        this.controller.nextImage();
+      progressController.animateTo(1).then((value) {
+        widget.onLivenessTestCompleted(result).then((value) {
+          progressController.value = 0;
+          this.controller.nextImage();
+        });
       });
-    });
+    }
   }
 
   void onFrame(FrameStatus f) {

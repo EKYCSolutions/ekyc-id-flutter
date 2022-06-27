@@ -1,3 +1,2 @@
-## 1.0.15
-- Fix wrong api route.
-- Added doc strings.
+## 1.0.16
+- Fix memory leak issue.
