@@ -1,7 +1,23 @@
+![image](https://user-images.githubusercontent.com/81238558/175767662-be4dc9ba-a6bd-459d-aaa3-f8ad0c96aa37.png)
+
 # Flutter SDK for EkycID
 ![](https://img.shields.io/badge/platform-flutter-blue) ![](https://img.shields.io/github/v/tag/EKYCSolutions/ekyc-id-flutter?label=version)
 
-An easy to use SDK for developing Identity Verification for KYC process. With this SDK, developers can quickly integrate KYC process into their flutter apps.
+The EkycID Android SDK lets you build a factastic OCR and Face Recognition experienced in your Android app.
+
+With one quick scan, your users will be able to extract information from thier identity cards, passports, driver licenses, license plate, vehicle registration, covid-19 vaccinate card, and any other document by government-issued.
+
+
+EkycID is:
+* Easy to integrate into existing ecosystems and solutions through the use of SDKs that supported both native and hybrid applications.
+* Better for user experience being that the document detections and liveness checks are done directly offline on the device.
+* Great for cutting down operations cost and increasing efficiency by decreasing reliance on human labor and time needed for manual data entry. 
+
+
+EkycID can:
+* Extract information from identity documents through document recognition & OCR.
+* Verify whether an individual is real or fake through liveness detection, and face recognition. 
+* Verify the authenticity of the identity documents by combining the power of document detection, OCR, liveness detection, and face recognition. 
 
 This Flutter SDK is a wrapper around our Native SDK ([Android](https://github.com/EKYCSolutions/ekyc-id-android) & [iOS](https://github.com/EKYCSolutions/ekyc-id-ios)).
 
