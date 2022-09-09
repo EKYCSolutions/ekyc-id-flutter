@@ -2,16 +2,17 @@ PODS:
   - audio_session (0.0.1):
     - Flutter
   - ekyc_id_flutter (1.0.0):
-    - EkycID (~> 1.0.12)
+    - EkycID (~> 1.0.19)
     - Flutter
-  - EkycID (1.0.12):
+  - EkycID (1.0.19):
     - GoogleMLKit/FaceDetection (= 2.5.0)
+    - MultipartForm (= 0.1.0)
     - OpenCV (= 4.3.0)
     - TensorFlowLiteSwift (= 0.0.1-nightly.20211127)
   - Flutter (1.0.0)
   - flutter_beep (0.0.1):
     - Flutter
-  - GoogleDataTransport (9.1.4):
+  - GoogleDataTransport (9.2.0):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
@@ -63,6 +64,7 @@ PODS:
     - MLImage (= 1.0.0-beta2)
     - MLKitCommon (~> 5.0)
     - Protobuf (~> 3.12)
+  - MultipartForm (0.1.0)
   - nanopb (2.30909.0):
     - nanopb/decode (= 2.30909.0)
     - nanopb/encode (= 2.30909.0)
@@ -72,7 +74,7 @@ PODS:
   - path_provider (0.0.1):
     - Flutter
   - PromisesObjC (2.1.1)
-  - Protobuf (3.21.2)
+  - Protobuf (3.21.5)
   - TensorFlowLiteC (0.0.1-nightly.20211127):
     - TensorFlowLiteC/Core (= 0.0.1-nightly.20211127)
   - TensorFlowLiteC/Core (0.0.1-nightly.20211127)
@@ -105,6 +107,7 @@ SPEC REPOS:
     - MLKitCommon
     - MLKitFaceDetection
     - MLKitVision
+    - MultipartForm
     - nanopb
     - OpenCV
     - PromisesObjC
@@ -130,11 +133,11 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
-  ekyc_id_flutter: 42337a0d7d450c061a93671a88c024e8d7dea5a8
-  EkycID: 37241b4f196748c59626d1ddce18a56876013e8a
+  ekyc_id_flutter: f6f28abe4093402c097d93e2359f56970b17314a
+  EkycID: d19821d9e6b58c74230b9307c38c37319498a823
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_beep: 54fb393b22dfa0f0e4573c81b1c74dd71c4e5af8
-  GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
+  GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleMLKit: 0d7f5aa2f8a2f2ea9d849a05abdbe80974b0ec83
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
@@ -145,15 +148,16 @@ SPEC CHECKSUMS:
   MLKitCommon: 3bc17c6f7d25ce3660f030350b46ae7ec9ebca6e
   MLKitFaceDetection: 617cb847441868a8bfd4b48d751c9b33c1104948
   MLKitVision: e87dc3f2e456a6ab32361ebd985e078dd2746143
+  MultipartForm: 170d4f653b833cab5b5e99dfdefe71069d913bd1
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   OpenCV: 681e0451c1e54c5930a8922277f817ed5d5ab459
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  Protobuf: 818c6a87e44193a77f56b87c6a1c106efda7e062
+  Protobuf: 7504b04fffcf6662ad629694db8231f5e744327f
   TensorFlowLiteC: b2eba881175ce9b490698f74cedf88c0c430f1d1
   TensorFlowLiteSwift: ee03ae882bab905b8e532c80640524cf6c91ec65
   vibration: 1ec279c4a1a7a646627b54039d812334b3f1114a
 
-PODFILE CHECKSUM: 16ddf56de8c9de4e7a321ca1d8a0c19d9d50a079
+PODFILE CHECKSUM: 1c55bb67f9da41fa023f80f450b252c4b1fb805c
 
 COCOAPODS: 1.11.2

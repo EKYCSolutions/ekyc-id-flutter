@@ -8,7 +8,7 @@ import EkycID
 import Foundation
 import AVFoundation
 
-public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScannerEventListener {
+public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScannerCameraEventListener {
     let frame: CGRect
     let viewId: Int64
     var flutterCameraView: UIView?
@@ -36,21 +36,30 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
     private func start(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         let args = call.arguments as! [String: Any?]
         self.cameraView = DocumentScannerCameraView(
-            frame: self.flutterCameraView!.frame,
-            options: DocumentScannerOptions(
-                preparingDuration: args["preparingDuration"]! as! Int
-            )
+            frame: self.flutterCameraView!.frame
         )
         self.cameraView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.cameraView!.addListener(self)
         self.flutterCameraView!.addSubview(self.cameraView!)
-        self.cameraView!.start()
+        self.cameraView!.start(
+            options: DocumentScannerCameraOptions(
+                preparingDuration: args["preparingDuration"]! as! Int
+            )
+        )
         result(true)
     }
     
     private func setWhiteList(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         let args = call.arguments as! [String]
-        self.cameraView!.setWhiteList(whiteList: args)
+        
+        var temp: [ObjectDetectionObjectType] = []
+                
+        for item in args {
+            let group = ObjectDetectionObjectGroupToObjectTypesMapping[item]!
+            temp.append(contentsOf: group)
+        }
+        
+        self.cameraView!.setWhiteList(temp)
         result(true)
     }
     
@@ -107,11 +116,11 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         self.eventStreamHandler?.sendOnInitializedEventToFlutter()
     }
     
-    public func onDetection(detection: DocumentScannerResult) {
+    public func onDetection(_ detection: DocumentScannerResult) {
         self.eventStreamHandler?.sendOnDetectionEventToFlutter(detection)
     }
     
-    public func onFrame(frameStatus: FrameStatus) {
+    public func onFrame(_ frameStatus: FrameStatus) {
         self.eventStreamHandler?.sendOnFrameEventToFlutter(frameStatus)
     }
     

@@ -9,7 +9,7 @@ import EkycID
 import Foundation
 import AVFoundation
 
-public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDetectionEventListener {
+public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDetectionCameraEventListener {
     let frame: CGRect
     let viewId: Int64
     var flutterCameraView: UIView?
@@ -44,20 +44,19 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
         let args = call.arguments as! [String: Any]
         let prompts = args["prompts"] as! [String]
         let promptTimerCountDownSec = args["promptTimerCountDownSec"] as! Int
-        self.cameraView = LivenessDetectionCameraView(
-            frame: self.flutterCameraView!.frame,
-            options: LivenessDetectionOptions(
-                prompts: prompts.map { e in
-                    LIVENESS_PROMPT_TYPE_MAPPING[e]!
-                },
-                promptTimerCountDownSec: promptTimerCountDownSec
-            )
-        )
+        self.cameraView = LivenessDetectionCameraView(frame: self.flutterCameraView!.frame)
         self.cameraView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.cameraView!.addListener(self)
         
         self.flutterCameraView!.addSubview(self.cameraView!)
-        self.cameraView!.start()
+        self.cameraView!.start(
+            options: LivenessDetectionCameraOptions(
+            prompts: prompts.map { e in
+                LIVENESS_PROMPT_TYPE_MAPPING[e]!
+            },
+            promptTimerCountDownSec: promptTimerCountDownSec
+            )
+        )
         result(true)
     }
     
@@ -108,7 +107,7 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
         self.eventStreamHandler?.sendOnInitializedEventToFlutter()
     }
     
-    public func onFrame(frameStatus: FrameStatus) {
+    public func onFrame(_ frameStatus: FrameStatus) {
         self.eventStreamHandler?.sendOnFrameEventToFlutter(frameStatus)
     }
     
@@ -127,7 +126,7 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
         )
     }
     
-    public func onAllPromptsCompleted(detection: LivenessDetectionResult) {
+    public func onAllPromptsCompleted(_ detection: LivenessDetectionResult) {
         self.eventStreamHandler?.sendOnAllPromptsCompletedEventToFlutter(detection)
     }
     
