@@ -1,3 +1,6 @@
+import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_view.dart';
+import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection.dart';
+import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_view.dart';
 import 'package:ekyc_id_flutter/core/models/api_result.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -65,10 +68,16 @@ class _HomeScreenState extends State<HomeScreen> {
             await showCupertinoModalBottomSheet(
               context: context,
               builder: (BuildContext context) {
-                return EkycIDExpress(
-                  language: Language.KH,
-                  onKYCCompleted: onKYCCompleted,
-                );
+                return DocumentScannerView(
+                    onDocumentScanned: ((
+                        {required mainSide, secondarySide}) async {}));
+
+                // return EkycIDExpress(
+                //   language: Language.KH,
+                //   onKYCCompleted: onKYCCompleted,
+                // );
+                // return LivenessDetectionView(
+                //     onLivenessTestCompleted: (result) async {});
               },
             );
           },

@@ -2,10 +2,11 @@ PODS:
   - audio_session (0.0.1):
     - Flutter
   - ekyc_id_flutter (1.0.0):
-    - EkycID (~> 1.0.19)
+    - EkycID (= 1.0.26)
     - Flutter
-  - EkycID (1.0.19):
+  - EkycID (1.0.26):
     - GoogleMLKit/FaceDetection (= 2.5.0)
+    - lottie-ios (= 3.4.2)
     - MultipartForm (= 0.1.0)
     - OpenCV (= 4.3.0)
     - TensorFlowLiteSwift (= 0.0.1-nightly.20211127)
@@ -33,17 +34,18 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.3.2)
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.3.2)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.3.2)"
-  - GoogleUtilities/Environment (7.7.0):
+  - GoogleUtilities/Environment (7.10.0):
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.7.0):
+  - GoogleUtilities/Logger (7.10.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/UserDefaults (7.7.0):
+  - GoogleUtilities/UserDefaults (7.10.0):
     - GoogleUtilities/Logger
   - GoogleUtilitiesComponents (1.1.0):
     - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (1.7.2)
   - just_audio (0.0.1):
     - Flutter
+  - lottie-ios (3.4.2)
   - MLImage (1.0.0-beta2)
   - MLKitCommon (5.0.0):
     - GoogleDataTransport (~> 9.0)
@@ -74,7 +76,7 @@ PODS:
   - path_provider (0.0.1):
     - Flutter
   - PromisesObjC (2.1.1)
-  - Protobuf (3.21.5)
+  - Protobuf (3.21.12)
   - TensorFlowLiteC (0.0.1-nightly.20211127):
     - TensorFlowLiteC/Core (= 0.0.1-nightly.20211127)
   - TensorFlowLiteC/Core (0.0.1-nightly.20211127)
@@ -103,6 +105,7 @@ SPEC REPOS:
     - GoogleUtilities
     - GoogleUtilitiesComponents
     - GTMSessionFetcher
+    - lottie-ios
     - MLImage
     - MLKitCommon
     - MLKitFaceDetection
@@ -133,17 +136,18 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
-  ekyc_id_flutter: f6f28abe4093402c097d93e2359f56970b17314a
-  EkycID: d19821d9e6b58c74230b9307c38c37319498a823
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  ekyc_id_flutter: dc8dfe294d52dceacc7e08b04d32fd063b512293
+  EkycID: 5586148b0966fe898ccc2ca45e3021f6ec97d236
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_beep: 54fb393b22dfa0f0e4573c81b1c74dd71c4e5af8
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleMLKit: 0d7f5aa2f8a2f2ea9d849a05abdbe80974b0ec83
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
-  GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
+  GoogleUtilities: bad72cb363809015b1f7f19beb1f1cd23c589f95
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
+  lottie-ios: 6bbc53eef6957e4744a50321507015fba72d8ca6
   MLImage: a454f9f8ecfd537783a12f9488f5be1a68820829
   MLKitCommon: 3bc17c6f7d25ce3660f030350b46ae7ec9ebca6e
   MLKitFaceDetection: 617cb847441868a8bfd4b48d751c9b33c1104948
@@ -153,11 +157,11 @@ SPEC CHECKSUMS:
   OpenCV: 681e0451c1e54c5930a8922277f817ed5d5ab459
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  Protobuf: 7504b04fffcf6662ad629694db8231f5e744327f
+  Protobuf: 120350fc38646e2dedc26f49ecba778184ea1de2
   TensorFlowLiteC: b2eba881175ce9b490698f74cedf88c0c430f1d1
   TensorFlowLiteSwift: ee03ae882bab905b8e532c80640524cf6c91ec65
   vibration: 1ec279c4a1a7a646627b54039d812334b3f1114a
 
 PODFILE CHECKSUM: 1c55bb67f9da41fa023f80f450b252c4b1fb805c
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

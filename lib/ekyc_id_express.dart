@@ -31,7 +31,10 @@ class EkycIDExpress extends StatefulWidget {
     required this.onKYCCompleted,
     this.language = Language.EN,
     this.documentTypes = const [DocumentScannerDocType.NATIONAL_ID],
-    this.documentScannerOptions = const DocumentScannerOptions(),
+    this.documentScannerOptions = const DocumentScannerOptions(
+        scannableDocuments: [
+          ScannableDocument(mainSide: ObjectDetectionObjectType.NATIONAL_ID_0)
+        ]),
     this.livenessDetectionOptions = const LivenessDetectionOptions(),
   }) : super(key: key);
 
@@ -66,7 +69,6 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
-    super.initState();
   }
 
   @override
@@ -120,10 +122,11 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
-
+    print("build");
+    print(showDocumentCamera);
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.red,
       appBar: AppBar(
         leading: Hero(
           tag: "back-button",
