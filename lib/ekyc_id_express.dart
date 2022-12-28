@@ -168,7 +168,6 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
                     onDocumentScanned: onDocumentScanned,
                     language: widget.language,
                     options: widget.documentScannerOptions,
-                    documentTypes: widget.documentTypes,
                   )
                 : Container(color: Colors.black),
           ),

@@ -4,7 +4,7 @@ import EkycID
 import Foundation
 
 public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScannerEventListener {
-    let frame: CGRect
+    var frame: CGRect
     let viewId: Int64
     var flutterCameraView: UIView?
     var cameraView: DocumentScannerView?
@@ -72,10 +72,24 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
     ]
 
     init(frame: CGRect, viewId: Int64, messenger: FlutterBinaryMessenger, args: Any?) {
+        let screenSize = UIScreen.main.bounds
+        let screenWidth = screenSize.width
+        let screenHeight = screenSize.height
+
         self.frame = frame
+
+        print("frame", frame)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { // Change `2.0` to the desired number of seconds.
+            print("frame after 1 second", frame)
+        }
+
         self.viewId = viewId
+
         super.init()
-        self.flutterCameraView = UIView(frame: frame)
+
+        self.flutterCameraView = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
+
         self.methodChannel = FlutterMethodChannel(name: "DocumentScanner_MethodChannel_" + String(viewId), binaryMessenger: messenger)
         self.eventChannel = FlutterEventChannel(name: "DocumentScanner_EventChannel_" + String(viewId), binaryMessenger: messenger)
         self.eventStreamHandler = DocumentScannerEventStreamHandler()
@@ -87,13 +101,9 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         return self.flutterCameraView!
     }
 
-    public func onDocumentScanned(mainSide: DocumentScannerResult, secondarySide: DocumentScannerResult?) {
-        self.eventStreamHandler?.sendOnDocumentScannedEventToFlutter(mainSide, secondarySide)
-    }
-
     private func start(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         let args = call.arguments as! [String: Any?]
-        let scannableDocuments = args["scannableDocuments"] as! [Any]
+        let scannableDocuments = args["scannableDocuments"] as! [[String: Any]]
         let preparingDuration = args["preparingDuration"] as! Int
 
         self.cameraView = DocumentScannerView(
@@ -109,14 +119,14 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         self.cameraView!.start(
             options: DocumentScannerOptions(
                 cameraOptions: DocumentScannerCameraOptions(preparingDuration: preparingDuration),
-                scannableDocuments: scannableDocuments.map({ _ in
-                    ScannableDocument(mainSide: self.OBJECT_TYPE_MAPPING["NATIONAL_ID_0"]!, secondarySide: nil)
+                scannableDocuments: scannableDocuments.map {
+                    ScannableDocument(
+                        mainSide: self.OBJECT_TYPE_MAPPING[$0["mainSide"] as! String]!,
+                        secondarySide: $0["secondarySide"] as? String == nil ? nil : self.OBJECT_TYPE_MAPPING[$0["secondarySide"] as! String]
+                    )
                 }
-                )
             )
         )
-
-        print("fuck here")
 
         result(true)
     }
@@ -149,24 +159,18 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         }
     }
 
-    public func onInitialized() {
-        print("on initalize swift")
-        self.eventStreamHandler?.sendOnInitializedEventToFlutter()
-    }
-
-    public func onDetection(_ detection: DocumentScannerResult) {
-        self.eventStreamHandler?.sendOnDetectionEventToFlutter(detection)
-    }
-
-    public func onFrame(_ frameStatus: FrameStatus) {
-        self.eventStreamHandler?.sendOnFrameEventToFlutter(frameStatus)
+    public func onDocumentScanned(mainSide: DocumentScannerResult, secondarySide: DocumentScannerResult?) {
+        print("onDocumentScanned")
+        self.eventStreamHandler?.sendOnDocumentScannedEventToFlutter(mainSide, secondarySide)
     }
 
     public func onFrameStatusChanged(_ frameStatus: FrameStatus) {
+        print("onFrameStatusChanged")
         self.eventStreamHandler?.sendOnFrameStatusChangedEventToFlutter(frameStatus)
     }
 
     public func onCurrentSideChanged(_ currentSide: DocumentSide) {
+        print("onCurrentsideChanged")
         self.eventStreamHandler?.sendOnCurrentSideChangedEventToFlutter(currentSide)
     }
 
@@ -174,34 +178,68 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         var events: FlutterEventSink?
 
         func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+            print("onListen")
             self.events = events
             return nil
         }
 
         func onCancel(withArguments arguments: Any?) -> FlutterError? {
+            print("onCancel")
             return nil
         }
 
         func sendOnDocumentScannedEventToFlutter(_ mainside: DocumentScannerResult, _ secondarySide: DocumentScannerResult?) {
+            print("sendOnDocumentScannedEventToFlutter")
             if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
                     event["type"] = "onDocumentScanned"
                     var values = [String: Any?]()
-                    values["mainSide"] = DocumentScannerResult.toFlutterMap(mainside)
+                    values["mainSide"] = mainside.toFlutterMap()
                     if secondarySide != nil {
-                        values["secondarySide"] = DocumentScannerResult.toFlutterMap(secondarySide!)
+                        values["secondarySide"] = secondarySide!.toFlutterMap()
                     } else {
                         values["secondarySide"] = nil
                     }
                     event["values"] = values
+                    print("main side")
+                    print(mainside)
+                    print("secondarySide")
+                    print(secondarySide)
+                    print("value in document scanned", values)
                     self.events!(event)
                 }
             }
         }
 
+        func convertFrameStatus(frameStatus: FrameStatus) -> String {
+            print("convertFrameStatus")
+            switch frameStatus {
+            case FrameStatus.FACE_FOUND:
+                return "FACE_FOUND"
+            case FrameStatus.CANNOT_GRAB_FACE:
+                return "CANNOT_GRAB_FACE"
+            case FrameStatus.PREPARING:
+                return "PREPARING"
+            case FrameStatus.INITIALIZING:
+                return "INITIALIZING"
+            case FrameStatus.DOCUMENT_FOUND:
+                return "DOCUMENT_FOUND"
+            case FrameStatus.DOCUMENT_NOT_IN_CENTER:
+                return "DOCUMENT_NOT_IN_CENTER"
+            case FrameStatus.DOCUMENT_NOT_FOUND:
+                return "DOCUMENT_NOT_FOUND"
+            case FrameStatus.DOCUMENT_TOO_BIG:
+                return "DOCUMENT_TOO_BIG"
+            case FrameStatus.DOCUMENT_TOO_SMALL:
+                return "DOCUMENT_TOO_BIG_SMALL"
+            default:
+                return "DOCUMENT_NOT_FOUND"
+            }
+        }
+
         func sendOnFrameStatusChangedEventToFlutter(_ frameStatus: FrameStatus) {
-            print("frame ", frameStatus)
+            print("sendOnFrameStatusChangedEventToFlutter")
             if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
@@ -213,11 +251,13 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         }
 
         func sendOnCurrentSideChangedEventToFlutter(_ currentSide: DocumentSide) {
+            print("sendOnCurrentSideChangedEventToFlutter")
+            print("currentSide", currentSide == DocumentSide.MAIN ? "MAIN" : "SECONDARY")
             if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
                     event["type"] = "onCurrentSideChanged"
-                    event["values"] = currentSide
+                    event["values"] = currentSide == DocumentSide.MAIN ? "MAIN" : "SECONDARY"
                     self.events!(event)
                 }
             }
@@ -230,17 +270,6 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
                     event["type"] = "onInitialized"
                     var values = [String: Any?]()
                     event["values"] = values
-                    self.events!(event)
-                }
-            }
-        }
-
-        func sendOnFrameEventToFlutter(_ frameStatus: FrameStatus) {
-            if self.events != nil {
-                DispatchQueue.main.async {
-                    var event = [String: Any]()
-                    event["type"] = "onFrame"
-                    event["values"] = "DOCUMENT_NOT_FOUND"
                     self.events!(event)
                 }
             }

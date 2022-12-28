@@ -19,6 +19,7 @@ class DocMinimalOverlay extends StatelessWidget {
   }) : super(key: key);
 
   final Language language;
+  
   final FrameStatus frameStatus;
   final DocumentSide currentSide;
   final bool showFlippingAnimation;

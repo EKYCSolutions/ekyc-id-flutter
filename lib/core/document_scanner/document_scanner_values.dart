@@ -9,13 +9,16 @@ typedef void DocumentScannerCreatedCallback(
 );
 
 /// Callback on every frame during the document scanning process.
-typedef void DocumentScannerOnFrameCallback(FrameStatus frameStatus);
+typedef void DocumentScannerOnFrameStatusChangedCallback(
+    FrameStatus frameStatus);
 
 /// Callback for when the document scanner detects a presence of a document.
-typedef void DocumentScannerOnDetectionCallback(DocumentScannerResult result);
+typedef void DocumentScannerOnDocumentScannedCallback(
+    DocumentScannerResult mainSide, DocumentScannerResult? secondarySide);
 
 /// Callback for when the document scanner is initialized.
-typedef void DocumentScannerOnInitializedCallback();
+typedef void DocumentScannerOnCurrentSideChangedCallback(
+    DocumentSide currentSide);
 
 /// Callback for when the document scanning process is completed.
 typedef Future<void> OnDocumentScannedCallback({
