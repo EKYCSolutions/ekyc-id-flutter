@@ -3,11 +3,11 @@ import AVFoundation
 import EkycID
 import Foundation
 
-public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDetectionCameraEventListener {
+public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDetectionEventListener {
     let frame: CGRect
     let viewId: Int64
     var flutterCameraView: UIView?
-    var cameraView: LivenessDetectionCameraView?
+    var cameraView: LivenessDetectionView?
     var methodChannel: FlutterMethodChannel?
     var eventChannel: FlutterEventChannel?
     var eventStreamHandler: LivenessDetectionEventStreamHandler?
@@ -19,10 +19,13 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
     ]
     
     init(frame: CGRect, viewId: Int64, messenger: FlutterBinaryMessenger, args: Any?) {
+        let screenSize = UIScreen.main.bounds
+        let screenWidth = screenSize.width
+        let screenHeight = screenSize.height
         self.frame = frame
         self.viewId = viewId
         super.init()
-        self.flutterCameraView = UIView(frame: frame)
+        self.flutterCameraView = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
         self.methodChannel = FlutterMethodChannel(name: "LivenessDetection_MethodChannel_" + String(viewId), binaryMessenger: messenger)
         self.eventChannel = FlutterEventChannel(name: "LivenessDetection_EventChannel_" + String(viewId), binaryMessenger: messenger)
         self.eventStreamHandler = LivenessDetectionEventStreamHandler()
@@ -36,21 +39,26 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
     
     private func start(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         let args = call.arguments as! [String: Any]
-        let prompts = args["prompts"] as! [String]
+
         let promptTimerCountDownSec = args["promptTimerCountDownSec"] as! Int
-        self.cameraView = LivenessDetectionCameraView(frame: self.flutterCameraView!.frame)
-        self.cameraView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        self.cameraView!.addListener(self)
+      
+        self.cameraView = LivenessDetectionView(
+            frame: self.flutterCameraView!.frame
+        )
         
+        self.cameraView!.setLang(lang: LivenessDetectionOverlayOptions(language: EkycIDLanguage.EN))
+        
+        self.cameraView!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+
+        self.cameraView!.addListener(self)
+
         self.flutterCameraView!.addSubview(self.cameraView!)
         self.cameraView!.start(
-            options: LivenessDetectionCameraOptions(
-                prompts: prompts.map { e in
-                    self.LIVENESS_PROMPT_TYPE_MAPPING[e]!
-                },
-                promptTimerCountDownSec: promptTimerCountDownSec
+            options: LivenessDetectionOptions(
+                cameraOptions: LivenessDetectionCameraOptions(promptTimerCountDownSec: promptTimerCountDownSec)
             )
         )
+        
         result(true)
     }
     
@@ -59,11 +67,6 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
             self.cameraView!.stop()
             self.cameraView = nil
         }
-        result(true)
-    }
-    
-    private func nextImage(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
-        self.cameraView!.nextImage()
         result(true)
     }
     
@@ -81,12 +84,7 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
             } catch {
                 result(FlutterError(code: "dispose Error", message: nil, details: nil))
             }
-        case "nextImage":
-            do {
-                try self.nextImage(call: call, result: result)
-            } catch {
-                result(FlutterError(code: "dispose Error", message: nil, details: nil))
-            }
+      
         default:
             result(FlutterMethodNotImplemented)
         }
@@ -96,42 +94,30 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
         self.eventStreamHandler?.sendOnInitializedEventToFlutter()
     }
     
-    public func onFrame(_ frameStatus: FrameStatus) {
-        print(frameStatus)
-        self.eventStreamHandler?.sendOnFrameEventToFlutter(frameStatus)
+    public func onLivenessTestCompleted(_ result: LivenessDetectionResult) {
+        self.eventStreamHandler?.sendOnLivenessTestCompletedEventToFlutter(result)
     }
     
-    public func onPromptCompleted(completedPromptIndex: Int, success: Bool, progress: Float) {
-        self.eventStreamHandler?.sendOnPromptCompletedEventToFlutter(
-            completedPromptIndex: completedPromptIndex,
-            success: success,
-            progress: progress
-        )
+    public func onFrameStatusChanged(_ frameStatus: FrameStatus) {
+        self.eventStreamHandler?.sendOnFrameStatusChangedEventToFlutter(frameStatus)
     }
     
-    public func onCountDownChanged(current: Int, max: Int) {
-        self.eventStreamHandler?.sendOnCountDownChangedEventToFlutter(
-            current: current,
-            max: max
-        )
+    public func onProgressChanged(_ progress: Float) {
+        self.eventStreamHandler?.sendOnProgressChangedEventToFlutter(progress)
     }
     
-    public func onAllPromptsCompleted(_ detection: LivenessDetectionResult) {
-        self.eventStreamHandler?.sendOnAllPromptsCompletedEventToFlutter(detection)
+    public func onFocusChanged(_ isFocusing: Bool) {
+        self.eventStreamHandler?.sendOnFocusChangedEventToFlutter(isFocusing)
     }
     
-    public func onFocus() {
-        self.eventStreamHandler?.sendOnFocusEventToFlutter()
-    }
-    
-    public func onFocusDropped() {
-        self.eventStreamHandler?.sendOnFocusDroppedEventToFlutter()
-    }
-    
-    public func onActivePromptChanged(_ activePrompt: LivenessPromptType) {
+    public func onActivePromptChanged(_ activePrompt: LivenessPromptType?) {
         self.eventStreamHandler?.sendOnActivePromptChanged(activePrompt)
     }
     
+    public func onCountDownChanged(current: Int, max: Int) {
+        self.eventStreamHandler?.sendOnCountDownChangedEventToFlutter(current: current, max: max)
+    }
+
     class LivenessDetectionEventStreamHandler: NSObject, FlutterStreamHandler {
         var events: FlutterEventSink?
         
@@ -145,6 +131,7 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
         }
         
         func sendOnInitializedEventToFlutter() {
+            print("sendOnInitializedEventToFlutter")
             if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
@@ -154,94 +141,83 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
             }
         }
         
-        func sendOnFrameEventToFlutter(_ frameStatus: FrameStatus) {
+        func sendOnFrameStatusChangedEventToFlutter(_ frameStatus: FrameStatus) {
+            print("sendOnFrameStatusChangedEventToFlutter")
+            
             if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
-                    event["type"] = "onFrame"
-                    event["values"] = "\(frameStatus)"
+                    event["type"] = "onFrameStatusChanged"
+                    event["values"] = "\(frameStatus.rawValue)"
                     self.events!(event)
                 }
             }
         }
         
-        func sendOnAllPromptsCompletedEventToFlutter(_ detection: LivenessDetectionResult) {
+        func sendOnProgressChangedEventToFlutter(_ progress: Float) {
+            print("sendOnProgressChangedEventToFlutter")
             if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
-                    event["type"] = "onAllPromptsCompleted"
-                    event["values"] = detection.toFlutterMap()
-                    self.events!(event)
-                }
-            }
-        }
-        
-        func sendOnPromptCompletedEventToFlutter(completedPromptIndex: Int, success: Bool, progress: Float) {
-            if self.events != nil {
-                DispatchQueue.main.async {
-                    var event = [String: Any]()
-                    event["type"] = "onPromptCompleted"
+                    event["type"] = "onProgressChanged"
                     var values = [String: Any?]()
-                    values["completedPromptIndex"] = completedPromptIndex
-                    values["success"] = success
                     values["progress"] = progress
                     event["values"] = values
+                 
+                    
                     self.events!(event)
                 }
             }
         }
         
-        func sendOnCountDownChangedEventToFlutter(current: Int, max: Int) {
+        func sendOnFocusChangedEventToFlutter(_ isFocusing: Bool) {
+            print("sendOnFocusChangedEventToFlutter", isFocusing)
             if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
-                    event["type"] = "onCountDownChanged"
-                    var values = [String: Any?]()
-                    values["current"] = current
-                    values["max"] = max
-                    event["values"] = values
-                    self.events!(event)
-                }
-            }
-        }
-        
-        func sendOnFocusEventToFlutter() {
-            if self.events != nil {
-                DispatchQueue.main.async {
-                    var event = [String: Any]()
-                    event["type"] = "onFocus"
-                    self.events!(event)
-                }
-            }
-        }
-        
-        func sendOnFocusDroppedEventToFlutter() {
-            if self.events != nil {
-                DispatchQueue.main.async {
-                    var event = [String: Any]()
-                    event["type"] = "onFocusDropped"
+                    event["type"] = "onFocusChanged"
+                    event["values"] = isFocusing
                     self.events!(event)
                 }
             }
         }
         
         func sendOnActivePromptChanged(_ activePrompt: LivenessPromptType?) {
+            print("sendOnActivePromptChanged")
+        
             if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
                     event["type"] = "onActivePromptChanged"
-                    event["values"] = activePrompt
+                    event["values"] = activePrompt?.rawValue
                     self.events!(event)
                 }
             }
         }
         
-        func onLivenessTestCompleted(_ result: LivenessDetectionResult) {
+        func sendOnCountDownChangedEventToFlutter(current: Int, max: Int) {
+            print("sendOnCountDownChangedEventToFlutter")
+            if self.events != nil {
+                DispatchQueue.main.async {
+                    var event = [String: Any]()
+                    event["type"] = "onCountDownChanged"
+                    var values = [String: Any]()
+                    values["current"] = current
+                    values["max"] = max
+                    event["values"] = values
+              
+                    self.events!(event)
+                }
+            }
+        }
+        
+        func sendOnLivenessTestCompletedEventToFlutter(_ result: LivenessDetectionResult) {
+            print("sendOnLivenessTestCompletedEventToFlutter")
             if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
                     event["type"] = "onLivenessActivecompleted"
-                    let values = LivenessDetectionResult.toFlutterMap(result)
+                    let values = result.toFlutterMap()
                     event["values"] = values
                     self.events!(event)
                 }

@@ -1,20 +1,3 @@
-// /// Class representing configurations of the [DocumentScanner].
-// class DocumentScannerOptions {
-
-//   /// The duration is seconds to wait before capturing the frame for process.
-//   final int preparingDuration;
-
-//   const DocumentScannerOptions({
-//     this.preparingDuration = 2,
-//   });
-
-//   Map<String, dynamic> toMap() {
-//     return {
-//       "preparingDuration": preparingDuration,
-//     };
-//   }
-// }
-
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_values.dart';
 
 /// Class representing configurations of the [DocumentScanner].
@@ -27,7 +10,7 @@ class DocumentScannerOptions {
 
   const DocumentScannerOptions({
     required this.scannableDocuments,
-    this.preparingDuration = 5,
+    this.preparingDuration = 1,
   });
 
   Map<String, dynamic> toMap() {

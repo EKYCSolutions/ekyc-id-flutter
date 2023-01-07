@@ -6,8 +6,6 @@ import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection.dart'
 import 'package:ekyc_id_flutter/core/overlays/liveness_detection_overlay.dart';
 
 import 'package:flutter/material.dart';
-import 'package:vibration/vibration.dart';
-import 'package:just_audio/just_audio.dart';
 
 import 'liveness_prompt.dart';
 import 'liveness_detection_values.dart';
@@ -23,11 +21,6 @@ class LivenessDetectionView extends StatefulWidget {
     this.language = Language.EN,
     this.options = const LivenessDetectionOptions(
       promptTimerCountDownSec: 5,
-      prompts: [
-        LivenessPromptType.LOOK_LEFT,
-        LivenessPromptType.LOOK_RIGHT,
-        LivenessPromptType.BLINKING
-      ],
     ),
   });
 
@@ -46,16 +39,13 @@ class LivenessDetectionView extends StatefulWidget {
 
 class _LivenessDetectionViewState extends State<LivenessDetectionView>
     with SingleTickerProviderStateMixin {
-  AudioPlayer? player;
-  bool hasFailed = false;
   bool isFocusing = false;
 
   int promptTimer = 0;
-  int? activePromptIndex;
 
   late LivenessDetectionOptions options;
 
-  LivenessPrompt? prompt;
+  LivenessPromptType activePrompt = LivenessPromptType.LOOK_LEFT;
   late LivenessDetectionController controller;
   FrameStatus frameStatus = FrameStatus.INITIALIZING;
 
@@ -71,14 +61,15 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
     });
 
     await this.controller.start(
-          options: options,
-          onFocus: onFocus,
-          onFrame: onFrame,
-          onInitialized: onInitialized,
-          onFocusDropped: onFocusDropped,
-          onPromptCompleted: onPromptCompleted,
+          onFocusChanged: onFocusChanged,
+          onActivePromptChanged: onActivePromptChanged,
           onCountDownChanged: onCountDownChanged,
-          onAllPromptsCompleted: onAllPromptsCompleted,
+          onFrameStatusChanged: onFrameStatusChanged,
+          onLivenessTestCompleted: onLivenessCompleted,
+          onProgressChanged: onProgressChanged,
+          options: LivenessDetectionOptions(
+            promptTimerCountDownSec: 5,
+          ),
         );
   }
 
@@ -88,7 +79,6 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
     setState(() {
       options = widget.options;
     });
-    player = AudioPlayer();
     progressController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 5),
@@ -103,10 +93,13 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
 
   @override
   void dispose() {
-    this.player?.dispose();
     this.controller.dispose();
     this.progressController.dispose();
     super.dispose();
+  }
+
+  void onProgressChanged(double progress) {
+    progressController.value = progress;
   }
 
   void onCountDownChanged({
@@ -120,52 +113,24 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
     }
   }
 
-  void onPromptCompleted({
-    required int completedPromptIndex,
-    required bool success,
-    required double progress,
-  }) {
+  void onActivePromptChanged(LivenessPromptType livesnessPromptType) {
     if (this.mounted) {
-      vibrate();
-
       setState(() {
-        activePromptIndex = activePromptIndex! + 1;
-      });
-
-      playInstruction();
-
-      progressController.animateTo(progress).then((value) {
-        this.controller.nextImage();
+        activePrompt = livesnessPromptType;
       });
     }
   }
 
-  void onFocus() {
+  void onFocusChanged(bool focusing) {
     if (this.mounted) {
       setState(() {
-        activePromptIndex = 0;
-        isFocusing = true;
-      });
-
-      playInstruction();
-    }
-  }
-
-  void onFocusDropped() {
-    if (this.mounted) {
-      progressController.value = 0;
-
-      setState(() {
-        activePromptIndex = null;
-        isFocusing = false;
+        isFocusing = focusing;
       });
     }
   }
 
-  void onAllPromptsCompleted(LivenessDetectionResult result) {
+  void onLivenessCompleted(LivenessDetectionResult result) {
     if (this.mounted) {
-      vibrate();
-
       progressController.animateTo(1).then((value) {
         widget.onLivenessTestCompleted(result).then((value) {
           progressController.value = 0;
@@ -175,47 +140,12 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
     }
   }
 
-  void onFrame(FrameStatus f) {
+  void onFrameStatusChanged(FrameStatus f) {
     if (this.mounted) {
       setState(() {
         frameStatus = f;
       });
     }
-  }
-
-  void onInitialized() {}
-
-  void playInstruction() {
-    String? type;
-    if (options.prompts[activePromptIndex!] == LivenessPromptType.BLINKING) {
-      type = "blink";
-    } else if (options.prompts[activePromptIndex!] ==
-        LivenessPromptType.LOOK_LEFT) {
-      type = "look_left";
-    } else if (options.prompts[activePromptIndex!] ==
-        LivenessPromptType.LOOK_RIGHT) {
-      type = "look_right";
-    }
-
-    if (type != null) {
-      String source = "packages/ekyc_id_flutter/assets";
-      String language = widget.language == Language.KH ? "kh" : "en";
-      try {
-        player?.setAsset("$source/${type}_$language.mp3").then((value) {
-          player?.play();
-        });
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  void vibrate() {
-    Vibration.hasVibrator().then((value) {
-      if (value != null && value) {
-        Vibration.vibrate();
-      }
-    });
   }
 
   @override
@@ -228,9 +158,7 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
         Positioned.fill(
           child: LivenessDetectionOverlay(
             promptCountDownMax: options.promptTimerCountDownSec,
-            activePrompt: activePromptIndex != null
-                ? options.prompts[activePromptIndex!]
-                : null,
+            activePrompt: activePrompt,
             progress: progress.value,
             promptTimer: promptTimer,
             isFocusing: isFocusing,

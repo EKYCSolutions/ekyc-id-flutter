@@ -32,10 +32,16 @@ class EkycIDExpress extends StatefulWidget {
     this.language = Language.EN,
     this.documentTypes = const [DocumentScannerDocType.NATIONAL_ID],
     this.documentScannerOptions = const DocumentScannerOptions(
-        scannableDocuments: [
-          ScannableDocument(mainSide: ObjectDetectionObjectType.NATIONAL_ID_0)
-        ]),
-    this.livenessDetectionOptions = const LivenessDetectionOptions(),
+      scannableDocuments: [
+        ScannableDocument(
+          mainSide: ObjectDetectionObjectType.NATIONAL_ID_0,
+          secondarySide: null,
+        )
+      ],
+    ),
+    this.livenessDetectionOptions = const LivenessDetectionOptions(
+      promptTimerCountDownSec: 5,
+    ),
   }) : super(key: key);
 
   /// The language for the audio and text in the EkycIDExpress.
@@ -122,11 +128,10 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.of(context);
-    print("build");
-    print(showDocumentCamera);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.black,
       appBar: AppBar(
         leading: Hero(
           tag: "back-button",

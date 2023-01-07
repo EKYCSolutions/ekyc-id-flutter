@@ -68,14 +68,14 @@ class _HomeScreenState extends State<HomeScreen> {
             await showCupertinoModalBottomSheet(
               context: context,
               builder: (BuildContext context) {
-                return DocumentScannerView(
-                    onDocumentScanned: ((
-                        {required mainSide, secondarySide}) async {}));
+                // return DocumentScannerView(
+                //     onDocumentScanned: ((
+                //         {required mainSide, secondarySide}) async {}));
 
-                // return EkycIDExpress(
-                //   language: Language.KH,
-                //   onKYCCompleted: onKYCCompleted,
-                // );
+                return EkycIDExpress(
+                  language: Language.EN,
+                  onKYCCompleted: onKYCCompleted,
+                );
                 // return LivenessDetectionView(
                 //     onLivenessTestCompleted: (result) async {});
               },

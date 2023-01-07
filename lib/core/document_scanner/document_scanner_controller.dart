@@ -69,7 +69,7 @@ class DocumentScannerController {
             ? null
             : DocumentScannerResult.fromMap(
                 Map<String, dynamic>.from(values["secondarySide"]));
-                
+
         onDocumentScanned(mainSide, secondarySide);
       } else if (event["type"] == "onFrameStatusChanged") {
         FrameStatus frameStatus = FrameStatus.values.firstWhere(

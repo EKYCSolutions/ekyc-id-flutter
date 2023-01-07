@@ -26,6 +26,7 @@ class ScannerMessage extends StatelessWidget {
       FrameStatus.NO_FACE_FOUND: "place_face_at_the_center",
       FrameStatus.MULTIPLE_FACES_FOUND: "multiple_faces_found",
       FrameStatus.FACE_NOT_IN_CENTER: "place_face_at_the_center",
+      FrameStatus.FACE_BLOCKAGE_FOUND: "face_blockage_found",
     };
 
     if (STATUS_MAPPING[frameStatus] == null) {
@@ -39,7 +40,7 @@ class ScannerMessage extends StatelessWidget {
         borderRadius: BorderRadius.circular(2),
       ),
       child: Text(
-        LANGUAGE[STATUS_MAPPING[frameStatus]!]![language]!,
+        LANGUAGE[STATUS_MAPPING[frameStatus]]![language]!,
         style: Theme.of(context).textTheme.bodyText1!.copyWith(
               color: Colors.black,
             ),

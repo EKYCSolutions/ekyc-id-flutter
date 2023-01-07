@@ -29,6 +29,7 @@ class ScannerMessage extends StatelessWidget {
           "scan_the_${currentSide == DocumentSide.MAIN ? 'front' : 'back'}_of_the_document",
       FrameStatus.DOCUMENT_NOT_IN_CENTER: "place_document_at_the_center",
       FrameStatus.CANNOT_GRAB_FACE: "face_not_found",
+      FrameStatus.DOCUMENT_BLUR: "document_blur",
       FrameStatus.CANNOT_GRAB_DOCUMENT: "document_not_found",
     };
 
