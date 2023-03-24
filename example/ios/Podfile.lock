@@ -71,8 +71,9 @@ PODS:
   - nanopb/decode (2.30909.0)
   - nanopb/encode (2.30909.0)
   - OpenCV (4.3.0)
-  - path_provider (0.0.1):
+  - path_provider_foundation (0.0.1):
     - Flutter
+    - FlutterMacOS
   - PromisesObjC (2.1.1)
   - Protobuf (3.21.5)
   - TensorFlowLiteC (0.0.1-nightly.20211127):
@@ -82,7 +83,7 @@ PODS:
     - TensorFlowLiteSwift/Core (= 0.0.1-nightly.20211127)
   - TensorFlowLiteSwift/Core (0.0.1-nightly.20211127):
     - TensorFlowLiteC (= 0.0.1-nightly.20211127)
-  - vibration (1.7.4-nullsafety.0):
+  - vibration (1.7.5):
     - Flutter
 
 DEPENDENCIES:
@@ -91,7 +92,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_beep (from `.symlinks/plugins/flutter_beep/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
   - vibration (from `.symlinks/plugins/vibration/ios`)
 
 SPEC REPOS:
@@ -126,8 +127,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_beep/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
-  path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_foundation:
+    :path: ".symlinks/plugins/path_provider_foundation/ios"
   vibration:
     :path: ".symlinks/plugins/vibration/ios"
 
@@ -135,7 +136,7 @@ SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   ekyc_id_flutter: f6f28abe4093402c097d93e2359f56970b17314a
   EkycID: d19821d9e6b58c74230b9307c38c37319498a823
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_beep: 54fb393b22dfa0f0e4573c81b1c74dd71c4e5af8
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleMLKit: 0d7f5aa2f8a2f2ea9d849a05abdbe80974b0ec83
@@ -151,13 +152,13 @@ SPEC CHECKSUMS:
   MultipartForm: 170d4f653b833cab5b5e99dfdefe71069d913bd1
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   OpenCV: 681e0451c1e54c5930a8922277f817ed5d5ab459
-  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   Protobuf: 7504b04fffcf6662ad629694db8231f5e744327f
   TensorFlowLiteC: b2eba881175ce9b490698f74cedf88c0c430f1d1
   TensorFlowLiteSwift: ee03ae882bab905b8e532c80640524cf6c91ec65
-  vibration: 1ec279c4a1a7a646627b54039d812334b3f1114a
+  vibration: 7d883d141656a1c1a6d8d238616b2042a51a1241
 
 PODFILE CHECKSUM: 1c55bb67f9da41fa023f80f450b252c4b1fb805c
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3
