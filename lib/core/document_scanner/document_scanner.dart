@@ -63,11 +63,6 @@ class _DocumentScannerState extends State<DocumentScanner> {
           return controller;
         },
       );
-      // return AndroidViewSurface(
-      //   viewType: 'DocumentScanner',
-      //   onPlatformViewCreated: onPlatformViewCreated,
-      //   creationParamsCodec: decorder,
-      // );
     }
 
     if (Platform.isIOS) {
