@@ -32,32 +32,35 @@ class _DocumentScannerState extends State<DocumentScanner> {
     StandardMessageCodec decorder = const StandardMessageCodec();
 
     if (Platform.isAndroid) {
+      final Map<String, dynamic> creationParams = const <String, dynamic>{};
+
       return PlatformViewLink(
-        viewType: 'DocumentScanner',
-        surfaceFactory: (context, controller) {
-          log("surfaceFactory");
+        viewType: "DocumentScanner",
+        surfaceFactory: (
+          BuildContext context,
+          PlatformViewController controller,
+        ) {
           return AndroidViewSurface(
             controller: controller as AndroidViewController,
             gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
             hitTestBehavior: PlatformViewHitTestBehavior.opaque,
           );
         },
-        onCreatePlatformView: (params) {
-          log("onCreatePlatformView");
-          const Map<String, dynamic> creationParams = <String, dynamic>{};
-
-          return PlatformViewsService.initSurfaceAndroidView(
+        onCreatePlatformView: (PlatformViewCreationParams params) {
+          final ExpensiveAndroidViewController controller =
+              PlatformViewsService.initExpensiveAndroidView(
             id: params.id,
-            viewType: 'DocumentScanner',
+            viewType: "DocumentScanner",
             layoutDirection: TextDirection.ltr,
             creationParams: creationParams,
             creationParamsCodec: const StandardMessageCodec(),
-            onFocus: () {
-              params.onFocusChanged(true);
-            },
-          )
+            onFocus: () => params.onFocusChanged(true),
+          );
+          controller
             ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
+            ..addOnPlatformViewCreatedListener(onPlatformViewCreated)
             ..create();
+          return controller;
         },
       );
       // return AndroidViewSurface(
