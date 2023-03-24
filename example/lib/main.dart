@@ -63,11 +63,16 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: TextButton(
           onPressed: () async {
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => EkycIDExpress(
-                      language: Language.KH,
-                      onKYCCompleted: onKYCCompleted,
-                    )));
+            await showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (BuildContext context) {
+                return EkycIDExpress(
+                  language: Language.KH,
+                  onKYCCompleted: onKYCCompleted,
+                );
+              },
+            );
           },
           child: Text("Start KYC"),
         ),
