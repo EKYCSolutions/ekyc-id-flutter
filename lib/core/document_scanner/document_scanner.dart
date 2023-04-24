@@ -1,6 +1,10 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'document_scanner_values.dart';
 import 'document_scanner_controller.dart';
@@ -28,10 +32,36 @@ class _DocumentScannerState extends State<DocumentScanner> {
     StandardMessageCodec decorder = const StandardMessageCodec();
 
     if (Platform.isAndroid) {
-      return AndroidView(
-        viewType: 'DocumentScanner',
-        onPlatformViewCreated: onPlatformViewCreated,
-        creationParamsCodec: decorder,
+      final Map<String, dynamic> creationParams = const <String, dynamic>{};
+
+      return PlatformViewLink(
+        viewType: "DocumentScanner",
+        surfaceFactory: (
+          BuildContext context,
+          PlatformViewController controller,
+        ) {
+          return AndroidViewSurface(
+            controller: controller as AndroidViewController,
+            gestureRecognizers: const <Factory<OneSequenceGestureRecognizer>>{},
+            hitTestBehavior: PlatformViewHitTestBehavior.opaque,
+          );
+        },
+        onCreatePlatformView: (PlatformViewCreationParams params) {
+          final ExpensiveAndroidViewController controller =
+              PlatformViewsService.initExpensiveAndroidView(
+            id: params.id,
+            viewType: "DocumentScanner",
+            layoutDirection: TextDirection.ltr,
+            creationParams: creationParams,
+            creationParamsCodec: const StandardMessageCodec(),
+            onFocus: () => params.onFocusChanged(true),
+          );
+          controller
+            ..addOnPlatformViewCreatedListener(params.onPlatformViewCreated)
+            ..addOnPlatformViewCreatedListener(onPlatformViewCreated)
+            ..create();
+          return controller;
+        },
       );
     }
 

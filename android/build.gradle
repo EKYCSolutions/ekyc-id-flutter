@@ -5,12 +5,11 @@ buildscript {
     ext.kotlin_version = '1.6.0'
     repositories {
         google()
-        jcenter()
-        mavenLocal()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath 'com.android.tools.build:gradle:7.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -18,7 +17,7 @@ buildscript {
 rootProject.allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
         mavenLocal()
     }
@@ -28,8 +27,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 32
-
+    compileSdkVersion 33
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }

@@ -3,10 +3,10 @@ import 'package:ekyc_id_flutter/core/models/api_result.dart';
 import 'package:ekyc_id_flutter/core/models/language.dart';
 import 'package:ekyc_id_flutter/ekyc_id_express.dart';
 import 'package:flutter/material.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:ekyc_id_flutter/core/services.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_result.dart';
 import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_result.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +22,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
+    Permission.camera.request();
     super.initState();
   }
 
@@ -59,12 +60,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: Center(
         child: TextButton(
           onPressed: () async {
-            await showCupertinoModalBottomSheet(
+            await showModalBottomSheet(
               context: context,
+              isScrollControlled: true,
               builder: (BuildContext context) {
                 // return DocumentScannerView(
                 //     onDocumentScanned: ((
@@ -74,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onKYCCompleted: onKYCCompleted,
                 );
                 //return LivenessDetectionView(
-                  //  onLivenessTestCompleted: (result) async {});
+                //  onLivenessTestCompleted: (result) async {});
               },
             );
           },
