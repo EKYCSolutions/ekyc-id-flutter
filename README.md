@@ -189,7 +189,7 @@ Future<void> onKYCCompleted({
     objectType: mainSide.documentType
   );
 
-  print(response.data?) // response object based on document type
+  print(response.data?); // response object based on document type
 }
 
 ```

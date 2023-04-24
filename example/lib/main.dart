@@ -1,13 +1,10 @@
-import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_view.dart';
-import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection.dart';
 import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_view.dart';
 import 'package:ekyc_id_flutter/core/models/api_result.dart';
+import 'package:ekyc_id_flutter/core/models/language.dart';
+import 'package:ekyc_id_flutter/ekyc_id_express.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
 import 'package:ekyc_id_flutter/core/services.dart';
-import 'package:ekyc_id_flutter/ekyc_id_express.dart';
-import 'package:ekyc_id_flutter/core/models/language.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_result.dart';
 import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_result.dart';
 
@@ -31,6 +28,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: HomeScreen(),
     );
   }
@@ -38,7 +36,6 @@ class _MyAppState extends State<MyApp> {
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -62,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       body: Center(
         child: TextButton(
           onPressed: () async {
@@ -71,13 +69,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 // return DocumentScannerView(
                 //     onDocumentScanned: ((
                 //         {required mainSide, secondarySide}) async {}));
-
                 return EkycIDExpress(
                   language: Language.EN,
                   onKYCCompleted: onKYCCompleted,
                 );
-                // return LivenessDetectionView(
-                //     onLivenessTestCompleted: (result) async {});
+                //return LivenessDetectionView(
+                  //  onLivenessTestCompleted: (result) async {});
               },
             );
           },

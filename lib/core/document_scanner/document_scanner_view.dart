@@ -110,11 +110,11 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 100,
-          bottom: 100,
+        Positioned.fill(
+          // top: 0,
+          // left: 0,
+          // right: 100,
+          // bottom: 100,
           child: DocumentScanner(
             onCreated: onPlatformViewCreated,
           ),

@@ -1,12 +1,10 @@
 import 'package:flutter/services.dart';
-
 import 'package:ekyc_id_flutter/core/models/frame_status.dart';
-
 import 'document_scanner_options.dart';
 import 'document_scanner_result.dart';
 import 'document_scanner_values.dart';
 
-/// Class for controlling the document scanner functionalites.
+/// Class for controlling the document scanner functionalities.
 class DocumentScannerController {
   late MethodChannel _methodChannel;
   late EventChannel _eventChannel;

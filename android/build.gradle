@@ -6,6 +6,7 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenLocal()
     }
 
     dependencies {
@@ -19,6 +20,7 @@ rootProject.allprojects {
         google()
         jcenter()
         maven { url 'https://jitpack.io' }
+        mavenLocal()
     }
 }
 
@@ -39,4 +41,6 @@ android {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.github.EKYCSolutions:ekyc-id-android:1.0.18-beta'
+//    implementation 'com.ekycsolutions:ekyc-id:1.0.18-beta'
+    //link to local maven
 }
