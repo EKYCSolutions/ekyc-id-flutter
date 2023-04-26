@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/services.dart';
 import 'package:ekyc_id_flutter/core/models/frame_status.dart';
 import 'document_scanner_options.dart';
@@ -59,6 +61,7 @@ class DocumentScannerController {
       if (event["type"] == "onDocumentScanned") {
         Map<String, dynamic> values =
             Map<String, dynamic>.from(event["values"]);
+        log("value mainside ${values["mainSide"]}");
 
         DocumentScannerResult mainSide = DocumentScannerResult.fromMap(
             Map<String, dynamic>.from(values["mainSide"]));

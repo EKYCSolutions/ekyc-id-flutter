@@ -1,10 +1,9 @@
+import 'dart:developer';
 import 'dart:typed_data';
 import 'document_scanner_values.dart';
 
-
 /// Class representing the result of the document scanning process.
 class DocumentScannerResult {
-
   /// The type of document detected.
   late ObjectDetectionObjectType documentType;
 
@@ -30,6 +29,7 @@ class DocumentScannerResult {
 
   /// Creates an instance of DocumentScannerResult from a [json] response.
   DocumentScannerResult.fromMap(Map<String, dynamic> json) {
+    print('response in json $json');
     ObjectDetectionObjectGroup documentGroup = ObjectDetectionObjectGroup.values
         .firstWhere((e) =>
             e.toString() ==

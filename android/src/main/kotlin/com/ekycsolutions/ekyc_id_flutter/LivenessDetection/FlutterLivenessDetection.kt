@@ -12,6 +12,7 @@ import com.ekycsolutions.ekycid.livenessdetection.*
 import com.ekycsolutions.ekycid.core.models.FrameStatus
 import com.ekycsolutions.ekycid.livenessdetection.cameraview.LivenessDetectionCameraOptions
 import com.ekycsolutions.ekycid.livenessdetection.cameraview.LivenessPromptType
+import com.ekycsolutions.ekycid.livenessdetection.overlays.LivenessDetectionOverlayOptions
 import io.flutter.plugin.common.EventChannel
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -71,10 +72,13 @@ class FlutterLivenessDetection(
         try {
             val args = call.arguments as HashMap<*, *>
 //            val prompts = args["prompts"] as ArrayList<String>
-            val prompts = args["prompts"] as ArrayList<LivenessPromptType>
+            val prompts = args["prompts"] as ArrayList<HashMap<String,Any>>
             val promptTimerCountDownSec = args["promptTimerCountDownSec"] as Int
             this.cameraView!!.addListener(this)
-            this.cameraView!!.start(LivenessDetectionOptions(cameraOptions = LivenessDetectionCameraOptions(prompts,promptTimerCountDownSec)))
+            this.cameraView!!.start(LivenessDetectionOptions(
+                cameraOptions = LivenessDetectionCameraOptions(prompts,promptTimerCountDownSec)),
+                langOptions = LivenessDetectionOverlayOptions()
+            )
             result.success(true)
         } catch (e: Exception) {
             result.error(e.toString(), e.message, "")
@@ -94,7 +98,7 @@ class FlutterLivenessDetection(
     }
 
     override fun onActivePromptChanged(activePrompt: LivenessPromptType?) {
-        TODO("Not yet implemented")
+
         this.eventStreamHandler?.sendOnActivePromptChangedEventToFlutter(activePrompt)
     }
 
@@ -103,22 +107,22 @@ class FlutterLivenessDetection(
     }
 
     override fun onFocusChanged(isFocusing: Boolean) {
-        TODO("Not yet implemented")
+
         this.eventStreamHandler?.sendOnFocusChangedEventToFlutter(isFocusing)
     }
 
     override fun onFrameStatusChanged(frameStatus: FrameStatus) {
-        TODO("Not yet implemented")
+
         this.eventStreamHandler?.sendOnFrameStatusChangedEventToFlutter(frameStatus)
     }
 
     override fun onLivenessTestCompleted(result: LivenessDetectionResult) {
-        TODO("Not yet implemented")
+
         this.eventStreamHandler?.sendOnLivenessTestCompletedEventToFlutter(result)
     }
 
     override fun onProgressChanged(progress: Float) {
-        TODO("Not yet implemented")
+
         this.eventStreamHandler?.sendOnProgressChangedEventToFlutter(progress)
     }
 

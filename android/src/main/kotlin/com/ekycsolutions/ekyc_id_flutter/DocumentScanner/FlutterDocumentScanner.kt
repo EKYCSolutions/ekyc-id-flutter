@@ -11,6 +11,7 @@ import com.ekycsolutions.ekycid.core.models.FrameStatus
 import com.ekycsolutions.ekycid.core.objectdetection.ObjectDetectionObjectType
 import com.ekycsolutions.ekycid.documentscanner.*
 import com.ekycsolutions.ekycid.documentscanner.cameraview.DocumentScannerCameraOptions
+import com.ekycsolutions.ekycid.documentscanner.overlays.DocumentScannerOverlayOptions
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -131,14 +132,17 @@ class FlutterDocumentScanner(
             val scannableDocuments = args["scannableDocuments"] as ArrayList<HashMap<String,Any>>
             val preparingDuration = args["preparingDuration"] as Int
             this.cameraView!!.addListener(this)
-            this.cameraView!!.start(options = DocumentScannerOptions(cameraOptions = DocumentScannerCameraOptions(preparingDuration),
+            this.cameraView!!.start(options = DocumentScannerOptions(
+                cameraOptions = DocumentScannerCameraOptions(preparingDuration),
                 scannableDocuments = ArrayList(scannableDocuments.map{
                     ScannableDocument(
                         mainSide  = OBJECT_TYPE_MAPPING[it["mainSide"]]!!,
                         secondarySide = OBJECT_TYPE_MAPPING[it["secondarySide"]]
                     )
                 })
-            ))
+            ),
+                langOptions = DocumentScannerOverlayOptions()
+            )
             result.success(true)
         } catch (e: Exception) {
             result.error(e.toString(), e.message, "")
@@ -223,10 +227,14 @@ class FlutterDocumentScanner(
                     val event = HashMap<String, Any>()
                     event["type"] = "onDocumentScanned"
                     val values  = HashMap<String,Any>()
-                    values["mainSide"] = mainSide.toMap(context)
+                    values["mainSide"] = documentScannerResultToFlutterMap(mainSide)
+
+//                    values["mainSide"] = mainSide.toMap(context, saveImage = false)
+
                     if(secondarySide!=null){
-                        values["secondarySide"] = secondarySide.toMap(context)
-                        //values["secondarySide"] = secondarySide.toMap(context, saveImage = false)
+//                        values["secondarySide"] = secondarySide.toMap(context)
+                        values["secondarySide"] = documentScannerResultToFlutterMap(secondarySide)
+//                        values["secondarySide"] = secondarySide.toMap(context, saveImage = false)
                     }
                     event["values"] = values
                     events!!.success(event)
@@ -247,12 +255,13 @@ class FlutterDocumentScanner(
 
         private fun documentScannerResultToFlutterMap(detection: DocumentScannerResult): HashMap<String, Any?> {
             val values = HashMap<String, Any?>()
-            values["documentType"] = detection.documentType.name
-            values["documentGroup"] = detection.documentGroup.name
-            values["fullImage"] = bitmapToFlutterByteArray(detection.fullImage)
-            values["documentImage"] = bitmapToFlutterByteArray(detection.documentImage)
+            val temp = detection.toMap(context, saveImage = false)
+            values["documentType"] = temp["documentType"]
+            values["documentGroup"] = temp["documentGroup"]
+            values["fullImage"] = bitmapToFlutterByteArray(temp["fullImage"] as Bitmap)
+            values["documentImage"] = bitmapToFlutterByteArray(temp["documentImage"] as Bitmap)
             if (detection.faceImage != null) {
-                values["faceImage"] = bitmapToFlutterByteArray(detection.faceImage!!)
+                values["faceImage"] = bitmapToFlutterByteArray(temp["faceImage"] as Bitmap)
             } else {
                 values["faceImage"] = null
             }
