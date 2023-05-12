@@ -10,15 +10,21 @@ import com.ekycsolutions.ekyc_id_flutter.R
 
 import com.ekycsolutions.ekycid.livenessdetection.*
 import com.ekycsolutions.ekycid.core.models.FrameStatus
+import com.ekycsolutions.ekycid.documentscanner.DocumentScannerResult
 import com.ekycsolutions.ekycid.livenessdetection.cameraview.LivenessDetectionCameraOptions
+import com.ekycsolutions.ekycid.livenessdetection.cameraview.LivenessFace
 import com.ekycsolutions.ekycid.livenessdetection.cameraview.LivenessPromptType
 import com.ekycsolutions.ekycid.livenessdetection.overlays.LivenessDetectionOverlayOptions
+import com.ekycsolutions.ekycid.utils.EkycIDLanguage
 import io.flutter.plugin.common.EventChannel
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
+import okhttp3.internal.toImmutableList
+import org.intellij.lang.annotations.Language
 import java.io.ByteArrayOutputStream
+import java.util.Collections
 
 class FlutterLivenessDetection(
     private var binding: FlutterPlugin.FlutterPluginBinding,
@@ -37,6 +43,12 @@ class FlutterLivenessDetection(
         "BLINKING" to LivenessPromptType.BLINKING,
         "LOOK_LEFT" to LivenessPromptType.LOOK_LEFT,
         "LOOK_RIGHT" to LivenessPromptType.LOOK_RIGHT
+    )
+
+    private val promptTypes: ArrayList<LivenessPromptType> = arrayListOf(
+        LivenessPromptType.BLINKING,
+        LivenessPromptType.LOOK_LEFT,
+        LivenessPromptType.LOOK_RIGHT
     )
 
     init {
@@ -72,11 +84,13 @@ class FlutterLivenessDetection(
         try {
             val args = call.arguments as HashMap<*, *>
 //            val prompts = args["prompts"] as ArrayList<String>
-            val prompts = args["prompts"] as ArrayList<HashMap<String,Any>>
+//            val prompts = args["prompts"] as ArrayList<HashMap<String,Any>>
             val promptTimerCountDownSec = args["promptTimerCountDownSec"] as Int
+            val promptTypesIndexList = args["prompts"] as ArrayList<Int>
+            val promptTypes = promptTypesIndexList.map { promptTypes[it] } as ArrayList<LivenessPromptType>
             this.cameraView!!.addListener(this)
             this.cameraView!!.start(LivenessDetectionOptions(
-                cameraOptions = LivenessDetectionCameraOptions(prompts,promptTimerCountDownSec)),
+                cameraOptions = LivenessDetectionCameraOptions(promptTypes,promptTimerCountDownSec)),
                 langOptions = LivenessDetectionOverlayOptions()
             )
             result.success(true)
@@ -126,6 +140,7 @@ class FlutterLivenessDetection(
         this.eventStreamHandler?.sendOnProgressChangedEventToFlutter(progress)
     }
 
+
     class LivenessDetectionEventStreamHandler(private var context: Context) :
         EventChannel.StreamHandler {
         private var events: EventChannel.EventSink? = null
@@ -143,6 +158,8 @@ class FlutterLivenessDetection(
                 (context as Activity).runOnUiThread{
                     val event = HashMap<String,Any>()
                     event["type"] = "OnActivePrompt"
+                    event["values"] = "LivenessPromptType.$activePrompt"
+                    events!!.success(event)
                 }
             }
         }
@@ -206,11 +223,13 @@ class FlutterLivenessDetection(
                 (context as Activity).runOnUiThread{
                     val event = HashMap<String,Any>()
                     event["type"] = "OnLivenessTestCompleted"
-                    event["values"] = result
+                    event["values"] = result.toMap()
                     events!!.success(event)
                 }
             }
         }
+
+
 
         fun sendOnAllPromptsCompletedEventToFlutter(detection: LivenessDetectionResult) {
             if (events != null) {
@@ -312,7 +331,7 @@ class FlutterLivenessDetection(
 //
 //            return values
 //        }
-
+//
 //        private fun livenessFaceToFlutterMap(livenessFace: LivenessFace): HashMap<String, Any?> {
 //            var values = HashMap<String, Any?>()
 //            values["image"] = bitmapToFlutterByteArray(livenessFace.image!!)

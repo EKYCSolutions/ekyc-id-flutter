@@ -32,7 +32,6 @@ class LivenessDetectionController {
     required LivenessDetectionOptions options,
   }) async {
     await _methodChannel.invokeMethod('start', options.toMap());
-
     _registerEventListener(
       onProgressChanged: onProgressChanged,
       onFocusChanged: onFocusChanged,
@@ -64,17 +63,17 @@ class LivenessDetectionController {
         onLivenessTestCompleted,
   }) {
     _eventChannel.receiveBroadcastStream().listen((event) async {
-      if (event["type"] == "onFrameStatusChanged") {
+      print("-------event: $event");
+      if (event["type"] == "OnFrameStatusChanged") {
         FrameStatus frameStatus = FrameStatus.values.firstWhere(
             (e) => e.toString() == "FrameStatus.${event['values']}");
         onFrameStatusChanged(frameStatus);
       } else if (event["type"] == "onFocusChanged") {
         onFocusChanged(event["values"]);
-      } else if (event["type"] == "onActivePromptChanged") {
+      } else if (event["type"] == "OnActivePrompt") {
+        print("condition matched");
         LivenessPromptType livenessPromptType = LivenessPromptType.values
-            .firstWhere(
-                (e) => e.toString() == "LivenessPromptType.${event['values']}");
-
+            .firstWhere((e) => e.toString() == "${event['values']}");
         onActivePromptChanged(livenessPromptType);
       } else if (event["type"] == "onLivenessCompleted") {
         Map<String, dynamic> values = Map<String, dynamic>.from(
@@ -94,7 +93,7 @@ class LivenessDetectionController {
       } else if (event["type"] == "onProgressChanged") {
         Map<String, dynamic> values =
             Map<String, dynamic>.from(event["values"]);
-        onProgressChanged(values["progress"]);
+        onProgressChanged(values["progress"] as double);
       }
     });
   }

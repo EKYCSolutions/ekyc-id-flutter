@@ -19,9 +19,12 @@ class LivenessDetectionView extends StatefulWidget {
     Key? key,
     required this.onLivenessTestCompleted,
     this.language = Language.EN,
-    this.options = const LivenessDetectionOptions(
-      promptTimerCountDownSec: 5,
-    ),
+    this.options =
+        const LivenessDetectionOptions(promptTimerCountDownSec: 5, prompts: [
+      LivenessPromptType.LOOK_LEFT,
+      LivenessPromptType.LOOK_RIGHT,
+      LivenessPromptType.BLINKING,
+    ]),
   });
 
   /// The language for the audio and text in the LivenessDetectionView.
@@ -61,16 +64,13 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
     });
 
     await this.controller.start(
-          onFocusChanged: onFocusChanged,
-          onActivePromptChanged: onActivePromptChanged,
-          onCountDownChanged: onCountDownChanged,
-          onFrameStatusChanged: onFrameStatusChanged,
-          onLivenessTestCompleted: onLivenessCompleted,
-          onProgressChanged: onProgressChanged,
-          options: LivenessDetectionOptions(
-            promptTimerCountDownSec: 5,
-          ),
-        );
+        onFocusChanged: onFocusChanged,
+        onActivePromptChanged: onActivePromptChanged,
+        onCountDownChanged: onCountDownChanged,
+        onFrameStatusChanged: onFrameStatusChanged,
+        onLivenessTestCompleted: onLivenessCompleted,
+        onProgressChanged: onProgressChanged,
+        options: options);
   }
 
   @override

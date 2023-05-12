@@ -47,14 +47,10 @@ class _HomeScreenState extends State<HomeScreen> {
     required DocumentScannerResult mainSide,
     DocumentScannerResult? secondarySide,
   }) async {
-    print("== ACCESS RESULTS HERE ==");
+    ApiResult response = await EkycIDServices.instance
+        .ocr(image: mainSide.documentImage, objectType: mainSide.documentType);
 
-    ApiResult result = await EkycIDServices.instance.faceCompare(
-      faceImage1: mainSide.faceImage,
-      faceImage2: liveness.frontFace?.image,
-    );
-
-    print(result.data);
+    print(response.data); // response object based on document type
   }
 
   @override
@@ -67,15 +63,10 @@ class _HomeScreenState extends State<HomeScreen> {
               context: context,
               isScrollControlled: true,
               builder: (BuildContext context) {
-                // return DocumentScannerView(
-                //     onDocumentScanned: ((
-                //         {required mainSide, secondarySide}) async {}));
                 return EkycIDExpress(
                   language: Language.EN,
                   onKYCCompleted: onKYCCompleted,
                 );
-                //return LivenessDetectionView(
-                //  onLivenessTestCompleted: (result) async {});
               },
             );
           },

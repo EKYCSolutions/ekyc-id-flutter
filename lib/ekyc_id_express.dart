@@ -29,13 +29,13 @@ class EkycIDExpress extends StatefulWidget {
   const EkycIDExpress({
     Key? key,
     required this.onKYCCompleted,
-    this.language = Language.EN,
+    this.language = Language.KH,
     this.documentTypes = const [DocumentScannerDocType.NATIONAL_ID],
     this.documentScannerOptions = const DocumentScannerOptions(
       scannableDocuments: [
         ScannableDocument(
           mainSide: ObjectDetectionObjectType.NATIONAL_ID_0,
-          secondarySide: null,
+          secondarySide: ObjectDetectionObjectType.NATIONAL_ID_0_BACK,
         )
       ],
     ),
