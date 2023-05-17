@@ -1,5 +1,6 @@
 package com.ekycsolutions.ekyc_id_flutter.LivenessDetection
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
@@ -31,6 +32,7 @@ class FlutterLivenessDetection(
     private var context: Context,
     private val viewId: Int
 ) : PlatformView, MethodChannel.MethodCallHandler, LivenessDetectionEventListener {
+    private val TAG: String? = "FlutterLivenessDetection"
     private var cameraView: LivenessDetectionView? = null
     private var cameraViewView: View = LayoutInflater.from(context as Activity).inflate(R.layout.liveness_detection_viewfinder, null)
     private val methodChannel: MethodChannel =
@@ -130,6 +132,7 @@ class FlutterLivenessDetection(
         this.eventStreamHandler?.sendOnFrameStatusChangedEventToFlutter(frameStatus)
     }
 
+    @SuppressLint("LongLogTag")
     override fun onLivenessTestCompleted(result: LivenessDetectionResult) {
 
         this.eventStreamHandler?.sendOnLivenessTestCompletedEventToFlutter(result)
@@ -157,39 +160,19 @@ class FlutterLivenessDetection(
             if (events != null){
                 (context as Activity).runOnUiThread{
                     val event = HashMap<String,Any>()
-                    event["type"] = "OnActivePrompt"
+                    event["type"] = "onActivePromptChanged"
                     event["values"] = "LivenessPromptType.$activePrompt"
                     events!!.success(event)
                 }
             }
         }
 
-        fun sendOnInitializedEventToFlutter() {
-            if (events != null) {
-                (context as Activity).runOnUiThread {
-                    val event = HashMap<String, Any>()
-                    event["type"] = "onInitialized"
-                    events!!.success(event)
-                }
-            }
-        }
-
-        fun sendOnFrameEventToFlutter(frameStatus: FrameStatus) {
-            if (events != null) {
-                (context as Activity).runOnUiThread {
-                    val event = HashMap<String, Any>()
-                    event["type"] = "onFrame"
-                    event["values"] = frameStatus.name
-                    events!!.success(event)
-                }
-            }
-        }
 
         fun sendOnFocusChangedEventToFlutter(isFocusing: Boolean){
             if(events != null){
                 (context as Activity).runOnUiThread{
                     val event = HashMap<String,Any>()
-                    event["type"] = "OnFocusChanged"
+                    event["type"] = "onFocusChanged"
                     event["values"] = isFocusing
                     events!!.success(event)
                 }
@@ -200,7 +183,7 @@ class FlutterLivenessDetection(
             if (events != null) {
                 (context as Activity).runOnUiThread{
                     val event = HashMap<String,Any>()
-                    event["type"]="OnFrameStatusChanged"
+                    event["type"]="onFrameStatusChanged"
                     event["values"]=frameStatus.name
                     events!!.success(event)
                 }
@@ -211,7 +194,7 @@ class FlutterLivenessDetection(
             if (events != null){
                 (context as Activity).runOnUiThread {
                     val event = HashMap<String,Any>()
-                    event["type"] = "OnProgressChanged"
+                    event["type"] = "onProgressChanged"
                     event["values"]=progress
                     events!!.success(event)
                 }
@@ -222,7 +205,7 @@ class FlutterLivenessDetection(
             if (events!=null){
                 (context as Activity).runOnUiThread{
                     val event = HashMap<String,Any>()
-                    event["type"] = "OnLivenessTestCompleted"
+                    event["type"] = "onLivenessTestCompleted"
                     event["values"] = result.toMap(context)
                     events!!.success(event)
                 }
@@ -230,36 +213,6 @@ class FlutterLivenessDetection(
         }
 
 
-
-        fun sendOnAllPromptsCompletedEventToFlutter(detection: LivenessDetectionResult) {
-            if (events != null) {
-                (context as Activity).runOnUiThread {
-                    val event = HashMap<String, Any>()
-                    event["type"] = "onAllPromptsCompleted"
-//                    event["values"] = livenessDetectionResultToFlutterMap(detection)
-                    events!!.success(event)
-                }
-            }
-        }
-
-        fun sendOnPromptCompletedEventToFlutter(
-            completedPromptIndex: Int,
-            success: Boolean,
-            progress: Float
-        ) {
-            if (events != null) {
-                (context as Activity).runOnUiThread {
-                    val event = HashMap<String, Any>()
-                    event["type"] = "onPromptCompleted"
-                    val values = HashMap<String, Any?>()
-                    values["completedPromptIndex"] = completedPromptIndex
-                    values["success"] = success
-                    values["progress"] = progress
-                    event["values"] = values
-                    events!!.success(event)
-                }
-            }
-        }
 
         fun sendOnCountDownChangedEventToFlutter(current: Int, max: Int) {
             if (events != null) {
@@ -275,91 +228,6 @@ class FlutterLivenessDetection(
             }
         }
 
-        fun sendOnFocusEventToFlutter() {
-            if (events != null) {
-                (context as Activity).runOnUiThread {
-                    val event = HashMap<String, Any>()
-                    event["type"] = "onFocus"
-                    events!!.success(event)
-                }
-            }
-        }
 
-        fun sendOnFocusDroppedEventToFlutter() {
-            if (events != null) {
-                (context as Activity).runOnUiThread {
-                    val event = HashMap<String, Any>()
-                    event["type"] = "onFocusDropped"
-                    events!!.success(event)
-                }
-            }
-        }
-
-//        private fun livenessDetectionResultToFlutterMap(detection: LivenessDetectionResult): HashMap<String, Any?> {
-//            val values = HashMap<String, Any?>()
-//
-//            if (detection.frontFace != null) {
-//                values["frontFace"] = livenessFaceToFlutterMap(detection.frontFace!!)
-//            } else {
-//                values["frontFace"] = null
-//            }
-//
-//            if (detection.leftFace != null) {
-//                values["leftFace"] = livenessFaceToFlutterMap(detection.leftFace!!)
-//            } else {
-//                values["leftFace"] = null
-//            }
-//
-//            if (detection.rightFace != null) {
-//                values["rightFace"] = livenessFaceToFlutterMap(detection.rightFace!!)
-//            } else {
-//                values["rightFace"] = null
-//            }
-//
-//            Log.d("livenessDetectionResult", detection.prompts.toString())
-//
-//            var ps = arrayListOf<HashMap<String,Any?>>()
-//
-//            for (p in detection.prompts) {
-//                val v = HashMap<String, Any?>()
-//                v["prompt"] = p.prompt.name
-//                v["success"] = p.success
-//                ps.add(v)
-//            }
-//
-//            values["prompts"] = ps
-//
-//            return values
-//        }
-//
-//        private fun livenessFaceToFlutterMap(livenessFace: LivenessFace): HashMap<String, Any?> {
-//            var values = HashMap<String, Any?>()
-//            values["image"] = bitmapToFlutterByteArray(livenessFace.image!!)
-//            values["leftEyeOpenProbability"] = livenessFace.leftEyeOpenProbability
-//            values["rightEyeOpenProbability"] = livenessFace.rightEyeOpenProbability
-//            values["headEulerAngleX"] = livenessFace.headEulerAngleX
-//            values["headEulerAngleY"] = livenessFace.headEulerAngleY
-//            values["headEulerAngleZ"] = livenessFace.headEulerAngleZ
-//
-//            if (livenessFace.headDirection != null) {
-//                values["headDirection"] = livenessFace.headDirection!!.name
-//            } else {
-//                values["headDirection"] = null
-//            }
-//
-//            if (livenessFace.eyesStatus != null) {
-//                values["eyesStatus"] = livenessFace.eyesStatus!!.name
-//            } else {
-//                values["eyesStatus"] = null
-//            }
-//
-//            return values
-//        }
-
-        private fun bitmapToFlutterByteArray(image: Bitmap): ByteArray {
-            val stream = ByteArrayOutputStream()
-            image.compress(Bitmap.CompressFormat.JPEG, 90, stream)
-            return stream.toByteArray()
-        }
     }
 }
