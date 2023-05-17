@@ -228,13 +228,8 @@ class FlutterDocumentScanner(
                     event["type"] = "onDocumentScanned"
                     val values  = HashMap<String,Any>()
                     values["mainSide"] = documentScannerResultToFlutterMap(mainSide)
-
-//                    values["mainSide"] = mainSide.toMap(context, saveImage = false)
-
                     if(secondarySide!=null){
-//                        values["secondarySide"] = secondarySide.toMap(context)
                         values["secondarySide"] = documentScannerResultToFlutterMap(secondarySide)
-//                        values["secondarySide"] = secondarySide.toMap(context, saveImage = false)
                     }
                     event["values"] = values
                     events!!.success(event)

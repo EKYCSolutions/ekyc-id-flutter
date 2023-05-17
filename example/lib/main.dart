@@ -10,7 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  EkycIDServices.instance.setURL("SERVER_URL");
+  EkycIDServices.instance.setURL("https://test-service.ews.ekycsolutions.com");
   runApp(MyApp());
 }
 
