@@ -8,18 +8,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ae854884-6a9e-4703-a7ca-924fbd59d368" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/android/src/main/kotlin/com/ekycsolutions/ekyc_id_flutter/LivenessDetection/FlutterLivenessDetection.kt" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/kotlin/com/ekycsolutions/ekyc_id_flutter/LivenessDetection/FlutterLivenessDetection.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/example/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/example/lib/main.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/core/liveness_detection/liveness_detection_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/liveness_detection/liveness_detection_controller.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/core/liveness_detection/liveness_detection_options.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/liveness_detection/liveness_detection_options.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/core/liveness_detection/liveness_detection_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/core/liveness_detection/liveness_detection_view.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ekyc_id_express.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ekyc_id_express.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

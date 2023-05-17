@@ -2,6 +2,16 @@
   <library name="Flutter Plugins" type="FlutterPluginsLibraryType">
     <CLASSES>
       <root url="file://$PROJECT_DIR$" />
+      <root url="file://$USER_HOME$/.asdf/installs/flutter/3.3.10-stable/.pub-cache/hosted/pub.dartlang.org/just_audio_web-0.4.8" />
+      <root url="file://$USER_HOME$/.asdf/installs/flutter/3.3.10-stable/.pub-cache/hosted/pub.dartlang.org/just_audio-0.9.33" />
+      <root url="file://$USER_HOME$/.asdf/installs/flutter/3.3.10-stable/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.27" />
+      <root url="file://$USER_HOME$/.asdf/installs/flutter/3.3.10-stable/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.15" />
+      <root url="file://$USER_HOME$/.asdf/installs/flutter/3.3.10-stable/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.1.6" />
+      <root url="file://$USER_HOME$/.asdf/installs/flutter/3.3.10-stable/.pub-cache/hosted/pub.dartlang.org/audio_session-0.1.14" />
+      <root url="file://$USER_HOME$/.asdf/installs/flutter/3.3.10-stable/.pub-cache/hosted/pub.dartlang.org/flutter_beep-1.0.0" />
+      <root url="file://$USER_HOME$/.asdf/installs/flutter/3.3.10-stable/.pub-cache/hosted/pub.dartlang.org/vibration-1.7.7" />
+      <root url="file://$USER_HOME$/.asdf/installs/flutter/3.3.10-stable/.pub-cache/hosted/pub.dartlang.org/path_provider_foundation-2.2.3" />
+      <root url="file://$USER_HOME$/.asdf/installs/flutter/3.3.10-stable/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.1.10" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

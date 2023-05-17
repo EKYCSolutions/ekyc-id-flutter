@@ -99,6 +99,7 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
   }
 
   void onProgressChanged(double progress) {
+    print("------------progress value $progress");
     progressController.value = progress;
   }
 

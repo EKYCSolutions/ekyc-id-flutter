@@ -223,7 +223,7 @@ class FlutterLivenessDetection(
                 (context as Activity).runOnUiThread{
                     val event = HashMap<String,Any>()
                     event["type"] = "OnLivenessTestCompleted"
-                    event["values"] = result.toMap()
+                    event["values"] = result.toMap(context)
                     events!!.success(event)
                 }
             }

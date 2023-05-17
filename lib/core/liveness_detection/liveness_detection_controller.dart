@@ -68,7 +68,7 @@ class LivenessDetectionController {
         FrameStatus frameStatus = FrameStatus.values.firstWhere(
             (e) => e.toString() == "FrameStatus.${event['values']}");
         onFrameStatusChanged(frameStatus);
-      } else if (event["type"] == "onFocusChanged") {
+      } else if (event["type"] == "OnFocusChanged") {
         onFocusChanged(event["values"]);
       } else if (event["type"] == "OnActivePrompt") {
         print("condition matched");
@@ -90,10 +90,10 @@ class LivenessDetectionController {
           current: values["current"],
           max: values["max"],
         );
-      } else if (event["type"] == "onProgressChanged") {
+      } else if (event["type"] == "OnProgressChanged") {
         Map<String, dynamic> values =
             Map<String, dynamic>.from(event["values"]);
-        onProgressChanged(values["progress"] as double);
+        onProgressChanged(values as double);
       }
     });
   }
