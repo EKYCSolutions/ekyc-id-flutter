@@ -58,6 +58,7 @@ class DocumentScannerController {
     required DocumentScannerOnCurrentSideChangedCallback onCurrentSideChanged,
   }) {
     _eventChannel.receiveBroadcastStream().listen((event) async {
+      log("---------- doc event $event");
       if (event["type"] == "onDocumentScanned") {
         Map<String, dynamic> values =
             Map<String, dynamic>.from(event["values"]);
@@ -75,7 +76,6 @@ class DocumentScannerController {
       } else if (event["type"] == "onFrameStatusChanged") {
         FrameStatus frameStatus = FrameStatus.values.firstWhere(
             (e) => e.toString() == "FrameStatus.${event['values']}");
-
         onFrameStatusChanged(frameStatus);
       } else if (event["type"] == "onCurrentSideChanged") {
         DocumentSide documentSide = DocumentSide.values.firstWhere(

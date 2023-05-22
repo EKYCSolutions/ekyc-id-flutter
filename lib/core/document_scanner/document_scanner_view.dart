@@ -74,6 +74,20 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
         frameStatus = f;
       });
     }
+    if (mounted &&
+        f == FrameStatus.PROCESSING &&
+        currentSide == DocumentSide.SECONDARY) {
+      setState(() {
+        showFlippingAnimation = false;
+      });
+    }
+    if (mounted &&
+        f == FrameStatus.DOCUMENT_NOT_FOUND &&
+        currentSide == DocumentSide.SECONDARY) {
+      setState(() {
+        showFlippingAnimation = true;
+      });
+    }
   }
 
   void onCurrentSideChanged(DocumentSide documentSide) {

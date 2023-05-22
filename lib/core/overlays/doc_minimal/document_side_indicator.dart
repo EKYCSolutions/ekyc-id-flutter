@@ -28,7 +28,7 @@ class _DocumentSideIndicatorState extends State<DocumentSideIndicator>
         AnimationController(vsync: this, duration: const Duration(seconds: 1))
           ..addListener(() => setState(() {}))
           ..repeat(reverse: true);
-    _animation = Tween(begin: 0.0, end: 0.4).animate(
+    _animation = Tween(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
         curve: Curves.linear,
