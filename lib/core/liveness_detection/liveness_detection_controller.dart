@@ -63,7 +63,6 @@ class LivenessDetectionController {
         onLivenessTestCompleted,
   }) {
     _eventChannel.receiveBroadcastStream().listen((event) async {
-      print("-------event: $event");
       if (event["type"] == "onFrameStatusChanged") {
         FrameStatus frameStatus = FrameStatus.values.firstWhere(
             (e) => e.toString() == "FrameStatus.${event['values']}");
@@ -81,7 +80,6 @@ class LivenessDetectionController {
         );
         LivenessDetectionResult result =
             LivenessDetectionResult.fromMap(values);
-
         onLivenessTestCompleted(result);
       } else if (event["type"] == "onCountDownChanged") {
         Map<String, dynamic> values =

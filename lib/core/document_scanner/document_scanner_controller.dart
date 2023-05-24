@@ -58,7 +58,6 @@ class DocumentScannerController {
     required DocumentScannerOnCurrentSideChangedCallback onCurrentSideChanged,
   }) {
     _eventChannel.receiveBroadcastStream().listen((event) async {
-      log("---------- doc event $event");
       if (event["type"] == "onDocumentScanned") {
         Map<String, dynamic> values =
             Map<String, dynamic>.from(event["values"]);
