@@ -4,7 +4,6 @@ import 'package:ekyc_id_flutter/core/utils/interpolate.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
-
 final Interpolate progressMapping = Interpolate(
   inputRange: [0, 1],
   outputRange: [-90, 270],
@@ -15,7 +14,7 @@ class FaceCutOut extends StatefulWidget {
   const FaceCutOut({
     Key? key,
     this.progress = 0,
-    this.isFocusing = false,
+    this.isFocusing = true,
     required this.cutOutSize,
   }) : super(key: key);
 

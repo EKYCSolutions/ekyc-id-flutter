@@ -21,26 +21,24 @@ class LivenessDetectionController {
   /// When the camera detects a face in the center of frame, [onFocus] is called.
   /// After the user completed each prompt, [onPromptCompleted] is called.
   Future<void> start({
-    required LivenessDetectionOnFocusCallback onFocus,
-    required LivenessDetectionOnFrameCallback onFrame,
-    required LivenessDetectionOnInitializedCallback onInitialized,
-    required LivenessDetectionOnFocusDroppedCallback onFocusDropped,
-    required LivenessDetectionOnPromptCompletedCallback onPromptCompleted,
+    required LivenessDetectionOnProgressChangedCallback onProgressChanged,
+    required LivenessDetectionOnFocusChangedCallback onFocusChanged,
+    required LivenessDetectionOnFrameStatusChangedCallback onFrameStatusChanged,
+    required LivenessDetectionOnActivePromptChangedCallback
+        onActivePromptChanged,
     required LivenessDetectionOnCountDownChangedCallback onCountDownChanged,
-    required LivenessDetectionOnAllPromptsCompletedCallback
-        onAllPromptsCompleted,
+    required LivenessDetectionOnLivenessTestCompletedCallback
+        onLivenessTestCompleted,
     required LivenessDetectionOptions options,
   }) async {
     await _methodChannel.invokeMethod('start', options.toMap());
-
     _registerEventListener(
-      onFocus: onFocus,
-      onFrame: onFrame,
-      onInitialized: onInitialized,
-      onFocusDropped: onFocusDropped,
-      onPromptCompleted: onPromptCompleted,
+      onProgressChanged: onProgressChanged,
+      onFocusChanged: onFocusChanged,
+      onFrameStatusChanged: onFrameStatusChanged,
+      onActivePromptChanged: onActivePromptChanged,
       onCountDownChanged: onCountDownChanged,
-      onAllPromptsCompleted: onAllPromptsCompleted,
+      onLivenessTestCompleted: onLivenessTestCompleted,
     );
   }
 
@@ -55,42 +53,34 @@ class LivenessDetectionController {
   }
 
   void _registerEventListener({
-    required LivenessDetectionOnFocusCallback onFocus,
-    required LivenessDetectionOnFrameCallback onFrame,
-    required LivenessDetectionOnInitializedCallback onInitialized,
-    required LivenessDetectionOnFocusDroppedCallback onFocusDropped,
-    required LivenessDetectionOnPromptCompletedCallback onPromptCompleted,
+    required LivenessDetectionOnProgressChangedCallback onProgressChanged,
+    required LivenessDetectionOnFocusChangedCallback onFocusChanged,
+    required LivenessDetectionOnFrameStatusChangedCallback onFrameStatusChanged,
+    required LivenessDetectionOnActivePromptChangedCallback
+        onActivePromptChanged,
     required LivenessDetectionOnCountDownChangedCallback onCountDownChanged,
-    required LivenessDetectionOnAllPromptsCompletedCallback
-        onAllPromptsCompleted,
+    required LivenessDetectionOnLivenessTestCompletedCallback
+        onLivenessTestCompleted,
   }) {
     _eventChannel.receiveBroadcastStream().listen((event) async {
-      if (event["type"] == "onFocus") {
-        onFocus();
-      } else if (event["type"] == "onFrame") {
+      if (event["type"] == "onFrameStatusChanged") {
         FrameStatus frameStatus = FrameStatus.values.firstWhere(
             (e) => e.toString() == "FrameStatus.${event['values']}");
-        onFrame(frameStatus);
-      } else if (event["type"] == "onInitialized") {
-        onInitialized();
-      } else if (event["type"] == "onFocusDropped") {
-        onFocusDropped();
-      } else if (event["type"] == "onPromptCompleted") {
-        print(event);
-        Map<String, dynamic> values =
-            Map<String, dynamic>.from(event["values"]);
-        onPromptCompleted(
-          completedPromptIndex: values["completedPromptIndex"],
-          success: values["success"],
-          progress: values["progress"],
-        );
-      } else if (event["type"] == "onAllPromptsCompleted") {
+        onFrameStatusChanged(frameStatus);
+      } else if (event["type"] == "onFocusChanged") {
+        onFocusChanged(event["values"]);
+      } else if (event["type"] == "onActivePromptChanged") {
+        print("condition matched");
+        LivenessPromptType livenessPromptType = LivenessPromptType.values
+            .firstWhere((e) => e.toString() == "${event['values']}");
+        onActivePromptChanged(livenessPromptType);
+      } else if (event["type"] == "onLivenessTestCompleted") {
         Map<String, dynamic> values = Map<String, dynamic>.from(
           event["values"],
         );
         LivenessDetectionResult result =
             LivenessDetectionResult.fromMap(values);
-        onAllPromptsCompleted(result);
+        onLivenessTestCompleted(result);
       } else if (event["type"] == "onCountDownChanged") {
         Map<String, dynamic> values =
             Map<String, dynamic>.from(event["values"]);
@@ -98,6 +88,8 @@ class LivenessDetectionController {
           current: values["current"],
           max: values["max"],
         );
+      } else if (event["type"] == "onProgressChanged") {
+        onProgressChanged(event["values"] as double);
       }
     });
   }

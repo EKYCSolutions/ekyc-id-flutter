@@ -29,10 +29,19 @@ class EkycIDExpress extends StatefulWidget {
   const EkycIDExpress({
     Key? key,
     required this.onKYCCompleted,
-    this.language = Language.EN,
+    this.language = Language.KH,
     this.documentTypes = const [DocumentScannerDocType.NATIONAL_ID],
-    this.documentScannerOptions = const DocumentScannerOptions(),
-    this.livenessDetectionOptions = const LivenessDetectionOptions(),
+    this.documentScannerOptions = const DocumentScannerOptions(
+      scannableDocuments: [
+        ScannableDocument(
+          mainSide: ObjectDetectionObjectType.NATIONAL_ID_0,
+          secondarySide: ObjectDetectionObjectType.NATIONAL_ID_0_BACK,
+        )
+      ],
+    ),
+    this.livenessDetectionOptions = const LivenessDetectionOptions(
+      promptTimerCountDownSec: 5,
+    ),
   }) : super(key: key);
 
   /// The language for the audio and text in the EkycIDExpress.
@@ -66,7 +75,6 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
-    super.initState();
   }
 
   @override
@@ -165,7 +173,6 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
                     onDocumentScanned: onDocumentScanned,
                     language: widget.language,
                     options: widget.documentScannerOptions,
-                    documentTypes: widget.documentTypes,
                   )
                 : Container(color: Colors.black),
           ),

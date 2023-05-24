@@ -19,6 +19,7 @@ rootProject.allprojects {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+        mavenLocal()
     }
 }
 
@@ -36,7 +37,8 @@ android {
 }
 
 dependencies {
-    
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api 'com.github.EKYCSolutions:ekyc-id-android:1.0.12'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.github.EKYCSolutions:ekyc-id-android:1.0.20'
+//    implementation 'com.ekycsolutions:ekyc-id:1.0.18-beta'
+    //link to local maven
 }

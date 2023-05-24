@@ -47,4 +47,9 @@ enum FrameStatus {
 
   /// The processor cannot grab the face from the frame.
   CANNOT_GRAB_FACE,
+
+  /// The face is blocked
+  FACE_BLOCKAGE_FOUND,
+
+  DOCUMENT_BLUR,
 }

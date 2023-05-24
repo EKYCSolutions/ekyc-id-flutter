@@ -1,12 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/services.dart';
-
 import 'package:ekyc_id_flutter/core/models/frame_status.dart';
-
 import 'document_scanner_options.dart';
 import 'document_scanner_result.dart';
 import 'document_scanner_values.dart';
 
-/// Class for controlling the document scanner functionalites.
+/// Class for controlling the document scanner functionalities.
 class DocumentScannerController {
   late MethodChannel _methodChannel;
   late EventChannel _eventChannel;
@@ -22,16 +22,16 @@ class DocumentScannerController {
   /// After the initialization process, the scanning process begins and on every frame [onFrame] is called.
   /// When the camera detects the presence of a valid document, [onDetection] is called.
   Future<void> start({
-    required DocumentScannerOnFrameCallback onFrame,
-    required DocumentScannerOnDetectionCallback onDetection,
-    required DocumentScannerOnInitializedCallback onInitialized,
+    required DocumentScannerOnFrameStatusChangedCallback onFrameStatusChanged,
+    required DocumentScannerOnDocumentScannedCallback onDocumentScanned,
+    required DocumentScannerOnCurrentSideChangedCallback onCurrentSideChanged,
     required DocumentScannerOptions options,
   }) async {
     await _methodChannel.invokeMethod('start', options.toMap());
     _registerEventListener(
-      onFrame: onFrame,
-      onDetection: onDetection,
-      onInitialized: onInitialized,
+      onFrameStatusChanged: onFrameStatusChanged,
+      onCurrentSideChanged: onCurrentSideChanged,
+      onDocumentScanned: onDocumentScanned,
     );
   }
 
@@ -53,22 +53,33 @@ class DocumentScannerController {
   }
 
   void _registerEventListener({
-    required DocumentScannerOnFrameCallback onFrame,
-    required DocumentScannerOnDetectionCallback onDetection,
-    required DocumentScannerOnInitializedCallback onInitialized,
+    required DocumentScannerOnFrameStatusChangedCallback onFrameStatusChanged,
+    required DocumentScannerOnDocumentScannedCallback onDocumentScanned,
+    required DocumentScannerOnCurrentSideChangedCallback onCurrentSideChanged,
   }) {
     _eventChannel.receiveBroadcastStream().listen((event) async {
-      if (event["type"] == "onDetection") {
+      if (event["type"] == "onDocumentScanned") {
         Map<String, dynamic> values =
             Map<String, dynamic>.from(event["values"]);
-        DocumentScannerResult result = DocumentScannerResult.fromMap(values);
-        onDetection(result);
-      } else if (event["type"] == "onFrame") {
+        log("value mainside ${values["mainSide"]}");
+
+        DocumentScannerResult mainSide = DocumentScannerResult.fromMap(
+            Map<String, dynamic>.from(values["mainSide"]));
+
+        DocumentScannerResult? secondarySide = values["secondarySide"] == null
+            ? null
+            : DocumentScannerResult.fromMap(
+                Map<String, dynamic>.from(values["secondarySide"]));
+
+        onDocumentScanned(mainSide, secondarySide);
+      } else if (event["type"] == "onFrameStatusChanged") {
         FrameStatus frameStatus = FrameStatus.values.firstWhere(
             (e) => e.toString() == "FrameStatus.${event['values']}");
-        onFrame(frameStatus);
-      } else if (event["type"] == "onInitialized") {
-        onInitialized();
+        onFrameStatusChanged(frameStatus);
+      } else if (event["type"] == "onCurrentSideChanged") {
+        DocumentSide documentSide = DocumentSide.values.firstWhere(
+            (e) => e.toString() == "DocumentSide.${event['values']}");
+        onCurrentSideChanged(documentSide);
       }
     });
   }

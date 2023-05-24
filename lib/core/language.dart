@@ -45,6 +45,10 @@ const Map<String, Map<Language, String>> LANGUAGE = {
     Language.EN: "Multiple Faces Detected",
     Language.KH: "ចាប់បានមុខលើសពីមួយ",
   },
+  "face_blockage_found": {
+    Language.EN: "Face blockage found",
+    Language.KH: "មានរបស់បាំងមុខ"
+  },
   "document_not_found": {
     Language.EN: "Can not grab document from image",
     Language.KH: "មិនអាចទាញយកកាតចេញពីរូបភាព",
@@ -61,4 +65,8 @@ const Map<String, Map<Language, String>> LANGUAGE = {
     Language.EN: "Turn Head - Right",
     Language.KH: 'ងាកស្តាំ',
   },
+  "document_blur": {
+    Language.EN: "Blurry Document",
+    Language.KH: 'ឯកសារមានសភាពមិនច្បាស់',
+  }
 };
