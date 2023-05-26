@@ -83,6 +83,19 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(context).pop();
   }
 
+  Future<void> onFaceCompareComplete({
+    required LivenessDetectionResult liveness,
+    required DocumentScannerResult mainSide,
+    DocumentScannerResult? secondarySide,
+  }) async {
+    ApiResult response = await EkycIDServices.instance.faceCompare(
+      faceImage1: mainSide.faceImage,
+      faceImage2: liveness.frontFace?.image,
+    );
+    print('---------match score: ${response.data}'); // match score
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (BuildContext context) {
                       return LivenessDetectionView(
                         onLivenessTestCompleted: onLivenessTestCompleted,
-                        language: Language.EN,
+                        language: Language.KH,
                         options: const LivenessDetectionOptions(
                           promptTimerCountDownSec: 5,
                         ),
@@ -146,14 +159,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (BuildContext context) {
                       return DocumentScannerView(
                         onDocumentScanned: onDocumentScanned,
-                        language: Language.EN,
+                        language: Language.KH,
                         options: const DocumentScannerOptions(
                           scannableDocuments: [
                             ScannableDocument(
-                              mainSide: ObjectDetectionObjectType
-                                  .COVID_19_VACCINATION_CARD_1,
-                              secondarySide: ObjectDetectionObjectType
-                                  .COVID_19_VACCINATION_CARD_1_BACK,
+                              mainSide: ObjectDetectionObjectType.NATIONAL_ID_0,
+                              secondarySide:
+                                  ObjectDetectionObjectType.NATIONAL_ID_0_BACK,
                             )
                           ],
                         ),
@@ -162,6 +174,25 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 },
                 child: Text("Document Detection"),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              width: 300,
+              height: 60,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (BuildContext context) {
+                      return EkycIDExpress(
+                          language: Language.EN,
+                          onKYCCompleted: onFaceCompareComplete);
+                    },
+                  );
+                },
+                child: Text("Face Compare"),
               ),
             ),
             // if (livenessImage != null)

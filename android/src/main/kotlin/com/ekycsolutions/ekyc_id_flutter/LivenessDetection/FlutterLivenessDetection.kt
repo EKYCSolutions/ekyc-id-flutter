@@ -88,6 +88,7 @@ class FlutterLivenessDetection(
             val args = call.arguments as HashMap<*, *>
 //            val prompts = args["prompts"] as ArrayList<String>
 //            val prompts = args["prompts"] as ArrayList<HashMap<String,Any>>
+            val language = args["language"] as String
             val promptTimerCountDownSec = args["promptTimerCountDownSec"] as Int
             val promptTypesIndexList = args["prompts"] as ArrayList<Int>
             val promptTypes =
@@ -100,7 +101,9 @@ class FlutterLivenessDetection(
                         promptTimerCountDownSec
                     )
                 ),
-                langOptions = LivenessDetectionOverlayOptions()
+                langOptions = LivenessDetectionOverlayOptions(if(language =="EN")
+                    EkycIDLanguage.EN
+                else EkycIDLanguage.KH)
             )
             result.success(true)
         } catch (e: Exception) {

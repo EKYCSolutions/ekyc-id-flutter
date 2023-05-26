@@ -65,6 +65,7 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
           onCurrentSideChanged: onCurrentSideChanged,
           onDocumentScanned: onDocumentScanned,
           options: widget.options,
+          language: widget.language,
         );
   }
 

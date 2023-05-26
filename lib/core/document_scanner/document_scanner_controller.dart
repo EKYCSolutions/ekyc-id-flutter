@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:ekyc_id_flutter/core/models/frame_status.dart';
+import '../models/language.dart';
 import 'document_scanner_options.dart';
 import 'document_scanner_result.dart';
 import 'document_scanner_values.dart';
@@ -26,8 +27,15 @@ class DocumentScannerController {
     required DocumentScannerOnDocumentScannedCallback onDocumentScanned,
     required DocumentScannerOnCurrentSideChangedCallback onCurrentSideChanged,
     required DocumentScannerOptions options,
+    required Language language,
   }) async {
-    await _methodChannel.invokeMethod('start', options.toMap());
+    await _methodChannel.invokeMethod(
+      'start',
+      {
+        ...options.toMap(),
+        'language': '${language.toString().split('.').last}'
+      },
+    );
     _registerEventListener(
       onFrameStatusChanged: onFrameStatusChanged,
       onCurrentSideChanged: onCurrentSideChanged,

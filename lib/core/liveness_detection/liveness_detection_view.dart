@@ -64,13 +64,15 @@ class _LivenessDetectionViewState extends State<LivenessDetectionView>
     });
 
     await this.controller.start(
-        onFocusChanged: onFocusChanged,
-        onActivePromptChanged: onActivePromptChanged,
-        onCountDownChanged: onCountDownChanged,
-        onFrameStatusChanged: onFrameStatusChanged,
-        onLivenessTestCompleted: onLivenessCompleted,
-        onProgressChanged: onProgressChanged,
-        options: options);
+          onFocusChanged: onFocusChanged,
+          onActivePromptChanged: onActivePromptChanged,
+          onCountDownChanged: onCountDownChanged,
+          onFrameStatusChanged: onFrameStatusChanged,
+          onLivenessTestCompleted: onLivenessCompleted,
+          onProgressChanged: onProgressChanged,
+          options: options,
+          language: widget.language,
+        );
   }
 
   @override

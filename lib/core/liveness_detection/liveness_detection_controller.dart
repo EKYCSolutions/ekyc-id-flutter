@@ -1,4 +1,5 @@
 import 'package:ekyc_id_flutter/core/models/frame_status.dart';
+import 'package:ekyc_id_flutter/core/models/language.dart';
 import 'package:flutter/services.dart';
 
 import 'liveness_detection_options.dart';
@@ -30,8 +31,15 @@ class LivenessDetectionController {
     required LivenessDetectionOnLivenessTestCompletedCallback
         onLivenessTestCompleted,
     required LivenessDetectionOptions options,
+    required Language language,
   }) async {
-    await _methodChannel.invokeMethod('start', options.toMap());
+    await _methodChannel.invokeMethod(
+      'start',
+      {
+        ...options.toMap(),
+        'language': '${language.toString().split('.').last}'
+      },
+    );
     _registerEventListener(
       onProgressChanged: onProgressChanged,
       onFocusChanged: onFocusChanged,

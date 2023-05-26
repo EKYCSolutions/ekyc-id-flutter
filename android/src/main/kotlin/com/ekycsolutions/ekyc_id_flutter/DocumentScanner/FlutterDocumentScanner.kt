@@ -12,6 +12,7 @@ import com.ekycsolutions.ekycid.core.objectdetection.ObjectDetectionObjectType
 import com.ekycsolutions.ekycid.documentscanner.*
 import com.ekycsolutions.ekycid.documentscanner.cameraview.DocumentScannerCameraOptions
 import com.ekycsolutions.ekycid.documentscanner.overlays.DocumentScannerOverlayOptions
+import com.ekycsolutions.ekycid.utils.EkycIDLanguage
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -129,6 +130,7 @@ class FlutterDocumentScanner(
         Log.d("START","Processing is starting")
         try {
             val args = call.arguments as HashMap<*, *>
+            val language = args["language"] as String
             val scannableDocuments = args["scannableDocuments"] as ArrayList<HashMap<String,Any>>
             val preparingDuration = args["preparingDuration"] as Int
             this.cameraView!!.addListener(this)
@@ -141,7 +143,10 @@ class FlutterDocumentScanner(
                     )
                 })
             ),
-                langOptions = DocumentScannerOverlayOptions()
+                langOptions = DocumentScannerOverlayOptions(
+                    if(language =="EN")
+                        EkycIDLanguage.EN
+                    else EkycIDLanguage.KH),
             )
             result.success(true)
         } catch (e: Exception) {
