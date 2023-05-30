@@ -51,6 +51,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Uint8List? livenessImage;
   Uint8List? docImage;
 
+  Language currentLanguage = Language.KH;
+
   Future<void> onKYCCompleted({
     required LivenessDetectionResult liveness,
     required DocumentScannerResult mainSide,
@@ -105,6 +107,37 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
+              width: 300,
+              height: 60,
+              margin: const EdgeInsets.only(bottom: 20),
+              child: DropdownButton<Language>(
+                value: currentLanguage,
+                icon: const Icon(Icons.arrow_downward),
+                elevation: 16,
+                underline: Container(
+                  height: 2,
+                  color: Colors.blue,
+                ),
+                onChanged: (Language? value) {
+                  // This is called when the user selects an item.
+                  setState(() {
+                    currentLanguage = value!;
+                  });
+                },
+                items: [
+                  DropdownMenuItem<Language>(
+                    value: Language.KH,
+                    child: Text("ខ្មែរ"),
+                  ),
+                  DropdownMenuItem<Language>(
+                    value: Language.EN,
+                    child: Text("English"),
+                  ),
+                ],
+              ),
+            ),
+
+            Container(
               margin: const EdgeInsets.only(bottom: 10),
               width: 300,
               height: 60,
@@ -115,7 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     isScrollControlled: true,
                     builder: (BuildContext context) {
                       return EkycIDExpress(
-                        language: Language.EN,
+                        language: currentLanguage,
                         onKYCCompleted: onKYCCompleted,
                       );
                     },
@@ -136,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (BuildContext context) {
                       return LivenessDetectionView(
                         onLivenessTestCompleted: onLivenessTestCompleted,
-                        language: Language.KH,
+                        language: currentLanguage,
                         options: const LivenessDetectionOptions(
                           promptTimerCountDownSec: 5,
                         ),
@@ -187,7 +220,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     isScrollControlled: true,
                     builder: (BuildContext context) {
                       return EkycIDExpress(
-                          language: Language.EN,
+                          language: currentLanguage,
                           onKYCCompleted: onFaceCompareComplete);
                     },
                   );
