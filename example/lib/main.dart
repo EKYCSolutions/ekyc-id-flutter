@@ -192,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (BuildContext context) {
                       return DocumentScannerView(
                         onDocumentScanned: onDocumentScanned,
-                        language: Language.KH,
+                        language: currentLanguage,
                         options: const DocumentScannerOptions(
                           scannableDocuments: [
                             ScannableDocument(
