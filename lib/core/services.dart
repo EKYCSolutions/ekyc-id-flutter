@@ -96,4 +96,78 @@ class EkycIDServices {
       throw e.toString();
     }
   }
+
+  Future<ApiResult> manualKyc({
+    required List<int>? faceImage,
+  }) async {
+    try {
+      if (faceImage == null) {
+        throw "faceImage not found";
+      }
+
+      Dio dio = Dio();
+      MultipartFile file1 = MultipartFile.fromBytes(
+        faceImage,
+        contentType: MediaType("image", "jpg"),
+        filename: "faceImage0.jpg",
+      );
+
+      FormData formData = FormData();
+      MapEntry<String, MultipartFile> img1 = MapEntry("faceImage0", file1);
+
+      formData.files.add(img1);
+
+      Response response = await dio.post(
+        "${this._url}/v0/manual-kyc",
+        data: formData,
+      );
+
+      Map<String, dynamic> json = Map<String, dynamic>.from(response.data);
+      return ApiResult.fromJson(json);
+    } on DioError catch (e) {
+      throw e.toString();
+    }
+  }
+
+  Future<ApiResult> expressKyc({
+    required List<int>? faceImage,
+    required List<int>? documentImage,
+  }) async {
+    try {
+      if (faceImage == null) {
+        throw "faceImage not found";
+      }
+      if (documentImage == null) {
+        throw "faceImage not found";
+      }
+
+      Dio dio = Dio();
+      MultipartFile file1 = MultipartFile.fromBytes(
+        faceImage,
+        contentType: MediaType("image", "jpg"),
+        filename: "faceImage0.jpg",
+      );
+      MultipartFile file2 = MultipartFile.fromBytes(
+        documentImage,
+        contentType: MediaType("image", "jpg"),
+        filename: "documentImage0.jpg",
+      );
+
+      FormData formData = FormData();
+      MapEntry<String, MultipartFile> img1 = MapEntry("faceImage0", file1);
+      MapEntry<String, MultipartFile> img2 = MapEntry("documentImage0", file2);
+
+      formData.files.add(img1);
+
+      Response response = await dio.post(
+        "${this._url}/v0/express",
+        data: formData,
+      );
+
+      Map<String, dynamic> json = Map<String, dynamic>.from(response.data);
+      return ApiResult.fromJson(json);
+    } on DioError catch (e) {
+      throw e.toString();
+    }
+  }
 }
