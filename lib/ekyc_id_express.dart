@@ -72,15 +72,15 @@ class _EkycIDExpressState extends State<EkycIDExpress> {
   late LivenessDetectionResult liveness;
   DocumentScannerResult? secondarySide;
 
-  @override
-  void initState() {
-    // SystemChrome.setEnabledSystemUIOverlays([]);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive, overlays: []);
-  }
+  // @override
+  // void initState() {
+  //   // SystemChrome.setEnabledSystemUIOverlays([]);
+  //   // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive, overlays: []);
+  // }
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    // SystemChrome.restoreSystemUIOverlays();
     super.dispose();
   }
 

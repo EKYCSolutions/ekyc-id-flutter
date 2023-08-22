@@ -110,14 +110,14 @@ class _DocumentScannerViewState extends State<DocumentScannerView> {
   @override
   void initState() {
     // SystemChrome.setEnabledSystemUIOverlays([]);
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive, overlays: []);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive, overlays: []);
 
     super.initState();
   }
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    // SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack)
     // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     this.controller.dispose();
     super.dispose();
