@@ -8,6 +8,7 @@ import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_view.
 import 'package:ekyc_id_flutter/core/models/api_result.dart';
 import 'package:ekyc_id_flutter/core/models/language.dart';
 import 'package:ekyc_id_flutter/ekyc_id_express.dart';
+import 'package:ekyc_id_flutter_example/widgets/DocumentResult.dart';
 import 'package:flutter/material.dart';
 import 'package:ekyc_id_flutter/core/services.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_result.dart';
@@ -17,6 +18,10 @@ import 'package:permission_handler/permission_handler.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   EkycIDServices.instance.setURL("https://test-service.ews.ekycsolutions.com");
+  EkycIDServices.instance.httpOptions = EkycServiceOptions(
+    connectTimeout: 120 * 1000,
+    receiveTimeout: 120 * 1000,
+  );
   runApp(MyApp());
 }
 
@@ -78,6 +83,12 @@ class _HomeScreenState extends State<HomeScreen> {
     DocumentScannerResult? secondarySide,
   }) async {
     Navigator.of(context).pop();
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return DocumentResult(
+        mainSide: mainSide,
+        secondarySide: secondarySide,
+      );
+    }));
   }
 
   Future<void> onLivenessTestCompleted(
@@ -136,7 +147,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-
             Container(
               margin: const EdgeInsets.only(bottom: 10),
               width: 300,
@@ -166,12 +176,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   await showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
                     builder: (BuildContext context) {
-                      return LivenessDetectionView(
-                        onLivenessTestCompleted: onLivenessTestCompleted,
-                        language: currentLanguage,
-                        options: const LivenessDetectionOptions(
-                          promptTimerCountDownSec: 5,
+                      return FractionallySizedBox(
+                        heightFactor: 0.9,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
+                          child: LivenessDetectionView(
+                            onLivenessTestCompleted: onLivenessTestCompleted,
+                            language: currentLanguage,
+                            options: const LivenessDetectionOptions(
+                              promptTimerCountDownSec: 5,
+                            ),
+                          ),
                         ),
                       );
                     },
@@ -189,18 +209,29 @@ class _HomeScreenState extends State<HomeScreen> {
                   await showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
                     builder: (BuildContext context) {
-                      return DocumentScannerView(
-                        onDocumentScanned: onDocumentScanned,
-                        language: currentLanguage,
-                        options: const DocumentScannerOptions(
-                          scannableDocuments: [
-                            ScannableDocument(
-                              mainSide: ObjectDetectionObjectType.NATIONAL_ID_0,
-                              secondarySide:
-                                  ObjectDetectionObjectType.NATIONAL_ID_0_BACK,
-                            )
-                          ],
+                      return FractionallySizedBox(
+                        heightFactor: 0.8,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
+                          child: DocumentScannerView(
+                            onDocumentScanned: onDocumentScanned,
+                            language: currentLanguage,
+                            options: const DocumentScannerOptions(
+                              scannableDocuments: [
+                                ScannableDocument(
+                                  mainSide:
+                                      ObjectDetectionObjectType.NATIONAL_ID_0,
+                                  secondarySide: ObjectDetectionObjectType
+                                      .NATIONAL_ID_0_BACK,
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },
@@ -209,35 +240,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text("Document Detection"),
               ),
             ),
-            Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              width: 300,
-              height: 60,
-              child: ElevatedButton(
-                onPressed: () async {
-                  await showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (BuildContext context) {
-                      return EkycIDExpress(
-                          language: currentLanguage,
-                          onKYCCompleted: onFaceCompareComplete);
-                    },
-                  );
-                },
-                child: Text("Face Compare"),
-              ),
-            ),
-            // if (livenessImage != null)
-            //   Image.memory(
-            //     livenessImage!,
-            //     height: 200,
-            //   ),
-            // if (docImage != null)
-            //   Image.memory(
-            //     docImage!,
-            //     height: 200,
-            //   ),
           ],
         ),
       ),
