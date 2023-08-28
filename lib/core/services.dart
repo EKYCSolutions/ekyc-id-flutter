@@ -184,6 +184,7 @@ class EkycIDServices {
   //
   Future<ApiResult> manualKyc({
     required ObjectDetectionObjectType objectType,
+    required List<int> ocrImage,
     List<int>? faceImage,
     List<int>? faceLeftImage,
     List<int>? faceRightImage,
@@ -195,6 +196,13 @@ class EkycIDServices {
         sequences.isNotEmpty);
     try {
       FormData formData = FormData();
+
+      formData.files.add(
+        MapEntry(
+          "ocr_image",
+          MultipartFile.fromBytes(ocrImage),
+        ),
+      );
 
       if (faceImage != null &&
           faceLeftImage != null &&
