@@ -24,8 +24,14 @@ typedef Future<void> OnKYCCompletedCallback({
   DocumentScannerResult? secondarySide,
 });
 
-/// Widget for performing `Document Scanning` and `Liveness Detection` in one go.
 class EkycIDExpress extends StatefulWidget {
+  /// Widget for performing `Document Scanning` and `Liveness Detection` in one go.
+  /// Avoid using as dialog or modal sheet. Should be use as fullscreen page.
+  ///
+  /// See also:
+  ///
+  ///  * [LivenessDetectionView], The Widget for Liveness Detection
+  ///  * [DocumentScannerView], The Widget for Document Scanning
   const EkycIDExpress({
     Key? key,
     required this.onKYCCompleted,
