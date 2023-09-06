@@ -1,8 +1,8 @@
-class Sequence {
+class FaceSequence {
   String check;
   String videoPath;
 
-  Sequence({
+  FaceSequence({
     required this.check,
     required this.videoPath,
   });
