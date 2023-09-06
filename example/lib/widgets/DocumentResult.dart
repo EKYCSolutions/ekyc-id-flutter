@@ -1,6 +1,6 @@
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_result.dart';
+import 'package:ekyc_id_flutter/core/ekyc_services/ekyc_services.dart';
 import 'package:ekyc_id_flutter/core/models/api_result.dart';
-import 'package:ekyc_id_flutter/core/services.dart';
 import 'package:flutter/material.dart';
 import 'package:json_view/json_view.dart';
 

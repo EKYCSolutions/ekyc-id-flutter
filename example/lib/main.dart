@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_options.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_values.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_view.dart';
+import 'package:ekyc_id_flutter/core/ekyc_services/ekyc_services.dart';
 import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_options.dart';
 import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_view.dart';
 import 'package:ekyc_id_flutter/core/models/api_result.dart';
@@ -10,7 +11,6 @@ import 'package:ekyc_id_flutter/core/models/language.dart';
 import 'package:ekyc_id_flutter/ekyc_id_express.dart';
 import 'package:ekyc_id_flutter_example/widgets/DocumentResult.dart';
 import 'package:flutter/material.dart';
-import 'package:ekyc_id_flutter/core/services.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_result.dart';
 import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_result.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -63,19 +63,38 @@ class _HomeScreenState extends State<HomeScreen> {
     required DocumentScannerResult mainSide,
     DocumentScannerResult? secondarySide,
   }) async {
-    print("mainSide ${mainSide.documentImage}");
-    print("objectType ${mainSide.documentType}");
+    try {
+      if (liveness.frontFace == null ||
+          liveness.leftFace == null ||
+          liveness.rightFace == null) {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("An error has occur."),
+                content: Text("cannot extract liveness info."),
+              );
+            });
+      }
+      ApiResult response = await EkycIDServices.instance.manualKyc(
+        ocrImage: mainSide.documentImage,
+        objectType: mainSide.documentType,
+        faceImage: liveness.frontFace!.image,
+        faceLeftImage: liveness.leftFace!.image,
+        faceRightImage: liveness.rightFace!.image,
+      );
 
-    ApiResult response = await EkycIDServices.instance
-        .ocr(image: mainSide.documentImage, objectType: mainSide.documentType);
+      print(response.data); // response object based on document type
 
-    print(response.data); // response object based on document type
-
-    setState(() {
-      livenessImage = liveness.frontFace!.image;
-      docImage = mainSide.documentImage;
-    });
-    Navigator.of(context).pop();
+      setState(() {
+        livenessImage = liveness.frontFace!.image;
+        docImage = mainSide.documentImage;
+      });
+      Navigator.of(context).pop();
+    } catch (e) {
+      print("error $e");
+      Navigator.of(context).pop();
+    }
   }
 
   Future<void> onDocumentScanned({
@@ -101,12 +120,17 @@ class _HomeScreenState extends State<HomeScreen> {
     required DocumentScannerResult mainSide,
     DocumentScannerResult? secondarySide,
   }) async {
-    ApiResult response = await EkycIDServices.instance.faceCompare(
-      faceImage1: mainSide.faceImage,
-      faceImage2: liveness.frontFace?.image,
-    );
-    print('---------match score: ${response.data}'); // match score
-    Navigator.of(context).pop();
+    try {
+      ApiResult response = await EkycIDServices.instance.faceCompare(
+        faceImage1: mainSide.faceImage!,
+        faceImage2: liveness.frontFace!.image,
+      );
+      print('---------match score: ${response.data}'); // match score
+      Navigator.of(context).pop();
+    } catch (e) {
+      print("error $e");
+      Navigator.of(context).pop();
+    }
   }
 
   @override

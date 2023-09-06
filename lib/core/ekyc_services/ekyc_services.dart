@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_values.dart';
+import 'package:ekyc_id_flutter/core/ekyc_services/src/errors.dart';
 import 'package:ekyc_id_flutter/core/ekyc_services/src/requests_builder.dart';
 import 'package:ekyc_id_flutter/core/models/face_sequence.dart';
 import 'package:ekyc_id_flutter/core/models/api_result.dart';
@@ -80,6 +81,7 @@ class EkycIDServices {
 
   void _configInterceptors() {
     if (interceptors != null && interceptors!.isNotEmpty) {
+      _http.interceptors.add(EkycErrorInterceptors(_http));
       _http.interceptors.add(
         InterceptorsWrapper(
           onRequest:
