@@ -13,6 +13,11 @@ import 'liveness_detection_result.dart';
 import 'liveness_detection_options.dart';
 import 'liveness_detection_controller.dart';
 
+enum OperationMode {
+  Express,
+  Manual,
+}
+
 /// The Camera View for Liveness Detection
 class LivenessDetectionView extends StatefulWidget {
   LivenessDetectionView({
@@ -25,6 +30,7 @@ class LivenessDetectionView extends StatefulWidget {
       LivenessPromptType.LOOK_RIGHT,
       LivenessPromptType.BLINKING,
     ]),
+    this.operationMode = OperationMode.Express,
   });
 
   /// The language for the audio and text in the LivenessDetectionView.
@@ -35,6 +41,9 @@ class LivenessDetectionView extends StatefulWidget {
 
   /// The callback for when the liveness test is completed.
   final OnLivenessTestCompletedCallback onLivenessTestCompleted;
+
+  /// Flag for operation mode
+  final OperationMode operationMode;
 
   @override
   _LivenessDetectionViewState createState() => _LivenessDetectionViewState();
