@@ -1,6 +1,5 @@
 import 'package:ekyc_id_flutter/core/overlays/document_scanner_overlay.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:ekyc_id_flutter/core/models/frame_status.dart';
 import 'package:ekyc_id_flutter/core/models/language.dart';
