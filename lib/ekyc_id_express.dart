@@ -4,7 +4,6 @@ import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_view.dart
 import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_options.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_font_icons/flutter_font_icons.dart';
 
 import 'core/document_scanner/document_scanner_result.dart';
@@ -28,6 +27,11 @@ class EkycIDExpress extends StatefulWidget {
   /// Widget for performing `Document Scanning` and `Liveness Detection` in one go.
   /// Avoid using as dialog or modal sheet. Should be use as fullscreen page.
   ///
+  /// There are 2 operation modes available:
+  ///   * [OperationMode.Express] Mode, EkycID will determine the liveness of the user
+  ///       using ML Model.
+  ///   * [OperationMode.Manual] Mode for manual approval by human operators.
+  ///
   /// See also:
   ///
   ///  * [LivenessDetectionView], The Widget for Liveness Detection
@@ -48,6 +52,7 @@ class EkycIDExpress extends StatefulWidget {
     this.livenessDetectionOptions = const LivenessDetectionOptions(
       promptTimerCountDownSec: 5,
     ),
+    this.operationMode = OperationMode.Express,
   }) : super(key: key);
 
   /// The language for the audio and text in the EkycIDExpress.
@@ -64,6 +69,9 @@ class EkycIDExpress extends StatefulWidget {
 
   /// The option for the LivenessDetection
   final LivenessDetectionOptions livenessDetectionOptions;
+
+  /// Flag for operation mode
+  final OperationMode operationMode;
 
   @override
   State<EkycIDExpress> createState() => _EkycIDExpressState();

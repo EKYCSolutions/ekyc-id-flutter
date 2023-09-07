@@ -4,6 +4,7 @@ import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_options.d
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_values.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_view.dart';
 import 'package:ekyc_id_flutter/core/ekyc_services/ekyc_services.dart';
+import 'package:ekyc_id_flutter/core/ekyc_services/src/ekyc_services_option.dart';
 import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_options.dart';
 import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_view.dart';
 import 'package:ekyc_id_flutter/core/models/api_result.dart';
@@ -17,11 +18,17 @@ import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  EkycIDServices.instance.setURL("https://test-service.ews.ekycsolutions.com");
-  EkycIDServices.instance.httpOptions = EkycServiceOptions(
-    connectTimeout: 120 * 1000,
-    receiveTimeout: 120 * 1000,
+
+  EkycIDServices.instance.initialize(
+    options: EkycServicesOptions(
+      httpOptions: BaseOptions(
+        connectTimeout: 60 * 1000,
+        // Add your auth token here in the header
+      ),
+      serverUrl: "https://test-service.ews.ekycsolutions.com",
+    ),
   );
+
   runApp(MyApp());
 }
 

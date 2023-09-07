@@ -4,6 +4,7 @@ class LivenessDetectionOptions {
   /// Duration in seconds for user to complete a prompt.
   final int promptTimerCountDownSec;
   final List<LivenessPromptType> prompts;
+
   const LivenessDetectionOptions({
     this.promptTimerCountDownSec = 5,
     this.prompts = const [
