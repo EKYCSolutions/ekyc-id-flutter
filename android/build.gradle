@@ -38,7 +38,7 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.github.EKYCSolutions:ekyc-id-android:1.0.20'
+    implementation 'com.github.EKYCSolutions:ekyc-id-android:1.0.22'
 //    implementation 'com.ekycsolutions:ekyc-id:1.0.18-beta'
     //link to local maven
 }
