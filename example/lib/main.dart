@@ -11,6 +11,7 @@ import 'package:ekyc_id_flutter/core/models/api_result.dart';
 import 'package:ekyc_id_flutter/core/models/language.dart';
 import 'package:ekyc_id_flutter/ekyc_id_express.dart';
 import 'package:ekyc_id_flutter_example/widgets/DocumentResult.dart';
+import 'package:ekyc_id_flutter_example/widgets/LivenessResult.dart';
 import 'package:flutter/material.dart';
 import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_result.dart';
 import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_result.dart';
@@ -70,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required DocumentScannerResult mainSide,
     DocumentScannerResult? secondarySide,
   }) async {
+    Navigator.of(context).pop();
     try {
       if (liveness.frontFace == null ||
           liveness.leftFace == null ||
@@ -97,10 +99,9 @@ class _HomeScreenState extends State<HomeScreen> {
         livenessImage = liveness.frontFace!.image;
         docImage = mainSide.documentImage;
       });
-      Navigator.of(context).pop();
     } catch (e) {
-      print("error $e");
-      Navigator.of(context).pop();
+      print("onKYCCompleted $e");
+      // Navigator.of(context).pop();
     }
   }
 
@@ -120,6 +121,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> onLivenessTestCompleted(
       LivenessDetectionResult livenessDetectionResult) async {
     Navigator.of(context).pop();
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return LivenessResult(
+        livenessDetectionResult: livenessDetectionResult,
+      );
+    }));
   }
 
   Future<void> onFaceCompareComplete({
