@@ -1,12 +1,7 @@
-//
-//  FlutterDocumentScanner.swift
-//  ekyc_id_flutter
-//
-//  Created by Socret Lee on 6/11/22.
-//
+
+import AVFoundation
 import EkycID
 import Foundation
-import AVFoundation
 
 public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScannerEventListener {
     let frame: CGRect
@@ -16,7 +11,7 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
     var methodChannel: FlutterMethodChannel?
     var eventChannel: FlutterEventChannel?
     var eventStreamHandler: DocumentScannerEventStreamHandler?
-    
+
     init(frame: CGRect, viewId: Int64, messenger: FlutterBinaryMessenger, args: Any?) {
         let screenSize = UIScreen.main.bounds
         let screenWidth = screenSize.width
@@ -26,7 +21,9 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         print(frame.height)
         
         self.frame = frame
+
         self.viewId = viewId
+
         super.init()
         self.flutterScannerView = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
         self.methodChannel = FlutterMethodChannel(name: "DocumentScanner_MethodChannel_" + String(viewId), binaryMessenger: messenger)
@@ -35,11 +32,11 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         self.methodChannel!.setMethodCallHandler(self.onMethodCall)
         self.eventChannel!.setStreamHandler(self.eventStreamHandler)
     }
-    
+
     public func view() -> UIView {
         return self.flutterScannerView!
     }
-    
+
     private func start(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         let args = call.arguments as! [String: Any?]
         self.scanner = DocumentScannerView(frame: self.flutterScannerView!.frame)
@@ -105,7 +102,7 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         }
         result(true)
     }
-    
+
     private func dispose(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         if (self.scanner != nil) {
             self.scanner!.stop()
@@ -120,16 +117,15 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         }
         result(true)
     }
-    
-    private func onMethodCall(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
-        switch (call.method) {
+
+    private func onMethodCall(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        switch call.method {
         case "start":
             do {
                 try self.start(call: call, result: result)
             } catch {
                 result(FlutterError(code: "initialize Error", message: nil, details: nil))
             }
-            break
         case "dispose":
             do {
                 try self.dispose(call: call, result: result)
@@ -153,24 +149,26 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
             break
         default:
             result(FlutterMethodNotImplemented)
-            break
         }
     }
     
     class DocumentScannerEventStreamHandler: NSObject, FlutterStreamHandler {
         var events: FlutterEventSink?
-        
+
         func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+            print("onListen")
             self.events = events
             return nil
         }
-        
+
         func onCancel(withArguments arguments: Any?) -> FlutterError? {
+            print("onCancel")
             return nil
         }
-        
-        func sendOnInitializedEventToFlutter() {
-            if (self.events != nil) {
+
+        func sendOnDocumentScannedEventToFlutter(_ mainside: DocumentScannerResult, _ secondarySide: DocumentScannerResult?) {
+            print("sendOnDocumentScannedEventToFlutter")
+            if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
                     event["type"] = "onInitialized"
@@ -242,12 +240,12 @@ extension DocumentScannerResult {
         values["documentGroup"] = "\(self.documentGroup)"
         values["fullImage"] = FlutterStandardTypedData(bytes: self.fullImage.jpegData(compressionQuality: 0.8)!)
         values["documentImage"] = FlutterStandardTypedData(bytes: self.documentImage.jpegData(compressionQuality: 0.8)!)
-        if (self.faceImage != nil) {
+        if self.faceImage != nil {
             values["faceImage"] = FlutterStandardTypedData(bytes: self.faceImage!.jpegData(compressionQuality: 0.8)!)
         } else {
             values["faceImage"] = nil
         }
-        
+
         return values
     }
 }

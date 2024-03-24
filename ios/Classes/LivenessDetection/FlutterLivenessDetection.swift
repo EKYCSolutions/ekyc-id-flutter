@@ -1,14 +1,9 @@
-//
-//  FlutterLivenessDetection.swift
-//  ekyc_id_flutter
-//
-//  Created by Socret Lee on 6/11/22.
-//
 
+import AVFoundation
 import EkycID
 import Foundation
-import AVFoundation
 
+public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDetectionEventListener {
 public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDetectionEventListener {
     let frame: CGRect
     let viewId: Int64
@@ -25,6 +20,9 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
     ]
     
     init(frame: CGRect, viewId: Int64, messenger: FlutterBinaryMessenger, args: Any?) {
+        let screenSize = UIScreen.main.bounds
+        let screenWidth = screenSize.width
+        let screenHeight = screenSize.height
         self.frame = frame
         self.viewId = viewId
         super.init()
@@ -42,7 +40,7 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
     
     private func start(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         let args = call.arguments as! [String: Any]
-        let prompts = args["prompts"] as! [String]
+
         let promptTimerCountDownSec = args["promptTimerCountDownSec"] as! Int
         self.scanner = LivenessDetectionView(frame: self.flutterScannerView!.frame)
         self.scanner!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -61,7 +59,6 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
         self.flutterScannerView!.addSubview(self.scanner!)
         result(true)
     }
-    
     
     private func dispose(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         if (self.scanner != nil) {
@@ -84,24 +81,15 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
             } catch {
                 result(FlutterError(code: "initialize Error", message: nil, details: nil))
             }
-            break
         case "dispose":
             do {
                 try self.dispose(call: call, result: result)
             } catch {
                 result(FlutterError(code: "dispose Error", message: nil, details: nil))
             }
-            break
-        case "nextImage":
-            do {
-                try self.nextImage(call: call, result: result)
-            } catch {
-                result(FlutterError(code: "dispose Error", message: nil, details: nil))
-            }
-            break
+      
         default:
             result(FlutterMethodNotImplemented)
-            break
         }
     }
     
@@ -149,7 +137,8 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
         }
         
         func sendOnInitializedEventToFlutter() {
-            if (self.events != nil) {
+            print("sendOnInitializedEventToFlutter")
+            if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
                     event["type"] = "onInitialized"
@@ -250,13 +239,13 @@ extension LivenessFace {
         values["headEulerAngleY"] = self.headEulerAngleY
         values["headEulerAngleZ"] = self.headEulerAngleZ
         
-        if (self.headDirection != nil) {
+        if self.headDirection != nil {
             values["headDirection"] = "\(self.headDirection!)"
         } else {
             values["headDirection"] = nil
         }
         
-        if (self.eyesStatus != nil) {
+        if self.eyesStatus != nil {
             values["eyesStatus"] = "\(self.eyesStatus!)"
         } else {
             values["eyesStatus"] = nil
@@ -268,28 +257,28 @@ extension LivenessFace {
 extension LivenessDetectionResult {
     func toFlutterMap() -> [String: Any?] {
         var values = [String: Any?]()
-        if (self.frontFace != nil) {
+        if self.frontFace != nil {
             values["frontFace"] = self.frontFace!.toFlutterMap()
         } else {
             values["frontFace"] = nil
         }
         
-        if (self.leftFace != nil) {
+        if self.leftFace != nil {
             values["leftFace"] = self.leftFace!.toFlutterMap()
         } else {
             values["leftFace"] = nil
         }
         
-        if (self.rightFace != nil) {
+        if self.rightFace != nil {
             values["rightFace"] = self.rightFace!.toFlutterMap()
         } else {
             values["rightFace"] = nil
         }
         
-        values["prompts"] = self.prompts.map {e -> [String:Any?] in
-            var v = [String:Any?]()
-            v["prompt"]="\(e.prompt)"
-            v["success"]=e.success
+        values["prompts"] = self.prompts.map { e -> [String: Any?] in
+            var v = [String: Any?]()
+            v["prompt"] = "\(e.prompt)"
+            v["success"] = e.success
             return v
         }
         

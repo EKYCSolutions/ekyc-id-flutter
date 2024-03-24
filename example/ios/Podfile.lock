@@ -1,6 +1,4 @@
 PODS:
-  - audio_session (0.0.1):
-    - Flutter
   - ekyc_id_flutter (1.0.0):
     - EkycID (~> 2.0.5)
     - Flutter
@@ -93,7 +91,6 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - ekyc_id_flutter (from `.symlinks/plugins/ekyc_id_flutter/ios`)
   - EkycID (from `/Users/socretlee/CodingDrive/ekyc/ekyc-id-ios`)
   - Flutter (from `Flutter`)
@@ -112,6 +109,7 @@ SPEC REPOS:
     - GoogleUtilities
     - GoogleUtilitiesComponents
     - GTMSessionFetcher
+    - lottie-ios
     - MLImage
     - MLKitCommon
     - MLKitFaceDetection
@@ -124,8 +122,6 @@ SPEC REPOS:
     - TensorFlowLiteSwift
 
 EXTERNAL SOURCES:
-  audio_session:
-    :path: ".symlinks/plugins/audio_session/ios"
   ekyc_id_flutter:
     :path: ".symlinks/plugins/ekyc_id_flutter/ios"
   EkycID:

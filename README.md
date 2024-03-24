@@ -3,7 +3,7 @@
 # EkycID SDK for Flutter
 ![](https://img.shields.io/badge/platform-flutter-blue) ![](https://img.shields.io/github/v/tag/EKYCSolutions/ekyc-id-flutter?label=version)
 
-The EkycID Flutter SDK lets you build a factastic OCR and Face Recognition experienced in your Android app.
+The EkycID Flutter SDK lets you build fantastic OCR and Face Recognition experienced in your Flutter app.
 
 With one quick scan, your users will be able to extract information from thier identity cards, passports, driver licenses, license plate, vehicle registration, covid-19 vaccinate card, and any other document by government-issued.
 
@@ -189,7 +189,7 @@ Future<void> onKYCCompleted({
     objectType: mainSide.documentType
   );
 
-  print(response.data?) // response object based on document type
+  print(response.data?); // response object based on document type
 }
 
 ```
