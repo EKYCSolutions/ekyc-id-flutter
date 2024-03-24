@@ -2,19 +2,18 @@ PODS:
   - audio_session (0.0.1):
     - Flutter
   - ekyc_id_flutter (1.0.0):
-    - EkycID (~> 1.0.19)
+    - EkycID (~> 2.0.5)
     - Flutter
-  - EkycID (1.0.19):
+  - EkycID (2.0.5):
     - GoogleMLKit/FaceDetection (= 2.5.0)
-    - MultipartForm (= 0.1.0)
     - OpenCV (= 4.3.0)
-    - TensorFlowLiteSwift (= 0.0.1-nightly.20211127)
+    - TensorFlowLiteSwift (~> 2.12.0)
   - Flutter (1.0.0)
   - flutter_beep (0.0.1):
     - Flutter
-  - GoogleDataTransport (9.2.0):
+  - GoogleDataTransport (9.4.1):
     - GoogleUtilities/Environment (~> 7.7)
-    - nanopb (< 2.30910.0, >= 2.30908.0)
+    - nanopb (< 2.30911.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleMLKit/FaceDetection (2.5.0):
     - GoogleMLKit/MLKitCore
@@ -33,15 +32,21 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.3.2)
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.3.2)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.3.2)"
-  - GoogleUtilities/Environment (7.7.0):
+  - GoogleUtilities/Environment (7.13.0):
+    - GoogleUtilities/Privacy
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.7.0):
+  - GoogleUtilities/Logger (7.13.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/UserDefaults (7.7.0):
+    - GoogleUtilities/Privacy
+  - GoogleUtilities/Privacy (7.13.0)
+  - GoogleUtilities/UserDefaults (7.13.0):
     - GoogleUtilities/Logger
+    - GoogleUtilities/Privacy
   - GoogleUtilitiesComponents (1.1.0):
     - GoogleUtilities/Logger
   - GTMSessionFetcher/Core (1.7.2)
+  - image_picker_ios (0.0.1):
+    - Flutter
   - just_audio (0.0.1):
     - Flutter
   - MLImage (1.0.0-beta2)
@@ -64,40 +69,43 @@ PODS:
     - MLImage (= 1.0.0-beta2)
     - MLKitCommon (~> 5.0)
     - Protobuf (~> 3.12)
-  - MultipartForm (0.1.0)
-  - nanopb (2.30909.0):
-    - nanopb/decode (= 2.30909.0)
-    - nanopb/encode (= 2.30909.0)
-  - nanopb/decode (2.30909.0)
-  - nanopb/encode (2.30909.0)
+  - nanopb (2.30910.0):
+    - nanopb/decode (= 2.30910.0)
+    - nanopb/encode (= 2.30910.0)
+  - nanopb/decode (2.30910.0)
+  - nanopb/encode (2.30910.0)
   - OpenCV (4.3.0)
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - PromisesObjC (2.1.1)
-  - Protobuf (3.21.5)
-  - TensorFlowLiteC (0.0.1-nightly.20211127):
-    - TensorFlowLiteC/Core (= 0.0.1-nightly.20211127)
-  - TensorFlowLiteC/Core (0.0.1-nightly.20211127)
-  - TensorFlowLiteSwift (0.0.1-nightly.20211127):
-    - TensorFlowLiteSwift/Core (= 0.0.1-nightly.20211127)
-  - TensorFlowLiteSwift/Core (0.0.1-nightly.20211127):
-    - TensorFlowLiteC (= 0.0.1-nightly.20211127)
+  - permission_handler_apple (9.0.4):
+    - Flutter
+  - PromisesObjC (2.4.0)
+  - Protobuf (3.26.0)
+  - TensorFlowLiteC (2.12.0):
+    - TensorFlowLiteC/Core (= 2.12.0)
+  - TensorFlowLiteC/Core (2.12.0)
+  - TensorFlowLiteSwift (2.12.0):
+    - TensorFlowLiteSwift/Core (= 2.12.0)
+  - TensorFlowLiteSwift/Core (2.12.0):
+    - TensorFlowLiteC (= 2.12.0)
   - vibration (1.7.5):
     - Flutter
 
 DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - ekyc_id_flutter (from `.symlinks/plugins/ekyc_id_flutter/ios`)
+  - EkycID (from `/Users/socretlee/CodingDrive/ekyc/ekyc-id-ios`)
   - Flutter (from `Flutter`)
   - flutter_beep (from `.symlinks/plugins/flutter_beep/ios`)
+  - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - vibration (from `.symlinks/plugins/vibration/ios`)
 
 SPEC REPOS:
   trunk:
-    - EkycID
     - GoogleDataTransport
     - GoogleMLKit
     - GoogleToolboxForMac
@@ -108,7 +116,6 @@ SPEC REPOS:
     - MLKitCommon
     - MLKitFaceDetection
     - MLKitVision
-    - MultipartForm
     - nanopb
     - OpenCV
     - PromisesObjC
@@ -121,44 +128,51 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/audio_session/ios"
   ekyc_id_flutter:
     :path: ".symlinks/plugins/ekyc_id_flutter/ios"
+  EkycID:
+    :path: "/Users/socretlee/CodingDrive/ekyc/ekyc-id-ios"
   Flutter:
     :path: Flutter
   flutter_beep:
     :path: ".symlinks/plugins/flutter_beep/ios"
+  image_picker_ios:
+    :path: ".symlinks/plugins/image_picker_ios/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
   path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/ios"
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  permission_handler_apple:
+    :path: ".symlinks/plugins/permission_handler_apple/ios"
   vibration:
     :path: ".symlinks/plugins/vibration/ios"
 
 SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
-  ekyc_id_flutter: f6f28abe4093402c097d93e2359f56970b17314a
-  EkycID: d19821d9e6b58c74230b9307c38c37319498a823
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  ekyc_id_flutter: 37df0dd8757bd524eb6dc95f5419d892b3ee2f98
+  EkycID: 87c9da68b5da78b64615794fb29ff506f581f7d6
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_beep: 54fb393b22dfa0f0e4573c81b1c74dd71c4e5af8
-  GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
+  GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleMLKit: 0d7f5aa2f8a2f2ea9d849a05abdbe80974b0ec83
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
-  GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
+  GoogleUtilities: d053d902a8edaa9904e1bd00c37535385b8ed152
   GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
   GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
+  image_picker_ios: b545a5f16c0fa88e3ecbbce3ed4de45567a8ec18
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   MLImage: a454f9f8ecfd537783a12f9488f5be1a68820829
   MLKitCommon: 3bc17c6f7d25ce3660f030350b46ae7ec9ebca6e
   MLKitFaceDetection: 617cb847441868a8bfd4b48d751c9b33c1104948
   MLKitVision: e87dc3f2e456a6ab32361ebd985e078dd2746143
-  MultipartForm: 170d4f653b833cab5b5e99dfdefe71069d913bd1
-  nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
+  nanopb: 438bc412db1928dac798aa6fd75726007be04262
   OpenCV: 681e0451c1e54c5930a8922277f817ed5d5ab459
   path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
-  PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  Protobuf: 7504b04fffcf6662ad629694db8231f5e744327f
-  TensorFlowLiteC: b2eba881175ce9b490698f74cedf88c0c430f1d1
-  TensorFlowLiteSwift: ee03ae882bab905b8e532c80640524cf6c91ec65
+  permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
+  PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
+  Protobuf: 5685c66a07eaad9d18ce5ab618e9ac01fd04b5aa
+  TensorFlowLiteC: 20785a69299185a379ba9852b6625f00afd7984a
+  TensorFlowLiteSwift: 3a4928286e9e35bdd3e17970f48e53c80d25e793
   vibration: 7d883d141656a1c1a6d8d238616b2042a51a1241
 
-PODFILE CHECKSUM: 1c55bb67f9da41fa023f80f450b252c4b1fb805c
+PODFILE CHECKSUM: d42a7e22a21ebbaf976226443f10440293668ff8
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.15.2

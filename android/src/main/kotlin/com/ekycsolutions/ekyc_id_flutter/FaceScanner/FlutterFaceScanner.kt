@@ -1,4 +1,4 @@
-package com.ekycsolutions.ekyc_id_flutter.DocumentScanner
+package com.ekycsolutions.ekyc_id_flutter.FaceScanner
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -8,14 +8,11 @@ import android.view.View
 import android.widget.LinearLayout
 import com.ekycsolutions.ekyc_id_flutter.R
 import com.ekycsolutions.ekycid.core.models.FrameStatus
-import com.ekycsolutions.ekycid.core.objectdetection.ObjectDetectionObjectTypeStringToObjectTypeMapping
-import com.ekycsolutions.ekycid.documentscanner.DocumentScannerEventListener
-import com.ekycsolutions.ekycid.documentscanner.DocumentScannerOptions
-import com.ekycsolutions.ekycid.documentscanner.DocumentScannerResult
-import com.ekycsolutions.ekycid.documentscanner.DocumentScannerView
-import com.ekycsolutions.ekycid.documentscanner.DocumentSide
-import com.ekycsolutions.ekycid.documentscanner.ScannableDocument
-import com.ekycsolutions.ekycid.documentscanner.cameraview.DocumentScannerCameraOptions
+import com.ekycsolutions.ekycid.facescanner.FaceScannerEventListener
+import com.ekycsolutions.ekycid.facescanner.FaceScannerOptions
+import com.ekycsolutions.ekycid.facescanner.FaceScannerView
+import com.ekycsolutions.ekycid.facescanner.cameraview.FaceScannerCameraOptions
+import com.ekycsolutions.ekycid.livenessdetection.cameraview.LivenessFace
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -24,19 +21,20 @@ import io.flutter.plugin.platform.PlatformView
 import java.io.ByteArrayOutputStream
 
 
-class FlutterDocumentScanner(
+class FlutterFaceScanner(
     private var binding: FlutterPlugin.FlutterPluginBinding,
     private var context: Context,
     private val viewId: Int
-): PlatformView, MethodChannel.MethodCallHandler, DocumentScannerEventListener {
-    private var scanner: DocumentScannerView? = null
+): PlatformView, MethodChannel.MethodCallHandler, FaceScannerEventListener {
+    private var scanner: FaceScannerView? = null
+//    private var scannerView: LinearLayout = LayoutInflater.from(context as Activity).inflate(R.layout.document_scanner_viewfinder, null)
     @SuppressLint("ResourceType")
     private var scannerView: LinearLayout = (context as Activity).findViewById(R.layout.document_scanner_viewfinder)
     private val methodChannel: MethodChannel =
-        MethodChannel(binding.binaryMessenger, "DocumentScanner_MethodChannel_$viewId")
+        MethodChannel(binding.binaryMessenger, "FaceScanner_MethodChannel_$viewId")
     private val eventChannel: EventChannel =
-        EventChannel(binding.binaryMessenger, "DocumentScanner_EventChannel_$viewId")
-    private val eventStreamHandler = DocumentScannerEventStreamHandler(context)
+        EventChannel(binding.binaryMessenger, "FaceScanner_EventChannel_$viewId")
+    private val eventStreamHandler = FaceScannerEventStreamHandler(context)
 
     init {
         this.methodChannel.setMethodCallHandler(this)
@@ -63,9 +61,6 @@ class FlutterDocumentScanner(
             "dispose" -> {
                 disposeFlutter(call, result)
             }
-            "reset" -> {
-                reset(call, result)
-            }
             else -> {
                 result.notImplemented()
             }
@@ -75,26 +70,19 @@ class FlutterDocumentScanner(
     private fun start(call: MethodCall, result: MethodChannel.Result) {
         try {
             val args = call.arguments as HashMap<*, *>
+            val useFrontCamera = args["useFrontCamera"] as Boolean
             val cameraOptions = args["cameraOptions"] as HashMap<String, Any>
-            val scannableDocuments = args["scannableDocuments"] as ArrayList<HashMap<String, Any>>
-
-            this.scanner = DocumentScannerView(context)
+            this.scanner = FaceScannerView(context, useFrontCamera)
             this.scanner!!.addListener(this)
             this.scanner!!.start(
-                DocumentScannerOptions(
-                    DocumentScannerCameraOptions(
+                FaceScannerOptions(
+                    FaceScannerCameraOptions(
                         cameraOptions["captureDurationCountDown"] as Int,
                         cameraOptions["faceCropScale"] as Float,
                         cameraOptions["roiSize"] as Float,
                         cameraOptions["minDocWidthPercentage"] as Float,
                         cameraOptions["maxDocWidthPercentage"] as Float,
-                    ),
-                    ArrayList(scannableDocuments.map {
-                        ScannableDocument(
-                            ObjectDetectionObjectTypeStringToObjectTypeMapping[it["mainSide"]!!]!!,
-                            if (it["secondarySide"] != null) ObjectDetectionObjectTypeStringToObjectTypeMapping[it["secondarySide"]!!] else null,
-                        )
-                    }),
+                    )
                 )
             )
 
@@ -132,23 +120,12 @@ class FlutterDocumentScanner(
         }
     }
 
-    private fun reset(call: MethodCall, result: MethodChannel.Result) {
-        try {
-            if (this.scanner != null) {
-                this.scanner!!.reset()
-            }
-            result.success(true)
-        } catch (e: Exception) {
-            result.error(e.toString(), e.message, "")
-        }
-    }
-
     override fun onInitialized() {
         this.eventStreamHandler?.sendOnInitializedEventToFlutter()
     }
 
-    override fun onDocumentScanned(mainSide: DocumentScannerResult, secondarySide: DocumentScannerResult?) {
-        this.eventStreamHandler?.sendOnDocumentScannedEventToFlutter(mainSide, secondarySide)
+    override fun onFaceScanned(face: LivenessFace) {
+        this.eventStreamHandler?.sendOnFaceScannedEventToFlutter(face)
     }
 
     override fun onFrameStatusChanged(frameStatus: FrameStatus) {
@@ -159,11 +136,7 @@ class FlutterDocumentScanner(
         this.eventStreamHandler?.sendOnCaptureCountDownChangedEventToFlutter(current, max)
     }
 
-    override fun onCurrentSideChanged(currentSide: DocumentSide) {
-        this.eventStreamHandler?.sendOnCurrentSideChangedEventToFlutter(currentSide)
-    }
-
-    class DocumentScannerEventStreamHandler(private var context: Context) : EventChannel.StreamHandler {
+    class FaceScannerEventStreamHandler(private var context: Context) : EventChannel.StreamHandler {
         private var events: EventChannel.EventSink? = null
 
         override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
@@ -197,30 +170,12 @@ class FlutterDocumentScanner(
             }
         }
 
-        fun sendOnDocumentScannedEventToFlutter(mainSide: DocumentScannerResult, secondarySide: DocumentScannerResult?) {
+        fun sendOnFaceScannedEventToFlutter(face: LivenessFace) {
             if (events != null) {
                 (context as Activity).runOnUiThread {
                     val event = HashMap<String, Any>()
-                    event["type"] = "onDocumentScanned"
-                    val values = HashMap<String, Any?>()
-                    values["mainSide"] = documentScannerResultToFlutterMap(mainSide)
-                    if (secondarySide!=null) {
-                        values["secondarySide"] = documentScannerResultToFlutterMap(secondarySide!!)
-                    }
-
-                    event["values"] = values
-                    events!!.success(event)
-                }
-            }
-        }
-
-
-        fun sendOnCurrentSideChangedEventToFlutter(currentSide: DocumentSide) {
-            if (events != null) {
-                (context as Activity).runOnUiThread {
-                    val event = HashMap<String, Any>()
-                    event["type"] = "onCurrentSideChanged"
-                    event["values"] = currentSide.name
+                    event["type"] = "onFaceScanned"
+                    event["values"] = livenessFaceToFlutterMap(face)
                     events!!.success(event)
                 }
             }
@@ -240,16 +195,25 @@ class FlutterDocumentScanner(
             }
         }
 
-        private fun documentScannerResultToFlutterMap(detection: DocumentScannerResult): HashMap<String, Any?> {
-            val values = HashMap<String, Any?>()
-            values["documentType"] = detection.documentType.name
-            values["documentGroup"] = detection.documentGroup.name
-            values["fullImage"] = bitmapToFlutterByteArray(detection.fullImage)
-            values["documentImage"] = bitmapToFlutterByteArray(detection.documentImage)
-            if (detection.faceImage != null) {
-                values["faceImage"] = bitmapToFlutterByteArray(detection.faceImage!!)
+        private fun livenessFaceToFlutterMap(livenessFace: LivenessFace): HashMap<String, Any?> {
+            var values = HashMap<String, Any?>()
+            values["image"] = bitmapToFlutterByteArray(livenessFace.image!!)
+            values["leftEyeOpenProbability"] = livenessFace.leftEyeOpenProbability
+            values["rightEyeOpenProbability"] = livenessFace.rightEyeOpenProbability
+            values["headEulerAngleX"] = livenessFace.headEulerAngleX
+            values["headEulerAngleY"] = livenessFace.headEulerAngleY
+            values["headEulerAngleZ"] = livenessFace.headEulerAngleZ
+
+            if (livenessFace.headDirection != null) {
+                values["headDirection"] = livenessFace.headDirection!!.name
             } else {
-                values["faceImage"] = null
+                values["headDirection"] = null
+            }
+
+            if (livenessFace.eyesStatus != null) {
+                values["eyesStatus"] = livenessFace.eyesStatus!!.name
+            } else {
+                values["eyesStatus"] = null
             }
 
             return values

@@ -7,9 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import com.ekycsolutions.ekyc_id_flutter.R
+import com.ekycsolutions.ekycid.core.models.FrameStatus
+import com.ekycsolutions.ekycid.livenessdetection.LivenessDetectionEventListener
+import com.ekycsolutions.ekycid.livenessdetection.LivenessDetectionResult
+import com.ekycsolutions.ekycid.livenessdetection.LivenessDetectionView
+import com.ekycsolutions.ekycid.livenessdetection.cameraview.LivenessFace
+import com.ekycsolutions.ekycid.livenessdetection.cameraview.LivenessPromptType
 
-import com.ekycsolutions.ekycid.livenessdetection.*
-import com.ekycsolutions.ekycid.models.FrameStatus
 import io.flutter.plugin.common.EventChannel
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -22,7 +26,7 @@ class FlutterLivenessDetection(
     private var context: Context,
     private val viewId: Int
 ) : PlatformView, MethodChannel.MethodCallHandler, LivenessDetectionEventListener {
-    private var cameraView: LivenessDetectionCameraView? = null
+    private var cameraView: LivenessDetectionView? = null
     private var cameraViewView: View = LayoutInflater.from(context as Activity).inflate(R.layout.liveness_detection_viewfinder, null)
     private val methodChannel: MethodChannel =
         MethodChannel(binding.binaryMessenger, "LivenessDetection_MethodChannel_$viewId")
@@ -30,11 +34,11 @@ class FlutterLivenessDetection(
         EventChannel(binding.binaryMessenger, "LivenessDetection_EventChannel_$viewId")
     private val eventStreamHandler = LivenessDetectionEventStreamHandler(context)
 
-    private val LIVENESS_PROMPT_TYPE_MAPPING: HashMap<String, LivenessPromptType> = hashMapOf(
-        "BLINKING" to LivenessPromptType.BLINKING,
-        "LOOK_LEFT" to LivenessPromptType.LOOK_LEFT,
-        "LOOK_RIGHT" to LivenessPromptType.LOOK_RIGHT
-    )
+//    private val LIVENESS_PROMPT_TYPE_MAPPING: HashMap<String, LivenessPromptType> = hashMapOf(
+//        "BLINKING" to LivenessPromptType.BLINKING,
+//        "LOOK_LEFT" to LivenessPromptType.LOOK_LEFT,
+//        "LOOK_RIGHT" to LivenessPromptType.LOOK_RIGHT
+//    )
 
     init {
         this.cameraView = cameraViewView.findViewById(R.id.livenessDetectionViewFinder)
@@ -73,14 +77,14 @@ class FlutterLivenessDetection(
             val args = call.arguments as HashMap<*, *>
             val prompts = args["prompts"] as ArrayList<String>
             val promptTimerCountDownSec = args["promptTimerCountDownSec"] as Int
-            this.cameraView!!.setOptions(
-                LivenessDetectionOptions(
-                    ArrayList(prompts.map {
-                        LIVENESS_PROMPT_TYPE_MAPPING[it]!!
-                    }),
-                    promptTimerCountDownSec
-                )
-            )
+//            this.cameraView!!.setOptions(
+//                LivenessDetectionOptions(
+//                    ArrayList(prompts.map {
+//                        LIVENESS_PROMPT_TYPE_MAPPING[it]!!
+//                    }),
+//                    promptTimerCountDownSec
+//                )
+//            )
             this.cameraView!!.addListener(this)
             this.cameraView!!.start()
             result.success(true)
@@ -103,43 +107,67 @@ class FlutterLivenessDetection(
 
     private fun nextImage(call: MethodCall, result: MethodChannel.Result) {
         try {
-            this.cameraView!!.nextImage()
+//            this.cameraView!!.nextImage()
             result.success(true)
         } catch (e: Exception) {
             result.error(e.toString(), e.message, "")
         }
     }
 
-    override fun onInitialize() {
-        this.eventStreamHandler.sendOnInitializedEventToFlutter()
-    }
+//    override fun onInitialize() {
+//        this.eventStreamHandler.sendOnInitializedEventToFlutter()
+//    }
+//
+//    override fun onFrame(frameStatus: FrameStatus) {
+//        this.eventStreamHandler.sendOnFrameEventToFlutter(frameStatus)
+//    }
+//
+//    override fun onPromptCompleted(completedPromptIndex: Int, success: Boolean, progress: Float) {
+//        this.eventStreamHandler.sendOnPromptCompletedEventToFlutter(
+//            completedPromptIndex,
+//            success,
+//            progress
+//        )
+//    }
+//
+//    override fun onAllPromptsCompleted(detection: LivenessDetectionResult) {
+//        this.eventStreamHandler.sendOnAllPromptsCompletedEventToFlutter(detection)
+//    }
+//
+//    override fun onFocus() {
+//        this.eventStreamHandler.sendOnFocusEventToFlutter()
+//    }
+//
+//    override fun onFocusDropped() {
+//        this.eventStreamHandler.sendOnFocusDroppedEventToFlutter()
+//    }
 
-    override fun onFrame(frameStatus: FrameStatus) {
-        this.eventStreamHandler.sendOnFrameEventToFlutter(frameStatus)
-    }
+//    override fun onCountDownChanged(current: Int, max: Int) {
+//        this.eventStreamHandler.sendOnCountDownChangedEventToFlutter(current, max)
+//    }
 
-    override fun onPromptCompleted(completedPromptIndex: Int, success: Boolean, progress: Float) {
-        this.eventStreamHandler.sendOnPromptCompletedEventToFlutter(
-            completedPromptIndex,
-            success,
-            progress
-        )
-    }
-
-    override fun onAllPromptsCompleted(detection: LivenessDetectionResult) {
-        this.eventStreamHandler.sendOnAllPromptsCompletedEventToFlutter(detection)
-    }
-
-    override fun onFocus() {
-        this.eventStreamHandler.sendOnFocusEventToFlutter()
-    }
-
-    override fun onFocusDropped() {
-        this.eventStreamHandler.sendOnFocusDroppedEventToFlutter()
+    override fun onActivePromptChanged(activePrompt: LivenessPromptType?) {
+        TODO("Not yet implemented")
     }
 
     override fun onCountDownChanged(current: Int, max: Int) {
-        this.eventStreamHandler.sendOnCountDownChangedEventToFlutter(current, max)
+        TODO("Not yet implemented")
+    }
+
+    override fun onFocusChanged(isFocusing: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onFrameStatusChanged(frameStatus: FrameStatus) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onLivenessTestCompleted(result: LivenessDetectionResult) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onProgressChanged(progress: Float) {
+        TODO("Not yet implemented")
     }
 
     class LivenessDetectionEventStreamHandler(private var context: Context) :

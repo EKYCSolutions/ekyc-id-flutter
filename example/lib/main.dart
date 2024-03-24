@@ -1,16 +1,13 @@
-import 'package:ekyc_id_flutter/core/models/api_result.dart';
+import 'package:ekyc_id_flutter/ekyc_id.dart';
 import 'package:flutter/material.dart';
-
-import 'package:ekyc_id_flutter/core/services.dart';
-import 'package:ekyc_id_flutter/ekyc_id_express.dart';
-import 'package:ekyc_id_flutter/core/models/language.dart';
-import 'package:ekyc_id_flutter/core/document_scanner/document_scanner_result.dart';
-import 'package:ekyc_id_flutter/core/liveness_detection/liveness_detection_result.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:ekyc_id_flutter/src/core/document_detection.dart';
+import 'package:ekyc_id_flutter/src/document_scanner/document_scanner_values.dart';
+import 'package:ekyc_id_flutter/src/core/models/object_detection_object_type.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  EkycIDServices.instance.setURL("SERVER_URL");
   runApp(MyApp());
 }
 
@@ -42,19 +39,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<void> onKYCCompleted({
-    required LivenessDetectionResult liveness,
-    required DocumentScannerResult mainSide,
-    DocumentScannerResult? secondarySide,
-  }) async {
-    print("== ACCESS RESULTS HERE ==");
+  // var faceDetector = FaceDetectionController();
+  var documentDetector = DocumentDetectionController();
 
-    ApiResult result = await EkycIDServices.instance.faceCompare(
-      faceImage1: mainSide.faceImage,
-      faceImage2: liveness.frontFace?.image,
-    );
-
-    print(result.data);
+  @override
+  void initState() {
+    super.initState();
+    documentDetector.initialize();
   }
 
   @override
@@ -63,13 +54,58 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Center(
         child: TextButton(
           onPressed: () async {
+            // final ImagePicker picker = ImagePicker();
+
+            // final XFile? image =
+            //     await picker.pickImage(source: ImageSource.gallery);
+            // var bytes = await image?.readAsBytes();
+
+            // if (bytes != null) {
+            //   await documentDetector.setWhiteList([
+            //     ObjectDetectionObjectType.NATIONAL_ID_0,
+            //   ]);
+            //   List<DocumentScannerResult> detections =
+            //       await documentDetector.detect(bytes);
+
+            //   if (detections.isNotEmpty) {
+            //     showDialog(
+            //       context: context,
+            //       builder: (BuildContext context) {
+            //         return Dialog(
+            //           child: Image.memory(detections[0].documentImage),
+            //         );
+            //       },
+            //     );
+            //   }
+            // }
             await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
               builder: (BuildContext context) {
-                return EkycIDExpress(
-                  language: Language.KH,
-                  onKYCCompleted: onKYCCompleted,
+                // return FaceScannerView(
+                //   onFaceScanned: (face) async {
+                //     print(face.toString());
+                //   },
+                // );
+                return DocumentScannerView(
+                  onDocumentScanned: (mainSide, secondarySide) async {
+                    print(mainSide.toString());
+                    print(secondarySide?.toString());
+                  },
+                  options: DocumentScannerOptions(scannableDocuments: [
+                    ScannableDocument(
+                      mainSide: ObjectDetectionObjectType.NATIONAL_ID_0,
+                    )
+                  ]),
+                  overlayBuilder: (BuildContext context,
+                      FrameStatus frameStatus,
+                      DocumentSide side,
+                      int countDown) {
+                    return Container(
+                      child: Center(
+                          child: Text("$frameStatus, $side, $countDown")),
+                    );
+                  },
                 );
               },
             );

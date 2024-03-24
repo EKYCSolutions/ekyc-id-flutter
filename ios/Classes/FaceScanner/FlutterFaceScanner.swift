@@ -1,21 +1,22 @@
 //
-//  FlutterDocumentScanner.swift
+//  FlutterFaceScanner.swift
 //  ekyc_id_flutter
 //
-//  Created by Socret Lee on 6/11/22.
+//  Created by Socret Lee on 3/16/24.
 //
+
 import EkycID
 import Foundation
 import AVFoundation
 
-public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScannerEventListener {
+public class FlutterFaceScanner: NSObject, FlutterPlatformView, FaceScannerEventListener {
     let frame: CGRect
     let viewId: Int64
     var flutterScannerView: UIView?
-    var scanner: DocumentScannerView!
+    var scanner: FaceScannerView!
     var methodChannel: FlutterMethodChannel?
     var eventChannel: FlutterEventChannel?
-    var eventStreamHandler: DocumentScannerEventStreamHandler?
+    var eventStreamHandler: FaceScannerEventStreamHandler?
     
     init(frame: CGRect, viewId: Int64, messenger: FlutterBinaryMessenger, args: Any?) {
         let screenSize = UIScreen.main.bounds
@@ -29,9 +30,10 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         self.viewId = viewId
         super.init()
         self.flutterScannerView = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
-        self.methodChannel = FlutterMethodChannel(name: "DocumentScanner_MethodChannel_" + String(viewId), binaryMessenger: messenger)
-        self.eventChannel = FlutterEventChannel(name: "DocumentScanner_EventChannel_" + String(viewId), binaryMessenger: messenger)
-        self.eventStreamHandler = DocumentScannerEventStreamHandler()
+        self.flutterScannerView?.backgroundColor = .black
+        self.methodChannel = FlutterMethodChannel(name: "FaceScanner_MethodChannel_" + String(viewId), binaryMessenger: messenger)
+        self.eventChannel = FlutterEventChannel(name: "FaceScanner_EventChannel_" + String(viewId), binaryMessenger: messenger)
+        self.eventStreamHandler = FaceScannerEventStreamHandler()
         self.methodChannel!.setMethodCallHandler(self.onMethodCall)
         self.eventChannel!.setStreamHandler(self.eventStreamHandler)
     }
@@ -42,40 +44,33 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
     
     private func start(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         let args = call.arguments as! [String: Any?]
-        self.scanner = DocumentScannerView(frame: self.flutterScannerView!.frame)
+        let useFrontCamera = args["useFrontCamera"] as! Bool
+        self.scanner = FaceScannerView(
+            frame: self.flutterScannerView!.frame,
+            useFrontCamera: useFrontCamera
+        )
         self.scanner.addListener(self)
         self.scanner.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         self.flutterScannerView!.addSubview(self.scanner)
-        self.scanner.start(options: self.argsToDocumentScannerOptions(args))
+        self.scanner.start(options: self.argsToFaceScannerOptions(args))
         result(true)
     }
     
-    private func argsToDocumentScannerOptions(_ args: [String: Any?]) -> DocumentScannerOptions {
+    private func argsToFaceScannerOptions(_ args: [String: Any?]) -> FaceScannerOptions {
         let cameraOptions = args["cameraOptions"] as! [String: Any?]
         let captureDurationCountDown = cameraOptions["captureDurationCountDown"] as! Int
         let faceCropScale = cameraOptions["faceCropScale"] as! NSNumber
         let roiSize = cameraOptions["roiSize"] as! NSNumber
-        let minDocWidthPercentage = cameraOptions["minDocWidthPercentage"] as! NSNumber
-        let maxDocWidthPercentage = cameraOptions["maxDocWidthPercentage"] as! NSNumber
-        let scannableDocuments = args["scannableDocuments"] as! [[String: Any]]
-        return DocumentScannerOptions(
-            cameraOptions: DocumentScannerCameraOptions(
+        let minFaceWidthPercentage = cameraOptions["minFaceWidthPercentage"] as! NSNumber
+        let maxFaceWidthPercentage = cameraOptions["maxFaceWidthPercentage"] as! NSNumber
+        return FaceScannerOptions(
+            cameraOptions: FaceScannerCameraOptions(
                 captureDurationCountDown: captureDurationCountDown,
                 faceCropScale: faceCropScale.floatValue,
                 roiSize: roiSize.floatValue,
-                minDocWidthPercentage: minDocWidthPercentage.floatValue,
-                maxDocWidthPercentage: maxDocWidthPercentage.floatValue
-            ),
-            scannableDocuments: scannableDocuments.map { e in
-                var doc = e as! [String: String?]
-                var mainSide = doc["mainSide"]!
-                var secondarySide = doc["secondarySide"]!
-                
-                return ScannableDocument(
-                    mainSide: StringToObjectDetectionObjectTypeMapping[mainSide!]!,
-                    secondarySide: secondarySide != nil ? StringToObjectDetectionObjectTypeMapping[secondarySide!]! : nil
-                )
-            }
+                minFaceWidthPercentage: minFaceWidthPercentage.floatValue,
+                maxFaceWidthPercentage: maxFaceWidthPercentage.floatValue
+            )
         )
     }
     
@@ -83,16 +78,12 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         self.eventStreamHandler?.sendOnInitializedEventToFlutter()
     }
     
-    public func onDocumentScanned(mainSide: EkycID.DocumentScannerResult, secondarySide: EkycID.DocumentScannerResult?) {
-        self.eventStreamHandler?.sendOnDocumentScannedEventToFlutter(mainSide: mainSide, secondarySide: secondarySide)
+    public func onFaceScanned(_ face: EkycID.LivenessFace) {
+        self.eventStreamHandler?.sendOnFaceScannedEventToFlutter(face)
     }
     
     public func onFrameStatusChanged(_ frameStatus: EkycID.FrameStatus) {
         self.eventStreamHandler?.sendOnFrameStatusChangedEventToFlutter(frameStatus)
-    }
-    
-    public func onCurrentSideChanged(_ currentSide: EkycID.DocumentSide) {
-        self.eventStreamHandler?.sendOnCurrentSideChangedEventToFlutter(currentSide)
     }
     
     public func onCaptureCountDownChanged(current: Int, max: Int) {
@@ -110,13 +101,6 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         if (self.scanner != nil) {
             self.scanner!.stop()
             self.scanner = nil
-        }
-        result(true)
-    }
-    
-    private func reset(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
-        if (self.scanner != nil) {
-            self.scanner!.reset()
         }
         result(true)
     }
@@ -144,20 +128,13 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
                 result(FlutterError(code: "dispose Error", message: nil, details: nil))
             }
             break
-        case "reset":
-            do {
-                try self.reset(call: call, result: result)
-            } catch {
-                result(FlutterError(code: "dispose Error", message: nil, details: nil))
-            }
-            break
         default:
             result(FlutterMethodNotImplemented)
             break
         }
     }
     
-    class DocumentScannerEventStreamHandler: NSObject, FlutterStreamHandler {
+    class FaceScannerEventStreamHandler: NSObject, FlutterStreamHandler {
         var events: FlutterEventSink?
         
         func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
@@ -190,30 +167,12 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
             }
         }
         
-        func sendOnCurrentSideChangedEventToFlutter(_ currentSide: EkycID.DocumentSide) {
+        func sendOnFaceScannedEventToFlutter(_ face: EkycID.LivenessFace) {
             if (self.events != nil) {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
-                    event["type"] = "onCurrentSideChanged"
-                    event["values"] = "\(currentSide)"
-                    self.events!(event)
-                }
-            }
-        }
-        
-        func sendOnDocumentScannedEventToFlutter(mainSide: EkycID.DocumentScannerResult, secondarySide: EkycID.DocumentScannerResult?) {
-            if (self.events != nil) {
-                DispatchQueue.main.async {
-                    var event = [String: Any]()
-                    event["type"] = "onDocumentScanned"
-                    
-                    var result = [String: Any?]()
-                    result["mainSide"] = mainSide.toFlutterMap()
-                    if secondarySide != nil {
-                        result["secondarySide"] = secondarySide!.toFlutterMap()
-                    }
-                    
-                    event["values"] = result
+                    event["type"] = "onFaceScanned"
+                    event["values"] = face.toFlutterMap()
                     self.events!(event)
                 }
             }
@@ -232,22 +191,5 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
                 }
             }
         }
-    }
-}
-
-extension DocumentScannerResult {
-    func toFlutterMap() -> [String: Any?] {
-        var values = [String: Any?]()
-        values["documentType"] = "\(self.documentType)"
-        values["documentGroup"] = "\(self.documentGroup)"
-        values["fullImage"] = FlutterStandardTypedData(bytes: self.fullImage.jpegData(compressionQuality: 0.8)!)
-        values["documentImage"] = FlutterStandardTypedData(bytes: self.documentImage.jpegData(compressionQuality: 0.8)!)
-        if (self.faceImage != nil) {
-            values["faceImage"] = FlutterStandardTypedData(bytes: self.faceImage!.jpegData(compressionQuality: 0.8)!)
-        } else {
-            values["faceImage"] = nil
-        }
-        
-        return values
     }
 }

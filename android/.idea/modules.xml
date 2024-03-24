@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ekyc_id_flutter.iml" filepath="$PROJECT_DIR$/.idea/modules/ekyc_id_flutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ekyc_id_flutter.iml" filepath="$PROJECT_DIR$/.idea/ekyc_id_flutter.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ekyc_id_flutter.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/ekyc_id_flutter.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ekyc_id_flutter.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ekyc_id_flutter.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ekyc_id_flutter.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/ekyc_id_flutter.unitTest.iml" />
