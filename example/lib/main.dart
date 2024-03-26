@@ -87,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 //     print(face.toString());
                 //   },
                 // );
+
                 return DocumentScannerView(
                   onDocumentScanned: (mainSide, secondarySide) async {
                     print(mainSide.toString());
