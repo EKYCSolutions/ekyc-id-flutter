@@ -1,8 +1,12 @@
 PODS:
-  - ekyc_id_flutter (1.0.0):
-    - EkycID (~> 2.0.5)
+  - audio_session (0.0.1):
     - Flutter
-  - EkycID (2.0.5):
+  - device_info_plus (0.0.1):
+    - Flutter
+  - ekyc_id_flutter (1.0.0):
+    - EkycID (~> 2.0.7)
+    - Flutter
+  - EkycID (2.0.7):
     - GoogleMLKit/FaceDetection (= 2.5.0)
     - OpenCV (= 4.3.0)
     - TensorFlowLiteSwift (~> 2.12.0)
@@ -76,7 +80,7 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - permission_handler_apple (9.0.4):
+  - permission_handler_apple (9.1.1):
     - Flutter
   - PromisesObjC (2.4.0)
   - Protobuf (3.26.0)
@@ -91,8 +95,9 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - ekyc_id_flutter (from `.symlinks/plugins/ekyc_id_flutter/ios`)
-  - EkycID (from `/Users/socretlee/CodingDrive/ekyc/ekyc-id-ios`)
   - Flutter (from `Flutter`)
   - flutter_beep (from `.symlinks/plugins/flutter_beep/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
@@ -103,13 +108,13 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - EkycID
     - GoogleDataTransport
     - GoogleMLKit
     - GoogleToolboxForMac
     - GoogleUtilities
     - GoogleUtilitiesComponents
     - GTMSessionFetcher
-    - lottie-ios
     - MLImage
     - MLKitCommon
     - MLKitFaceDetection
@@ -122,10 +127,12 @@ SPEC REPOS:
     - TensorFlowLiteSwift
 
 EXTERNAL SOURCES:
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   ekyc_id_flutter:
     :path: ".symlinks/plugins/ekyc_id_flutter/ios"
-  EkycID:
-    :path: "/Users/socretlee/CodingDrive/ekyc/ekyc-id-ios"
   Flutter:
     :path: Flutter
   flutter_beep:
@@ -143,8 +150,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
-  ekyc_id_flutter: 37df0dd8757bd524eb6dc95f5419d892b3ee2f98
-  EkycID: 87c9da68b5da78b64615794fb29ff506f581f7d6
+  device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
+  ekyc_id_flutter: 2038336f44c62c8f6d4ba705ee39a26d61547da5
+  EkycID: b80f3abed7196f4ef9e5099e48b299cf636c4aa5
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_beep: 54fb393b22dfa0f0e4573c81b1c74dd71c4e5af8
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
@@ -161,14 +169,14 @@ SPEC CHECKSUMS:
   MLKitVision: e87dc3f2e456a6ab32361ebd985e078dd2746143
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   OpenCV: 681e0451c1e54c5930a8922277f817ed5d5ab459
-  path_provider_foundation: c68054786f1b4f3343858c1e1d0caaded73f0be9
-  permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
+  path_provider_foundation: 3784922295ac71e43754bd15e0653ccfd36a147c
+  permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   Protobuf: 5685c66a07eaad9d18ce5ab618e9ac01fd04b5aa
   TensorFlowLiteC: 20785a69299185a379ba9852b6625f00afd7984a
   TensorFlowLiteSwift: 3a4928286e9e35bdd3e17970f48e53c80d25e793
   vibration: 7d883d141656a1c1a6d8d238616b2042a51a1241
 
-PODFILE CHECKSUM: d42a7e22a21ebbaf976226443f10440293668ff8
+PODFILE CHECKSUM: 4904b4cd90c159c1930745e215e1cba88dd8ec5e
 
 COCOAPODS: 1.15.2

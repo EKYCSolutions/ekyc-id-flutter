@@ -1,14 +1,12 @@
 package com.ekycsolutions.ekyc_id_flutter
 
 import androidx.annotation.NonNull
+import com.ekycsolutions.ekycid.EkycID
 import com.ekycsolutions.ekyc_id_flutter.DocumentScanner.DocumentScannerViewFactory
 import com.ekycsolutions.ekyc_id_flutter.FaceScanner.FaceScannerViewFactory
 import com.ekycsolutions.ekyc_id_flutter.LivenessDetection.LivenessDetectionViewFactory
-import com.ekycsolutions.ekycid.EkycID
-import com.ekycsolutions.ekycid.EkycID
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
-import io.flutter.embedding.engine.plugins.FlutterPlugin.FlutterPluginBinding
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 

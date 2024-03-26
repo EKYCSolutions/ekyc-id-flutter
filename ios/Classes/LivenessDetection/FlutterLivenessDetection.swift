@@ -4,7 +4,6 @@ import EkycID
 import Foundation
 
 public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDetectionEventListener {
-public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDetectionEventListener {
     let frame: CGRect
     let viewId: Int64
     var flutterScannerView: UIView?
@@ -12,13 +11,13 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
     var methodChannel: FlutterMethodChannel?
     var eventChannel: FlutterEventChannel?
     var eventStreamHandler: LivenessDetectionEventStreamHandler?
-    
+        
     let LIVENESS_PROMPT_TYPE_MAPPING: [String: LivenessPromptType] = [
         "BLINKING": .BLINKING,
         "LOOK_LEFT": .LOOK_LEFT,
         "LOOK_RIGHT": .LOOK_RIGHT,
     ]
-    
+        
     init(frame: CGRect, viewId: Int64, messenger: FlutterBinaryMessenger, args: Any?) {
         let screenSize = UIScreen.main.bounds
         let screenWidth = screenSize.width
@@ -33,14 +32,14 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
         self.methodChannel!.setMethodCallHandler(self.onMethodCall)
         self.eventChannel!.setStreamHandler(self.eventStreamHandler)
     }
-    
+        
     public func view() -> UIView {
         return self.flutterScannerView!
     }
-    
+        
     private func start(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         let args = call.arguments as! [String: Any]
-
+        var prompts = args["prompts"] as! [String]
         let promptTimerCountDownSec = args["promptTimerCountDownSec"] as! Int
         self.scanner = LivenessDetectionView(frame: self.flutterScannerView!.frame)
         self.scanner!.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -59,7 +58,7 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
         self.flutterScannerView!.addSubview(self.scanner!)
         result(true)
     }
-    
+        
     private func dispose(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         if (self.scanner != nil) {
             self.scanner!.stop()
@@ -67,12 +66,12 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
         }
         result(true)
     }
-    
+        
     private func nextImage(call: FlutterMethodCall, result: @escaping FlutterResult) throws {
         self.scanner!.nextImage()
         result(true)
     }
-    
+        
     private func onMethodCall(call: FlutterMethodCall, result: @escaping FlutterResult) -> Void {
         switch (call.method) {
         case "start":
@@ -87,12 +86,12 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
             } catch {
                 result(FlutterError(code: "dispose Error", message: nil, details: nil))
             }
-      
+            
         default:
             result(FlutterMethodNotImplemented)
         }
     }
-    
+        
     public func onInitialized() {
         eventStreamHandler?.sendOnInitializedEventToFlutter()
     }
@@ -104,14 +103,14 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
     public func onProgressChanged(_ progress: Float) {
         eventStreamHandler?.sendOnProgressChangedEventToFlutter(progress)
     }
-    
+        
     public func onCountDownChanged(current: Int, max: Int) {
         eventStreamHandler?.sendOnCountDownChangedEventToFlutter(
             current: current,
             max: max
         )
     }
-    
+        
     public func onFrameStatusChanged(_ frameStatus: EkycID.FrameStatus) {
         eventStreamHandler?.sendOnFrameStatusChangedEventToFlutter(frameStatus)
     }
@@ -123,7 +122,7 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
     public func onLivenessTestCompleted(_ result: EkycID.LivenessDetectionResult) {
         eventStreamHandler?.sendOnLivenessTestCompletedEventToFlutter(result)
     }
-    
+        
     class LivenessDetectionEventStreamHandler: NSObject, FlutterStreamHandler {
         var events: FlutterEventSink?
         
@@ -146,7 +145,7 @@ public class FlutterLivenessDetection: NSObject, FlutterPlatformView, LivenessDe
                 }
             }
         }
-
+        
         func sendOnCountDownChangedEventToFlutter(current: Int, max: Int) {
             if (self.events != nil) {
                 DispatchQueue.main.async {

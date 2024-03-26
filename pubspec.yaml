@@ -1,6 +1,6 @@
 name: ekyc_id_flutter
 description: A Flutter Plugin to interact with EkycID.
-version: 1.0.27
+version: 1.0.28
 homepage: https://ekycsolutions.com
 
 environment:
@@ -8,20 +8,32 @@ environment:
   flutter: ">=2.0.0"
 
 dependencies:
-  dio: ^5.4.1
-  http_parser: ^4.0.1
-  flutter_spinkit: ^5.1.0
-  flutter_font_icons: ^2.2.4
   flutter:
     sdk: flutter
-  
+  dio: ^5.4.1
+  vibration: ^1.7.3
+  just_audio: ^0.9.24
+  http_parser: ^4.0.1
+  flutter_beep: ^1.0.0
+  flutter_spinkit: ^5.1.0
+  flutter_font_icons: ^2.2.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 flutter:
-   
+  assets:
+    - packages/ekyc_id_flutter/assets/blink_en.mp3
+    - packages/ekyc_id_flutter/assets/look_left_en.mp3
+    - packages/ekyc_id_flutter/assets/look_right_en.mp3
+    - packages/ekyc_id_flutter/assets/scan_back_en.mp3
+    - packages/ekyc_id_flutter/assets/scan_front_en.mp3
+    - packages/ekyc_id_flutter/assets/blink_kh.mp3
+    - packages/ekyc_id_flutter/assets/look_left_kh.mp3
+    - packages/ekyc_id_flutter/assets/look_right_kh.mp3
+    - packages/ekyc_id_flutter/assets/scan_back_kh.mp3
+    - packages/ekyc_id_flutter/assets/scan_front_kh.mp3
   plugin:
     platforms:
       android:

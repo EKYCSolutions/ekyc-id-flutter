@@ -135,6 +135,7 @@ class FaceScannerViewState extends State<FaceScannerView> {
           Vibration.vibrate();
         }
       });
+
     } catch (e) {}
   }
 

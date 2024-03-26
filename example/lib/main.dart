@@ -40,12 +40,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   // var faceDetector = FaceDetectionController();
-  var documentDetector = DocumentDetectionController();
+  // var documentDetector = DocumentDetectionController();
 
   @override
   void initState() {
     super.initState();
-    documentDetector.initialize();
+    // documentDetector.initialize();
   }
 
   @override

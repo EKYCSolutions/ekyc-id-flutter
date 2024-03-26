@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import com.ekycsolutions.ekyc_id_flutter.R
 import com.ekycsolutions.ekycid.core.models.FrameStatus
 import com.ekycsolutions.ekycid.livenessdetection.LivenessDetectionEventListener
@@ -15,23 +16,22 @@ import com.ekycsolutions.ekycid.livenessdetection.LivenessDetectionView
 import com.ekycsolutions.ekycid.livenessdetection.cameraview.LivenessFace
 import com.ekycsolutions.ekycid.livenessdetection.cameraview.LivenessPromptType
 
-import io.flutter.plugin.common.EventChannel
-import io.flutter.embedding.engine.plugins.FlutterPlugin
+import java.io.ByteArrayOutputStream
 import io.flutter.plugin.common.MethodCall
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.platform.PlatformView
-import okhttp3.internal.toImmutableList
-import org.intellij.lang.annotations.Language
-import java.io.ByteArrayOutputStream
-import java.util.Collections
+import io.flutter.embedding.engine.plugins.FlutterPlugin
 
 class FlutterLivenessDetection(
     private var binding: FlutterPlugin.FlutterPluginBinding,
     private var context: Context,
     private val viewId: Int
 ) : PlatformView, MethodChannel.MethodCallHandler, LivenessDetectionEventListener {
-    private var cameraView: LivenessDetectionView? = null
-    private var cameraViewView: View = LayoutInflater.from(context as Activity).inflate(R.layout.liveness_detection_viewfinder, null)
+    private var scanner: LivenessDetectionView? = null
+
+    private var scannerView: LinearLayout = LinearLayout(context)
+
     private val methodChannel: MethodChannel =
         MethodChannel(binding.binaryMessenger, "LivenessDetection_MethodChannel_$viewId")
     private val eventChannel: EventChannel =
@@ -45,14 +45,13 @@ class FlutterLivenessDetection(
 //    )
 
     init {
-        this.cameraView = cameraViewView.findViewById(R.id.livenessDetectionViewFinder)
         this.methodChannel.setMethodCallHandler(this)
         this.eventChannel.setStreamHandler(eventStreamHandler)
     }
 
 
     override fun getView(): View {
-        return cameraViewView
+        return scannerView
     }
 
     override fun dispose() {
@@ -88,8 +87,8 @@ class FlutterLivenessDetection(
 //                    promptTimerCountDownSec
 //                )
 //            )
-            this.cameraView!!.addListener(this)
-            this.cameraView!!.start()
+            this.scanner!!.addListener(this)
+            this.scanner!!.start()
             result.success(true)
         } catch (e: Exception) {
             result.error(e.toString(), e.message, "")
@@ -98,9 +97,9 @@ class FlutterLivenessDetection(
 
     private fun disposeFlutter(call: MethodCall, result: MethodChannel.Result) {
         try {
-            if (this.cameraView != null) {
-                this.cameraView!!.stop()
-                this.cameraView = null
+            if (this.scanner != null) {
+                this.scanner!!.stop()
+                this.scanner = null
             }
             result.success(true)
         } catch (e: Exception) {
@@ -110,6 +109,8 @@ class FlutterLivenessDetection(
 
     private fun nextImage(call: MethodCall, result: MethodChannel.Result) {
         try {
+            if (scanner != null) {
+            }
 //            this.cameraView!!.nextImage()
             result.success(true)
         } catch (e: Exception) {
@@ -120,57 +121,29 @@ class FlutterLivenessDetection(
 //    override fun onInitialize() {
 //        this.eventStreamHandler.sendOnInitializedEventToFlutter()
 //    }
-//
-//    override fun onFrame(frameStatus: FrameStatus) {
-//        this.eventStreamHandler.sendOnFrameEventToFlutter(frameStatus)
-//    }
-//
-//    override fun onPromptCompleted(completedPromptIndex: Int, success: Boolean, progress: Float) {
-//        this.eventStreamHandler.sendOnPromptCompletedEventToFlutter(
-//            completedPromptIndex,
-//            success,
-//            progress
-//        )
-//    }
-//
-//    override fun onAllPromptsCompleted(detection: LivenessDetectionResult) {
-//        this.eventStreamHandler.sendOnAllPromptsCompletedEventToFlutter(detection)
-//    }
-//
-//    override fun onFocus() {
-//        this.eventStreamHandler.sendOnFocusEventToFlutter()
-//    }
-//
-//    override fun onFocusDropped() {
-//        this.eventStreamHandler.sendOnFocusDroppedEventToFlutter()
-//    }
-
-//    override fun onCountDownChanged(current: Int, max: Int) {
-//        this.eventStreamHandler.sendOnCountDownChangedEventToFlutter(current, max)
-//    }
 
     override fun onActivePromptChanged(activePrompt: LivenessPromptType?) {
-        TODO("Not yet implemented")
+        eventStreamHandler.sendOnActivePromptChangedEventToFlutter(activePrompt)
     }
 
     override fun onCountDownChanged(current: Int, max: Int) {
-        TODO("Not yet implemented")
+        eventStreamHandler.sendOnCountDownChangedEventToFlutter(current, max)
     }
 
     override fun onFocusChanged(isFocusing: Boolean) {
-        TODO("Not yet implemented")
+        eventStreamHandler.sendOnFocusChangedEventToFlutter(isFocusing)
     }
 
     override fun onFrameStatusChanged(frameStatus: FrameStatus) {
-        TODO("Not yet implemented")
+        eventStreamHandler.sendOnFrameStatusChangedEventToFlutter(frameStatus)
     }
 
     override fun onLivenessTestCompleted(result: LivenessDetectionResult) {
-        TODO("Not yet implemented")
+        eventStreamHandler.sendOnLivenessTestCompletedEventToFlutter(result)
     }
 
     override fun onProgressChanged(progress: Float) {
-        TODO("Not yet implemented")
+        eventStreamHandler.sendOnProgressChangedEventToFlutter(progress)
     }
 
     class LivenessDetectionEventStreamHandler(private var context: Context) :
@@ -256,43 +229,20 @@ class FlutterLivenessDetection(
             }
         }
 
-        //        private fun livenessDetectionResultToFlutterMap(detection: LivenessDetectionResult): HashMap<String, Any?> {
-//            val values = HashMap<String, Any?>()
-//
-//            if (detection.frontFace != null) {
-//                values["frontFace"] = livenessFaceToFlutterMap(detection.frontFace!!)
-//            } else {
-//                values["frontFace"] = null
-//            }
-//
-//            if (detection.leftFace != null) {
-//                values["leftFace"] = livenessFaceToFlutterMap(detection.leftFace!!)
-//            } else {
-//                values["leftFace"] = null
-//            }
-//
-//            if (detection.rightFace != null) {
-//                values["rightFace"] = livenessFaceToFlutterMap(detection.rightFace!!)
-//            } else {
-//                values["rightFace"] = null
-//            }
-//
-//            Log.d("livenessDetectionResult", detection.prompts.toString())
-//
-//            var ps = arrayListOf<HashMap<String,Any?>>()
-//
-//            for (p in detection.prompts) {
-//                val v = HashMap<String, Any?>()
-//                v["prompt"] = p.prompt.name
-//                v["success"] = p.success
-//                ps.add(v)
-//            }
-//
-//            values["prompts"] = ps
-//
-//            return values
-//        }
-//
+        fun sendOnCountDownChangedEventToFlutter(current: Int, max: Int) {
+            if (events != null) {
+                (context as Activity).runOnUiThread {
+                    val event = HashMap<String, Any>()
+                    event["type"] = "onCountDownChanged"
+                    val values = HashMap<String, Any?>()
+                    values["current"] = current
+                    values["max"] = max
+                    event["values"] = values
+                    events!!.success(event)
+                }
+            }
+        }
+
         private fun livenessFaceToFlutterMap(livenessFace: LivenessFace?): HashMap<String, Any?>? {
 
             if (livenessFace == null) {
@@ -328,22 +278,5 @@ class FlutterLivenessDetection(
             image.compress(Bitmap.CompressFormat.JPEG, 90, stream)
             return stream.toByteArray()
         }
-
-
-        fun sendOnCountDownChangedEventToFlutter(current: Int, max: Int) {
-            if (events != null) {
-                (context as Activity).runOnUiThread {
-                    val event = HashMap<String, Any>()
-                    event["type"] = "onCountDownChanged"
-                    val values = HashMap<String, Any?>()
-                    values["current"] = current
-                    values["max"] = max
-                    event["values"] = values
-                    events!!.success(event)
-                }
-            }
-        }
-
-
     }
 }

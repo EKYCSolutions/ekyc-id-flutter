@@ -4,8 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import androidx.annotation.RequiresApi
 import com.ekycsolutions.ekyc_id_flutter.R
 import com.ekycsolutions.ekycid.core.models.FrameStatus
 import com.ekycsolutions.ekycid.core.objectdetection.ObjectDetectionObjectTypeStringToObjectTypeMapping
@@ -33,73 +37,13 @@ class FlutterDocumentScanner(
     private val viewId: Int
 ): PlatformView, MethodChannel.MethodCallHandler, DocumentScannerEventListener {
     private var scanner: DocumentScannerView? = null
-    @SuppressLint("ResourceType")
-    private var scannerView: LinearLayout = (context as Activity).findViewById(R.layout.document_scanner_viewfinder)
+
+    private var scannerView: LinearLayout = LinearLayout(context)
     private val methodChannel: MethodChannel =
         MethodChannel(binding.binaryMessenger, "DocumentScanner_MethodChannel_$viewId")
     private val eventChannel: EventChannel =
         EventChannel(binding.binaryMessenger, "DocumentScanner_EventChannel_$viewId")
     private val eventStreamHandler = DocumentScannerEventStreamHandler(context)
-
-    private val OBJECT_TYPE_MAPPING : HashMap<String,ObjectDetectionObjectType> = hashMapOf(
-        "COVID_19_VACCINATION_CARD_0" to  ObjectDetectionObjectType.COVID_19_VACCINATION_CARD_0,
-
-    "COVID_19_VACCINATION_CARD_0_BACK" to  ObjectDetectionObjectType.COVID_19_VACCINATION_CARD_0_BACK,
-
-    "COVID_19_VACCINATION_CARD_1" to  ObjectDetectionObjectType.COVID_19_VACCINATION_CARD_1,
-
-    "COVID_19_VACCINATION_CARD_1_BACK" to  ObjectDetectionObjectType.COVID_19_VACCINATION_CARD_1_BACK,
-
-    "DRIVER_LICENSE_0" to ObjectDetectionObjectType.DRIVER_LICENSE_0,
-
-    "DRIVER_LICENSE_BACK_0" to ObjectDetectionObjectType.DRIVER_LICENSE_0_BACK,
-
-    "DRIVER_LICENSE_1" to  ObjectDetectionObjectType.DRIVER_LICENSE_1,
-
-    "DRIVER_LICENSE_1_BACK" to ObjectDetectionObjectType.DRIVER_LICENSE_1_BACK,
-
-    "LICENSE_PLATE_0_0" to ObjectDetectionObjectType.LICENSE_PLATE_0_0,
-
-    "LICENSE_PLATE_0_1" to ObjectDetectionObjectType.LICENSE_PLATE_0_1,
-
-    "LICENSE_PLATE_1_0" to ObjectDetectionObjectType.LICENSE_PLATE_1_0,
-
-    "LICENSE_PLATE_2_0" to ObjectDetectionObjectType.LICENSE_PLATE_2_0,
-
-    "LICENSE_PLATE_3_0" to ObjectDetectionObjectType.LICENSE_PLATE_3_0,
-
-    "LICENSE_PLATE_3_1" to ObjectDetectionObjectType.LICENSE_PLATE_3_1,
-
-    "NATIONAL_ID_0" to ObjectDetectionObjectType.NATIONAL_ID_0,
-
-    "NATIONAL_ID_0_BACK" to ObjectDetectionObjectType.NATIONAL_ID_0_BACK,
-
-    "NATIONAL_ID_1" to ObjectDetectionObjectType.NATIONAL_ID_1,
-
-    "NATIONAL_ID_1_BACK" to ObjectDetectionObjectType.NATIONAL_ID_1_BACK,
-
-    "NATIONAL_ID_2" to ObjectDetectionObjectType.NATIONAL_ID_2,
-
-    "NATIONAL_ID_2_BACK" to ObjectDetectionObjectType.NATIONAL_ID_2_BACK,
-
-    "PASSPORT_0" to ObjectDetectionObjectType.PASSPORT_0,
-
-    "PASSPORT_0_:P" to ObjectDetectionObjectType.PASSPORT_0_TOP,
-
-    "SUPERFIT_0" to ObjectDetectionObjectType.SUPERFIT_0,
-
-    "SUPERFIT_0_BACK" to ObjectDetectionObjectType.SUPERFIT_0_BACK,
-
-    "VEHICLE_REGISTRATION_0" to ObjectDetectionObjectType.VEHICLE_REGISTRATION_0,
-
-    "VEHICLE_REGISTRATION_0_BACK" to ObjectDetectionObjectType.VEHICLE_REGISTRATION_0_BACK,
-
-    "VEHICLE_REGISTRATION_1" to ObjectDetectionObjectType.VEHICLE_REGISTRATION_1,
-
-    "VEHICLE_REGISTRATION_1_BACK" to ObjectDetectionObjectType.VEHICLE_REGISTRATION_1_BACK,
-
-    "VEHICLE_REGISTRATION_2" to ObjectDetectionObjectType.VEHICLE_REGISTRATION_2
-    )
 
     init {
         this.methodChannel.setMethodCallHandler(this)
@@ -108,7 +52,7 @@ class FlutterDocumentScanner(
 
 
     override fun getView(): View {
-        return scannerView.rootView
+        return scannerView
     }
 
     override fun dispose() {
@@ -148,10 +92,10 @@ class FlutterDocumentScanner(
                 DocumentScannerOptions(
                     DocumentScannerCameraOptions(
                         cameraOptions["captureDurationCountDown"] as Int,
-                        cameraOptions["faceCropScale"] as Float,
-                        cameraOptions["roiSize"] as Float,
-                        cameraOptions["minDocWidthPercentage"] as Float,
-                        cameraOptions["maxDocWidthPercentage"] as Float,
+                        (cameraOptions["faceCropScale"] as Double).toFloat(),
+                        (cameraOptions["roiSize"] as Double).toFloat(),
+                        (cameraOptions["minDocWidthPercentage"] as Double).toFloat(),
+                        (cameraOptions["maxDocWidthPercentage"] as Double).toFloat(),
                     ),
                     ArrayList(scannableDocuments.map {
                         ScannableDocument(
@@ -211,6 +155,7 @@ class FlutterDocumentScanner(
         this.eventStreamHandler?.sendOnInitializedEventToFlutter()
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onDocumentScanned(mainSide: DocumentScannerResult, secondarySide: DocumentScannerResult?) {
         this.eventStreamHandler?.sendOnDocumentScannedEventToFlutter(mainSide, secondarySide)
     }
@@ -261,6 +206,7 @@ class FlutterDocumentScanner(
             }
         }
 
+        @RequiresApi(Build.VERSION_CODES.N)
         fun sendOnDocumentScannedEventToFlutter(mainSide: DocumentScannerResult, secondarySide: DocumentScannerResult?) {
             if (events != null) {
                 (context as Activity).runOnUiThread {
@@ -304,6 +250,7 @@ class FlutterDocumentScanner(
             }
         }
 
+        @RequiresApi(Build.VERSION_CODES.N)
         private fun documentScannerResultToFlutterMap(detection: DocumentScannerResult): HashMap<String, Any?> {
             val values = HashMap<String, Any?>()
             val temp = detection.toMap(context, saveImage = false)
@@ -324,26 +271,5 @@ class FlutterDocumentScanner(
             image.compress(Bitmap.CompressFormat.JPEG, 90, stream)
             return stream.toByteArray()
         }
-    }
-
-    override fun onCurrentSideChanged(currentSide: DocumentSide) {
-        // gets called every time scanning of current side is finished
-        // when switch side, get and send current side to flutter
-        Log.d("onCurrentSideChanged",currentSide.toString())
-        this.eventStreamHandler?.sendOnCurrentSideChangedEventToFlutter(currentSide)
-    }
-
-    override fun onDocumentScanned(
-        mainSide: DocumentScannerResult,
-        secondarySide: DocumentScannerResult?
-    ) {
-        // when scanning of both sides are done
-        this.eventStreamHandler?.sendOnDocumentScannedEventToFlutter(mainSide,secondarySide)
-    }
-
-    override fun onFrameStatusChanged(frameStatus: FrameStatus) {
-        Log.d("onFrameStatusChanged",frameStatus.toString())
-        // called every frame
-        this.eventStreamHandler?.sendOnFrameStatusChangedEventToFlutter(frameStatus)
     }
 }

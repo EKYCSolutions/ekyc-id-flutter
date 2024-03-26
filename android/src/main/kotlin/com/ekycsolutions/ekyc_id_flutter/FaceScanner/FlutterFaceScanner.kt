@@ -27,9 +27,8 @@ class FlutterFaceScanner(
     private val viewId: Int
 ): PlatformView, MethodChannel.MethodCallHandler, FaceScannerEventListener {
     private var scanner: FaceScannerView? = null
-//    private var scannerView: LinearLayout = LayoutInflater.from(context as Activity).inflate(R.layout.document_scanner_viewfinder, null)
-    @SuppressLint("ResourceType")
-    private var scannerView: LinearLayout = (context as Activity).findViewById(R.layout.document_scanner_viewfinder)
+
+    private var scannerView: LinearLayout = LinearLayout(context)
     private val methodChannel: MethodChannel =
         MethodChannel(binding.binaryMessenger, "FaceScanner_MethodChannel_$viewId")
     private val eventChannel: EventChannel =
@@ -43,7 +42,7 @@ class FlutterFaceScanner(
 
 
     override fun getView(): View {
-        return scannerView.rootView
+        return scannerView
     }
 
     override fun dispose() {
@@ -80,8 +79,8 @@ class FlutterFaceScanner(
                         cameraOptions["captureDurationCountDown"] as Int,
                         cameraOptions["faceCropScale"] as Float,
                         cameraOptions["roiSize"] as Float,
-                        cameraOptions["minDocWidthPercentage"] as Float,
-                        cameraOptions["maxDocWidthPercentage"] as Float,
+                        cameraOptions["minFaceWidthPercentage"] as Float,
+                        cameraOptions["maxFaceWidthPercentage"] as Float,
                     )
                 )
             )

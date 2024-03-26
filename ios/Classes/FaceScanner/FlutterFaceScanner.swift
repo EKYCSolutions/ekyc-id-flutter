@@ -10,7 +10,6 @@ import Foundation
 import AVFoundation
 
 public class FlutterFaceScanner: NSObject, FlutterPlatformView, FaceScannerEventListener {
-    let frame: CGRect
     let viewId: Int64
     var flutterScannerView: UIView?
     var scanner: FaceScannerView!
@@ -23,14 +22,11 @@ public class FlutterFaceScanner: NSObject, FlutterPlatformView, FaceScannerEvent
         let screenWidth = screenSize.width
         let screenHeight = screenSize.height
         
-        print(frame.width)
-        print(frame.height)
-        
-        self.frame = frame
         self.viewId = viewId
+        
         super.init()
+        
         self.flutterScannerView = UIView(frame: CGRect(x: 0, y: 0, width: screenWidth, height: screenHeight))
-        self.flutterScannerView?.backgroundColor = .black
         self.methodChannel = FlutterMethodChannel(name: "FaceScanner_MethodChannel_" + String(viewId), binaryMessenger: messenger)
         self.eventChannel = FlutterEventChannel(name: "FaceScanner_EventChannel_" + String(viewId), binaryMessenger: messenger)
         self.eventStreamHandler = FaceScannerEventStreamHandler()

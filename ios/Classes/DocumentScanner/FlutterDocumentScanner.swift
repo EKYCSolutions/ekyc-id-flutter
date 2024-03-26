@@ -4,7 +4,6 @@ import EkycID
 import Foundation
 
 public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScannerEventListener {
-    let frame: CGRect
     let viewId: Int64
     var flutterScannerView: UIView?
     var scanner: DocumentScannerView!
@@ -17,11 +16,6 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
         let screenWidth = screenSize.width
         let screenHeight = screenSize.height
         
-        print(frame.width)
-        print(frame.height)
-        
-        self.frame = frame
-
         self.viewId = viewId
 
         super.init()
@@ -64,9 +58,9 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
                 maxDocWidthPercentage: maxDocWidthPercentage.floatValue
             ),
             scannableDocuments: scannableDocuments.map { e in
-                var doc = e as! [String: String?]
-                var mainSide = doc["mainSide"]!
-                var secondarySide = doc["secondarySide"]!
+                let doc = e as! [String: String?]
+                let mainSide = doc["mainSide"]!
+                let secondarySide = doc["secondarySide"]!
                 
                 return ScannableDocument(
                     mainSide: StringToObjectDetectionObjectTypeMapping[mainSide!]!,
@@ -166,8 +160,7 @@ public class FlutterDocumentScanner: NSObject, FlutterPlatformView, DocumentScan
             return nil
         }
 
-        func sendOnDocumentScannedEventToFlutter(_ mainside: DocumentScannerResult, _ secondarySide: DocumentScannerResult?) {
-            print("sendOnDocumentScannedEventToFlutter")
+        func sendOnInitializedEventToFlutter() {
             if self.events != nil {
                 DispatchQueue.main.async {
                     var event = [String: Any]()
