@@ -1,4 +1,4 @@
-import 'package:ekyc_id_flutter/ekyc_id.dart';
+import 'package:ekyc_id_flutter/ekyc_id_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
