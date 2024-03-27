@@ -77,10 +77,10 @@ class FlutterFaceScanner(
                 FaceScannerOptions(
                     FaceScannerCameraOptions(
                         cameraOptions["captureDurationCountDown"] as Int,
-                        cameraOptions["faceCropScale"] as Float,
-                        cameraOptions["roiSize"] as Float,
-                        cameraOptions["minFaceWidthPercentage"] as Float,
-                        cameraOptions["maxFaceWidthPercentage"] as Float,
+                        (cameraOptions["faceCropScale"] as Double).toFloat(),
+                        (cameraOptions["roiSize"] as Double).toFloat(),
+                        (cameraOptions["minFaceWidthPercentage"] as Double).toFloat(),
+                        (cameraOptions["maxFaceWidthPercentage"] as Double).toFloat(),
                     )
                 )
             )
