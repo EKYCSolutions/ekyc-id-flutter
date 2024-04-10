@@ -49,5 +49,5 @@ android {
 
 dependencies {
     api "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api 'com.github.EKYCSolutions:ekyc-id-android:1.0.30'
+    api 'com.github.EKYCSolutions:ekyc-id-android:1.0.33'
 }

@@ -92,7 +92,7 @@ class FaceScannerViewState extends State<FaceScannerView> {
   void dispose() {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     this.player?.dispose();
-    this.controller?.dispose();
+    this.controller.dispose();
     super.dispose();
   }
 

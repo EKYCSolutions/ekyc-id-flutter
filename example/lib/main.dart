@@ -82,11 +82,14 @@ class _HomeScreenState extends State<HomeScreen> {
               context: context,
               isScrollControlled: true,
               builder: (BuildContext context) {
-                // return FaceScannerView(
-                //   onFaceScanned: (face) async {
-                //     print(face.toString());
-                //   },
-                // );
+                return FaceScannerView(
+                  options: FaceScannerOptions(
+                    useFrontCamera: true,
+                  ),
+                  onFaceScanned: (face) async {
+                    print(face.toString());
+                  },
+                );
 
                 return DocumentScannerView(
                   onDocumentScanned: (mainSide, secondarySide) async {
